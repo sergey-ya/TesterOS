@@ -1,0 +1,1237 @@
+{% extends "base.html" %}
+
+
+{% block css2 %}
+    <style type="text/css">
+        {#table#}
+        table th {
+            font-weight: 300;
+            color: #818181;
+        }
+
+
+        table#table-buildiso-run th,
+        table#table-buildiso-run td{
+            padding-top: 0.8rem;
+            padding-bottom: 0.8rem;
+        }
+
+        .table-buildiso-log-row:hover{
+            cursor: pointer;
+            background:#e1ebf0;
+        }
+
+
+        tr.table-buildiso-row td{
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+
+        tbody#table-pkgset-data tr td{
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+
+        a i{
+            font-size: 1rem;
+        }
+
+        #table-buildiso-head th{
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+
+        table#table-buildiso thead tr th a,
+        table#table-buildiso tbody tr td a,
+        table#table-pkgset thead tr th a,
+        table#table-pkgset tbody tr td a{
+            margin: 0 10px;
+        }
+
+
+        .table-buildiso-row:hover {
+            cursor: pointer;
+            background:#e1ebf0;
+        }
+
+        .selected-row {
+            background: #e1ebf0
+        }
+
+        a .fas:hover {
+            color: #9bb4e2;
+        }
+
+        #close-loader .fas:hover {
+            color: #3e4551;
+        }
+
+        .tree span:hover {
+            font-weight: bold;
+        }
+
+        .tree span {
+            cursor: pointer;
+        }
+
+        label.error {
+            color: #ff000080;
+            font-size: 0.8rem;
+        }
+
+
+        #jstree_folder {
+            float: left;
+            min-width: 319px;
+            width: 95%;
+            border-right: 1px solid silver;
+            overflow: auto;
+            padding: 0px 0;
+
+        }
+        #jstree_file {
+            float: left;
+            min-width: 319px;
+            width: 95%;
+            border-right: 1px solid silver;
+            overflow: auto;
+            padding: 0px 0;
+
+        }
+
+        li.jstree-node {
+            list-style-type: none; /* Убираем маркеры */
+        }
+
+        .fa-file {
+            color: #b3b6ba;
+        }
+
+    </style>
+{% endblock %}
+
+
+{% block content %}
+
+    <!--title-->
+    <div class="row" style="padding-bottom: 20px;">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <p style="text-align: justify;"><span class="header">Build ISO</span> - осуществляет сборку образов
+                <a data-container="body" data-toggle="popover" data-placement="right"
+                   data-content="описание"><i class="fa fa-question-circle"> </i></a>
+            </p>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" href="{% url 'buildiso' %}">Build ISO</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'buildisolog' %}">Journal Build ISO</a>
+        </li>
+    </ul>
+
+
+    <div class="row" id="buildiso-settings-panel" style="margin-bottom: 400px">
+
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <!--table-buildiso-log-->
+                    {% if log %}
+                        <div class="row" id="buildiso-log-panel" style="padding-bottom: 40px">
+                            <div class="col-xs-12 col-md-12 col-lg-12">
+
+                                <p class="table-title">Запущенные сборки</p>
+
+                                <table class="table buildiso-log" id="table-buildiso-log">
+                                    <thead>
+                                    <tr id="table-buildiso-head">
+                                        <th style="width: 80px">ID</th>
+                                        <th>Information</th>
+                                        <th style="width: 150px">Built by</th>
+                                        <th style="width: 180px">Started</th>
+                                        <th class="text-center" style="width: 80px">State</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody id="table-buildiso-log-data">
+
+                                    {% for elem in log %}
+                                        <tr class="table-buildiso-log-row" num="{{ elem.id }}">
+                                            <td id="">{{ elem.id }}</td>
+                                            <td id="">{{ elem.inform }}</td>
+                                            <td id="">{{ elem.user_id }}</td>
+                                            <td id="">{{ elem.created_at|date:'d E Y, H:i' }}</td>
+
+                                            <td class="text-center status" id="status{{ elem.id }}" num="{{ elem.id }}" status="1">
+                                                <i class="fas fa-sync-alt fa-spin fa-lg fa-fw color-info"></i>
+                                                <span class="sr-only">Loading...</span>
+                                                {% if elem.user_id == user.username %}
+                                                    <a id="cancel-buildiso" num="{{ elem.id }}">cancel</a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="row" style="margin-top: 20px">
+                        <div class="col-xs-7 col-md-7 col-lg-7 ">
+
+                            <h5>Список настроек</h5>
+
+                            <table class="table" id="table-buildiso">
+                                <thead>
+                                <tr>
+                                    <th>Имя</th>
+                                    <th>Комментарий</th>
+                                    <th class="text-right" style="width:100px; margin-bottom: 0px;">
+                                        <a id="buildiso-add"><i class="fas fa-plus"></i></a>
+                                    </th>
+                                </tr>
+                                </thead>
+
+                                <tbody id="table-buildiso-data">
+                                {% for elem in settings %}
+                                    <tr class="table-buildiso-row" settingId="{{ elem.id }}">
+                                        <td id="buildisoNameRow">{{ elem.name }}</td>
+                                        <td id="buildisoCommentRow">{{ elem.comment }}</td>
+                                        <td class="text-right">
+                                            <a><i class='fas fa-pencil-alt' id="edit"></i></a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="col-xs-5 col-md-5 col-lg-5">
+
+                            <div class="card border-light mb-3" id="options-panel">
+                                <div class="card-body">
+                                    <h4 class="card-title" style="font-size: 1.1rem;">Сборка</h4>
+
+                                    <hr>
+
+                                    <div class="form-group">
+                                        <label for="target_dir">Target dir</label>
+
+                                        <div class="form-group row">
+                                            <div class="col-sm-11">
+                                                <input type="text" class="form-control settingdata" id="targetDir" readonly>
+                                            </div>
+                                            <a class="col-sm-1 col-form-label" id="getPath-targetdir" act="targetdir" style="padding-left: 0px;">
+                                                <i class="fas fa-folder-open"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="label">Label</label>
+                                        <input type="text" class="form-control settingdata" id="label">
+                                    </div>
+
+                                    <div class="text-center">
+                                        <a class="btn btn-outline-danger waves-effect" id="buildiso-save-settings"
+                                           data-toggle="modal" data-target="#confirm-form">Сохранить
+                                        </a>
+
+                                        <a class="btn btn-danger" id="buildiso-run"
+                                           data-toggle="modal" data-target="#confirm-form"><i class="fa fa-magic mr-1"></i> Запустить
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-5 col-md-5 col-lg-5">
+                            <div class="card border-light mb-3" id="options-release">
+                                <div class="card-header">RELEASE</div>
+
+                                <div class="card-body">
+
+                                    <div class="form-group">
+
+                                        <label for="release_name" >Name / Short</label>
+
+                                        <div class="form-group row">
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control settingdata" id="relName">
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control settingdata" id="relShortName">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="release_version">Version</label>
+
+                                        <div class="form-group row">
+                                            <div class="col">
+                                                <input type="text" class="form-control settingdata" id="relVer">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-7 col-md-7 col-lg-7">
+                            <div class="card border-light mb-3" id="options-general">
+                                <div class="card-header">GENERAL</div>
+                                <div class="card-body">
+
+                                    <div class="form-group">
+                                        <label for="compas_file">Comps file</label>
+                                        <div class="form-group row">
+                                            <div class="col-sm-11">
+                                                <input type="text" class="form-control settingdata" id="compsFile" readonly>
+                                            </div>
+                                            <a class="col-sm-1 col-form-label" id="getFile-comps" act="comps" style="padding-left: 0px;">
+                                                <i class="fas fa-folder-open"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="variants_file">Variants file</label>
+                                        <div class="form-group row">
+                                            <div class="col-sm-11">
+                                                <input type="text" class="form-control settingdata" id="varFile" readonly>
+                                            </div>
+                                            <a class="col-sm-1 col-form-label" id="getFile-var" act="var" style="padding-left: 0px;">
+                                                <i class="fas fa-folder-open"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-md-12 col-lg-12">
+                            <div class="card border-light mb-3" id="options-pkgset">
+                                <div class="card-header">PKGSET</div>
+
+                                <div class="card-body">
+                                    <table class="table" id="table-pkgset">
+                                        <thead>
+                                        <tr>
+                                            <th style="width: 100px">arch</th>
+                                            <th>path</th>
+                                            <th class="text-right" style="width:200px;">
+                                                <a id="pkgset-add-arch" >arch <i class="fas fa-plus"></i></a>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="table-pkgset-data"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="loader-block-2" id="loader1" style="display: none;">
+        <div class="modal-mask">
+            <div class="modal-wrapper">
+                <center>
+                    <div id="loader1" class="loader-2"></div>
+                </center>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="loader-block-2" id="loader2" style="display: none;">
+        <div class="modal-mask">
+            <div class="modal-wrapper">
+                <center>
+                    <div class="text-right" style="width: 1000px; height:60px;">
+                        <a id='close-loader' style="color: white;">Close <i class='fas fa-times fa-lg'></i></a>
+                    </div>
+                    <div id="loader2" class="loader-2"></div>
+                    <br>
+                    <div class="text-left" id="scroll" style="overflow:auto; width: 1000px; height:350px;">
+                        <pre id="buildIsoInfo" style="overflow:visible; color: white"></pre>
+                    </div>
+                </center>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ModalForms -->
+    {% include "testeros/buildiso/modalforms.html" %}
+
+
+{% endblock %}
+
+
+{% block js %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.5/jstree.min.js"></script>
+
+
+    <script type="text/javascript">
+        var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+        var archRow = '';
+        var pathRow = '';
+        var buildisoRow = '';
+        var buildisoRowOld = '';
+        var settingId = '';
+
+
+        function enableSaveSettingsBtn() {
+            $("#buildiso-save-settings").removeClass('disabled');
+        }
+
+
+        $('input.settingdata').on('input', function () {
+            enableSaveSettingsBtn();
+        });
+
+        {#запуск диалога подтверждения#}
+        function runConfirm(action, msg){
+            $("#confirmAction").val(action);
+            $("#confirmMessage").text(msg);
+            $('#confirmFormModal').modal('show');
+        }
+
+        {#блокировка панелей#}
+        function disabledPanels () {
+            $(":input.form-control").val('');
+            $("#table-pkgset-data").empty();
+
+            $('#options-panel').find('input, label').prop('disabled', true);
+            $('#options-panel').find('a').addClass('disabled');
+
+            $('#options-release').find('input, label').prop('disabled', true);
+            $('#options-general').find('input, label').prop('disabled', true);
+            $('#options-general').find('a').addClass('disabled');
+
+            $('#options-pkgset').find('a').addClass('disabled');
+        }
+
+
+
+
+
+
+        {#запуск диалога выбора каталога#}
+        function runSelectFolder(th, path) {
+            archRow = th.parent().parent();
+            $("#selectfolderAction").val(th.attr('act'));
+            $('#jstree_folder').jstree(true).close_all();
+            $("#selectfolderPath").text(path);
+            $('#selectfolderFormModal').modal('show');
+        }
+
+        $("body").on('click','a[id="getPath-targetdir"]',function() {
+            runSelectFolder($(this), $("#targetDir").val());
+        });
+
+        $("body").on('click','a[id="getPath-path"]',function() {
+            runSelectFolder($(this), '');
+        });
+
+        $('#jstree_folder')
+            .jstree({
+                "core" : {
+                    "animation" : 0,
+                    "check_callback" : true,
+                    "themes" : { "default" : true },
+                    'data' : {
+                        'type': "POST",
+                        'url' : function (node) {
+                            return "ajax/";
+                        },
+                        'data' : function (node) {
+                            return {'action': 'getCatalogDialog', 'path': node.id, 'id': node.id, 'type': 'folders' };
+                        },
+                        'beforeSend': function (xhr, settings) {
+                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                            }
+                        },
+
+                    }
+                },
+                "types" : {
+                    "#" : {
+                        "max_children" : 1,
+                        "max_depth" : 4,
+                        "valid_children" : ["root"]
+                    },
+                    "root" : {
+                        "icon" : "fas fa-folder",
+                        "valid_children" : ["default"]
+                    },
+                    "default" : {
+                        "valid_children" : ["default","file"]
+                    },
+                    "file" : {
+                        "icon" : "fas fa-file",
+                        "valid_children" : []
+                    }
+                },
+                'plugins' : ['dnd','types','unique']
+
+            })
+            .on('changed.jstree', function (e, data) {
+                if(data.node) {
+                    $("#selectfolderPath").text(data.node.id);
+                }
+            });
+
+
+        {#запуск диалога выбора файла#}
+        function runSelectFile(th, path) {
+            $("#selectfileAction").val(th.attr('act'));
+            $('#jstree_file').jstree(true).close_all();
+            $("#selectfilePath").text(path);
+            $('#selectfileFormModal').modal('show');
+        }
+
+        $("body").on('click','a[id="getFile-comps"]',function() {
+            runSelectFile($(this), $("#compsFile").val())
+        });
+
+        $("body").on('click','a[id="getFile-var"]',function() {
+            runSelectFile($(this), $("#varFile").val())
+        });
+
+        $('#jstree_file')
+            .jstree({
+                "core" : {
+                    "animation" : 0,
+                    "check_callback" : true,
+                    "themes" : { "default" : true },
+                    'data' : {
+                        'type': "POST",
+                        'url' : function (node) {
+                            return "ajax/";
+                        },
+                        'data' : function (node) {
+                            return {'action': 'getCatalogDialog', 'path': node.id, 'id': node.id, 'type': 'files' };
+                        },
+                        'beforeSend': function (xhr, settings) {
+                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                            }
+                        },
+
+                    }
+                },
+                "types" : {
+                    "#" : {
+                        "max_children" : 1,
+                        "max_depth" : 4,
+                        "valid_children" : ["root"]
+                    },
+                    "root" : {
+                        "icon" : "fas fa-folder",
+                        "valid_children" : ["default"]
+                    },
+                    "default" : {
+                        "valid_children" : ["default","file"]
+                    },
+                    "file" : {
+                        "icon" : "fas fa-file",
+                        "valid_children" : []
+                    }
+                },
+                'plugins' : ['dnd','types','unique']
+
+            })
+            .on('changed.jstree', function (e, data) {
+                if(data.node) {
+                    if (data.node.type == 'file') {
+                        {#console.log(data.node.id)#}
+                        $("#selectfilePath").text(data.node.id);
+                    }
+                }
+            });
+
+
+
+        {#РАБОТА С MODAL FORM*****************************************************************************************#}
+        {#валидация форм и действия#}
+
+        $(document).ready(function(){
+            disabledPanels();
+
+            $("#buildisoForm").validate({
+                rules: {
+                    buildisoName: {
+                        required: true,
+                        minlength: 3
+                    },
+                    action: "required"
+                },
+                messages: {
+                    buildisoName: {
+                        required: "Обязательное поле",
+                        minlength: "Минимальная длинна Имени 3 символа"
+                    },
+                    action: "Please provide some data"
+                },
+
+                submitHandler: function(form) {
+
+                    if (form.buildisoAction.value == 'add') {
+                        $.ajax({
+                            type: "POST",
+                            url: "ajax/",
+                            data: {
+                                action: 'addSettingBuildISo',
+                                name: form.buildisoName.value,
+                                comment: form.buildisoComment.value,
+                            },
+                            cache: false,
+
+                            success: function (data) {
+                                $("#table-buildiso-data").append("<tr class='table-buildiso-row' settingId='" + data +"'>" +
+                                    "<td id='buildisoNameRow'>" + form.buildisoName.value + "</td>" +
+                                    "<td id='buildisoCommentRow'>" + form.buildisoComment.value + "</td>" +
+                                    "<td class='text-right'>" +
+                                    "<a><i class='fas fa-pencil-alt' id='edit'></i></a>" +
+                                    "</td></tr>");
+                            },
+
+                            error: function (request, error) {
+                                $.alert("При добавлении настроек.", {type: 'danger'}, request.status + request.responseText);
+                            },
+
+                            beforeSend: function (xhr, settings) {
+                                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                                }
+                            },
+                        });
+
+                    } else if (form.buildisoAction.value == 'edit') {
+                        $.ajax({
+                            type: "POST",
+                            url: "ajax/",
+                            data: {
+                                action: 'editSettingBuildISo',
+                                settingId: form.buildisoId.value,
+                                name: form.buildisoName.value,
+                                comment: form.buildisoComment.value,
+                            },
+                            cache: false,
+
+                            success: function (data) {
+                                buildisoRow.find("#buildisoNameRow").html(form.buildisoName.value);
+                                buildisoRow.find("#buildisoCommentRow").html(form.buildisoComment.value);
+                            },
+
+                            error: function (request, error) {
+                                $.alert("При редактировани настроек.", {type: 'danger'}, request.status + request.responseText);
+                            },
+
+                            beforeSend: function (xhr, settings) {
+                                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                                }
+                            },
+                        });
+                    }
+
+                    $('#buildisoModal').modal('hide');
+                    return false;
+                    {#form.submit();#}
+                }
+            });
+
+            $("#archForm").validate({
+
+                submitHandler: function(form) {
+                    if (form.archAction.value == 'add') {
+                        $("#table-pkgset-data").append("<tr class='table-pkgsetarch-row' num='" + $(".table-pkgsetarch-row").length + "'>"+
+                            "<td colspan='2' id='archNameRow'>" + form.archName.value + "</td>"+
+                            "<td class='text-right'><a id='getPath-path' act='path'>path <i class='fas fa-plus'></i></a>"+
+                            "<a id='pkgset-del-arch'><i class='fas fa-minus'></i></a></td>"+
+                            "</tr>");
+                    }
+                    $('#archModal').modal('hide');
+                    return false;
+                }
+            });
+
+            $("#confirmForm").validate({
+
+                submitHandler: function(form) {
+                    if (form.confirmAction.value == 'del-buildiso') {
+                        disabledPanels();
+                        $.ajax({
+                            type: "POST",
+                            url: "ajax/",
+                            data: {
+                                action: 'delSettingBuildISo',
+                                settingId: buildisoRow.attr('settingId'),
+                            },
+                            cache: false,
+
+                            success: function (data) {
+                                buildisoRow.remove();
+                            },
+
+                            error: function (request, error) {
+                                $.alert("При удалении настроек.", {type: 'danger'}, request.status + request.responseText);
+                            },
+
+                            beforeSend: function (xhr, settings) {
+                                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                                }
+                            },
+                        });
+                    } else if (form.confirmAction.value == 'del-arch') {
+                        $(".table-pkgsetpath-row").each(function(){
+                            if ($(this).attr('num') == archRow.attr('num')) {
+                                $(this).remove();
+                            }
+                        });
+
+                        archRow.remove();
+                        enableSaveSettingsBtn();
+                    } else if (form.confirmAction.value == 'del-path') {
+                        pathRow.remove();
+                        enableSaveSettingsBtn();
+                    }
+
+                    $('#confirmFormModal').modal('hide');
+                    return false;
+                }
+            });
+
+            $("#selectfolderForm").validate({
+
+                submitHandler: function(form) {
+                    if ($("#selectfolderPath").text() != '') {
+                        if (form.selectfolderAction.value == 'targetdir') {
+                            $("#targetDir").val($("#selectfolderPath").text());
+                        } else if (form.selectfolderAction.value == 'path') {
+                            var elem = archRow.find("#archNameRow").text();
+                            archRow.after("<tr class='table-pkgsetpath-row' num='" + archRow.attr('num') + "'>"+
+                                "<td></td>"+
+                                "<td id='pathNameRow'>" + $("#selectfolderPath").text() + "</td>"+
+                                "<td class='text-right'>" +
+                                "<a id='pkgset-del-path'><i class='fas fa-minus' id='del'></i></a></td>"+
+                                "</tr>");
+                        }
+                        $('#selectfolderFormModal').modal('hide');
+                        enableSaveSettingsBtn();
+                        return false;
+                    }
+                }
+            });
+
+            $("#selectfileForm").validate({
+
+                submitHandler: function(form) {
+                    if (form.selectfileAction.value == 'comps') {
+                        $("#compsFile").val($("#selectfilePath").text());
+                    } else if (form.selectfileAction.value == 'var') {
+                        $("#varFile").val($("#selectfilePath").text());
+                    }
+
+                    $('#selectfileFormModal').modal('hide');
+                    enableSaveSettingsBtn();
+                    return false;
+                }
+            });
+
+            $("#questionForm").validate({
+
+                submitHandler: function(form) {
+                    saveSettingsData(buildisoRowOld.attr('settingId'));
+                    getSettingsData(buildisoRow.attr('settingId'));
+                    $('#questionFormModal').modal('hide');
+                    return false;
+                }
+            });
+
+        });
+
+
+        $('#questionCancel').on('click', function (e) {
+            console.log('get data ' + buildisoRow.attr('settingId'));
+            getSettingsData(buildisoRow.attr('settingId'));
+        });
+
+        {#установка фокуса#}
+        $('#buildisoModal').on('shown.bs.modal', function () {
+            document.getElementById("buildisoName").focus();
+        });
+
+        $('#archModal').on('shown.bs.modal', function () {
+            document.getElementById("archName").focus();
+        });
+
+        $('#pathModal').on('shown.bs.modal', function () {
+            document.getElementById("pathName").focus();
+        });
+
+
+
+
+        {#РАБОТА С ТАБЛИЦЕЙ НАСТРОЕК (BUILD-ISO)**********************************************************************#}
+        {#получаем данные с сервера#}
+        function getSettingsData(id) {
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'getSettingsBuildISo',
+                    settingId: id,
+                },
+                cache: false,
+
+                success: function (data) {
+                    $("#targetDir").val(data.results[0].dir);
+                    $("#label").val(data.results[0].label);
+                    $("#relName").val(data.results[0].rel_name);
+                    $("#relShortName").val(data.results[0].rel_short_name);
+                    $("#relVer").val(data.results[0].rel_ver);
+                    $("#compsFile").val(data.results[0].comps_file_path);
+                    $("#varFile").val(data.results[0].var_file_path);
+
+                    var counter = 0;
+                    for (key in data.pkgset) {
+                        counter++;
+                        $("#table-pkgset-data").append("<tr class='table-pkgsetarch-row' num='" + counter + "'>" +
+                            "<td colspan='2' id='archNameRow'>" + key + "</td>" +
+                            "<td class='text-right'><a id='getPath-path' act='path'>path <i class='fas fa-plus'></i> </a>" +
+                            "<a id='pkgset-del-arch'><i class='fas fa-minus'></i></a></td>" +
+                            "</tr>");
+
+                        data.pkgset[key].forEach(function (path) {
+                            $("#table-pkgset-data").append("<tr class='table-pkgsetpath-row' num='" + counter + "'>" +
+                                "<td></td>" +
+                                "<td id='pathNameRow'>" + path + "</td>" +
+                                "<td class='text-right'>" +
+                                "<a id='pkgset-del-path'><i class='fas fa-minus' id='del'></i></a></td>" +
+                                "</tr>");
+                        })
+                    }
+
+                    $('#options-panel').find('input, label').prop('disabled', false);
+                    $('#options-panel').find('a').removeClass('disabled');
+                    $('#options-release').find('input, label').prop('disabled', false);
+                    $('#options-general').find('input, label').prop('disabled', false);
+                    $('#options-general').find('a').removeClass('disabled');
+                    $('#options-pkgset').find('a').removeClass('disabled');
+                    $("#buildiso-save-settings").addClass('disabled');
+                },
+
+                error: function (request, error) {
+                    $.alert("При получени настроек.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function (xhr, settings) {
+                    disabledPanels();
+                    $("#table-pkgset-data").empty();
+
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+            });
+        }
+
+        {#добавление настроек#}
+        $("body").on('click','a[id="buildiso-add"]',function() {
+            $("#buildiso-modal-form-label").text("Добавление");
+            $('#buildisoModal').find('form').trigger('reset');
+            $('#buildisoAction').val("add");
+            $('#buildisoModal').modal('show');
+        });
+
+        {#выбор строки в таблице#}
+        $("#table-buildiso-data").on('click', '.table-buildiso-row', function (e) {
+            if (buildisoRow == '') {
+                buildisoRowOld = $(this);
+            } else {
+                buildisoRowOld = buildisoRow;
+            }
+
+            $('#table-buildiso-data .table-buildiso-row').removeClass('selected-row');
+            $(this).addClass('selected-row');
+
+            buildisoRow = $(this);
+            if (e.target.id == 'edit') {
+                $("#buildiso-modal-form-label").text("Редактирвоание");
+                $('#buildisoAction').val("edit");
+                $('#buildisoId').val($(this).attr("settingId"));
+                $("#buildisoName").val(buildisoRow.find("#buildisoNameRow").text());
+                $("#buildisoComment").val(buildisoRow.find("#buildisoCommentRow").text());
+                $('#buildisoModal').modal('show');
+            } else if (e.target.id == 'del') {
+                runConfirm('del-buildiso', 'Вы действительно хотите удалить настройки?');
+            } else {
+                {#получаем даные#}
+                if (!$("#buildiso-save-settings").hasClass('disabled')) {
+                    $('#questionFormModal').modal('show');
+                } else {
+                    getSettingsData($(this).attr('settingId'));
+                }
+            }
+        });
+
+
+
+        {#РАБОТА С PKGSET*********************************************************************************************#}
+        {#добавление архитектуры#}
+        $("body").on('click','a[id="pkgset-add-arch"]',function() {
+            $("#arch-modal-form-label").text("Добавление");
+            $('#archModal').find('form').trigger('reset');
+            $('#archAction').val("add");
+            $('#archModal').modal('show');
+        });
+
+        {#удаление архитектуры#}
+        $("body").on('click','a[id="pkgset-del-arch"]',function() {
+            archRow = $(this).parent().parent();
+            runConfirm('del-arch', 'Вы действительно хотите удалить архитектуру и все пути включенные в нее?');
+        });
+
+        {#удаление пути#}
+        $("body").on('click','a[id="pkgset-del-path"]',function() {
+            pathRow = $(this).parent().parent();
+            runConfirm('del-path', 'Вы действительно хотите удалить путь из архитектуры?');
+        });
+
+
+
+        {#СОХРАНЕНИЕ НАСТРОЕК*****************************************************************************************#}
+        function saveSettingsData(id) {
+            {#формирование списка pkgset#}
+            var $table = $("#table-pkgset-data");
+            var arch = '';
+            var cell = {};
+
+            console.log($('#targetDir').val());
+            console.log(id);
+
+            $("tr", $table).each(function () {
+                if ($(this).hasClass('table-pkgsetarch-row')) {
+                    $("td", this).each(function () {
+                        if (this.id == "archNameRow") {
+                            {#cell['arch'] = this.textContent;#}
+                            arch = this.textContent;
+                        }
+                    });
+                    var num = $(this).attr('num');
+                    var paths = [];
+                    $("tr.table-pkgsetpath-row", $table).each(function () {
+                        if ($(this).attr('num') == num) {
+                            $("td", this).each(function () {
+                                if (this.id == "pathNameRow") {
+                                    paths.push(this.textContent);
+                                }
+                            })
+                        };
+                    });
+                    cell[arch] = paths;
+                }
+            });
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'saveSettingBuildISo',
+                    settingId: id,
+                    dir: $('#targetDir').val(),
+                    label: $('#label').val(),
+                    relName: $('#relName').val(),
+                    relShortName: $('#relShortName').val(),
+                    relVer: $('#relVer').val(),
+                    compsFilePath: $('#compsFile').val(),
+                    varFilePath: $('#varFile').val(),
+                    pkgsetRepos: JSON.stringify(cell),
+                },
+                cache: false,
+
+                success: function (data) {
+                    $("#buildiso-save-settings").addClass('disabled');
+                    $.alert("Настройки успешно сохранены.", {type: 'success'});
+                },
+
+                error: function (request, error) {
+                    $.alert("При сохранении настроек.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+            })
+        }
+
+        $("body").on('click','a[id="buildiso-save-settings"]',function() {
+            saveSettingsData(buildisoRow.attr('settingId'));
+        });
+
+
+
+        {#ПОЛУЧЕНИЕ ИНФОРМАЦИИ О ХОДЕ СБОРКИ**************************************************************************#}
+        var logTimer = '';
+
+        function getBuildIsoInfo(){
+            var logId = buildisoRow.attr('num')
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'getBuildIsoInfo',
+                    id: logId,
+                },
+                cache: false,
+
+                success: function (data) {
+                    {#console.log(data);#}
+                    if (data.status == 0) {
+                        $('#loader2').css("display", "none");
+                        clearInterval(logTimer);
+                    } else {
+                        if ($("#buildIsoInfo").text() != data.data) {
+                            $("#buildIsoInfo").text(data.data);
+                            {#var div = $("#scroll");#}
+                            {#div.scrollTop(div.prop('scrollHeight'));#}
+                        }
+                    }
+                },
+
+                error: function (request, error) {
+                    // console.log(error + request.status + request.statusText);
+                    $.alert("При редактировани настроек.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+            })
+        }
+
+        $("#table-buildiso-log-data").on('click', '.table-buildiso-log-row', function (e) {
+            if (e.target.id == 'cancel-buildiso') {
+                {#отмена запущенной сборки#}
+                $.ajax({
+                    type: "POST",
+                    url: "ajax/",
+                    data: {
+                        action: 'cancelBuildIso',
+                        id: $(this).attr('num'),
+                    },
+                    cache: false,
+
+                    error: function (request, error) {
+                        // console.log(error + request.status + request.statusText);
+                        $.alert("При отмене сборки.", {type: 'danger'}, request.status + request.responseText);
+                    },
+
+                    beforeSend: function (xhr, settings) {
+                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                        }
+                    },
+                });
+            } else if ($("#status"+$(this).attr('num')).attr('status') == 1) {
+                buildisoRow = $(this);
+                $('#loader2').css("display", "block");
+                $("#buildIsoInfo").empty();
+                logTimer = setInterval(getBuildIsoInfo, 1000);
+            }
+        });
+
+        {#закрыть лоадер#}
+        $("body").on('click','a[id="close-loader"]',function() {
+            $('#loader2').css("display", "none");
+            clearInterval(logTimer);
+            {#$("#closeLoader").replaceWith("<div id='loader2' class='loader-2'></div>");#}
+        })
+
+
+
+        {#СЛЕЖЕНИЕ ЗА СОСТОЯНИЕМ ЗАПУЩЕННЫХ СБОРОК********************************************************************#}
+        var statusTimer = '';
+        $(document).ready(function(){
+            if ($("#buildiso-log-panel").length) {
+                statusTimer = setInterval(checkStatus, 1000);
+            }
+        });
+
+        {#установка статусов#}
+        function getStatus(buildisoid){
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'getBuildIsoStatus',
+                    id: buildisoid,
+                },
+                cache: false,
+
+                success: function (data) {
+                    var $obj = $("#status" + buildisoid);
+                    if (data.status != 1) {
+                        $obj.removeClass('status');
+                        $obj.attr('status', data.status);
+                        if (data.status == 0) {
+                            $obj.html('<i class="fas fa-check fa-lg color-success"></i>');
+                        } else if (data.status == 2) {
+                            $obj.html('<i class="fas fa-ban fa-lg color-warning"></i>');
+                        } else if (data.status == 3) {
+                            $obj.html('<i class="fas fa-exclamation-circle fa-lg color-danger"></i>');
+                        }
+                    }
+                },
+
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+            })
+        }
+
+        {#проверка статусов#}
+        function checkStatus(buildisoid) {
+            if ($(".status").length) {
+                $(".status").each(function(){
+                    getStatus($(this).attr('num'))
+                });
+            } else {
+                clearInterval(statusTimer);
+            }
+        };
+
+
+
+        {#ЗАПУСК СБОРКИ***********************************************************************************************#}
+        {#запуск сборки образа#}
+        function runBuildIso(logId) {
+            console.log(buildisoRow.attr('settingId'));
+            console.log(logId);
+
+
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'runBuildIso',
+                    settingId: buildisoRow.attr('settingId'),
+                    id: logId,
+                },
+                cache: false,
+
+                beforeSend: function (xhr, settings) {
+                    $('#loader1').css('display', 'block');
+                    setTimeout("location.reload()", 2000);
+
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+            })
+        }
+
+        {#добавить запись в лог#}
+        function addLogBuildIso() {
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'addLogBuildIso',
+                    settingId: buildisoRow.attr('settingId'),
+                },
+                cache: false,
+
+                success: function (data) {
+                    runBuildIso(data);
+                },
+
+                error: function (request, error) {
+                    $.alert("При добавлении записи в лог.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+            })
+        }
+
+        {#проверка параметров#}
+        function checkParams() {
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'checkParamsBuildIso',
+                    settingId: buildisoRow.attr('settingId'),
+                },
+                cache: false,
+
+                success: function (data) {
+                    addLogBuildIso();
+                },
+
+                error: function (request, error) {
+                    $.alert("При проверке параметров.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+            })
+        }
+
+
+        $("body").on('click','a[id="buildiso-run"]',function() {
+            if ($("#buildiso-save-settings").hasClass('disabled')) {
+                checkParams();
+            } else {
+                $.alert("Необходимо сохранить настройки.", {type: 'warning'});
+            }
+        });
+
+
+    </script>
+{% endblock %}

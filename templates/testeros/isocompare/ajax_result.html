@@ -1,0 +1,199 @@
+{#<div class="row" id="result-title">#}
+{#    <div class="col text-right">#}
+{#        <a onClick="javascript:CallPrint('result-content');">Печать <i class="fas fa-print"></i></a>#}
+{#    </div>#}
+{#</div>#}
+
+<div class="card">
+    <div class="card-body">
+
+        <div class="row" id="result-content">
+            <div class="col">
+
+                <h3 id="res-header"></h3>
+                <h5 style="color: grey;" id="res-header-iso1"></h5>
+                <h5 style="color: grey;" id="res-header-iso2"></h5>
+
+                <br>
+
+                {#список пакетов на первом образе#}
+                <h4>Список пакетов находящихся только на первом образе</h4>
+                {% if result.iso1_pkgs %}
+                    <p><span style='color: green'>Выявлено пакетов: {{ result.iso1_pkgs|length }}</span>
+                        <a class='float-right' id='a-pkgs1'>показать <i class='fa fa-angle-double-down'></i></a>
+                    </p>
+
+                    <ul class='pkgs1' id='pkgs1'>
+                        {% for elem in result.iso1_pkgs %}
+                            <li> {{ elem }} </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p style="color: grey;">Отличий не выявлено</p>
+                {% endif %}
+                <br>
+
+                {#список пакетов на втором образе#}
+                <h4>Список пакетов находящихся только на втором образе</h4>
+                {% if result.iso2_pkgs %}
+                    <p><span style='color: green'>Выявлено пакетов: {{ result.iso2_pkgs|length }}</span>
+                        <a class='float-right' id='a-pkgs2'>показать <i class='fa fa-angle-double-down'></i></a>
+                    </p>
+
+                    <ul class='pkgs2' id='pkgs2'>
+                        {% for elem in result.iso2_pkgs %}
+                            <li> {{ elem }} </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p style="color: grey;">Отличий не выявлено</p>
+                {% endif %}
+                <br>
+
+                {#отличия по версиям#}
+                <h4>Список пакетов отличающихся по версиям</h4>
+                {% if result.ver %}
+                    <p><span style='color: green'>Выявлено пакетов: {{ result.ver|length }}</span>
+                        <a class='float-right' id='a-ver'>показать <i class='fa fa-angle-double-down'></i></a>
+                    </p>
+
+                    <div class='ver'>
+                        <table class='table'>
+                            <thead>
+                            <tr>
+                                <th scope='col'>Имя пакета</th>
+                                <th class='th-2' scope='col' style="cursor: pointer"
+                                    data-toggle="tooltip" data-placement="top" title="{{ result.iso1 }}">
+                                    Версия на первом образе
+                                </th>
+                                <th class='th-2' scope='col' style="cursor: pointer"
+                                    data-toggle="tooltip" data-placement="top" title="{{ result.iso2 }}">
+                                    Версия на втором образе
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody id='tbody-ver'>
+
+                            {% for elem in result.ver %}
+                                {#                <li> {{ elem }} </li>#}
+                                <tr id="{{ elem }}">
+                                    <td> {{ elem.name }} </td>
+                                    <td> {{ elem.iso1 }} </td>
+                                    <td> {{ elem.iso2 }} </td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p style="color: grey;">Отличий не выявлено</p>
+                {% endif %}
+                <br>
+
+                {#отличия по релизам#}
+                <h4>Список пакетов отличающихся по релизам</h4>
+                {% if result.rel %}
+                    <p><span style='color: green'>Выявлено пакетов: {{ result.rel|length }}</span>
+                        <a class='float-right' id='a-rel'>показать <i class='fa fa-angle-double-down'></i></a>
+                    </p>
+                    <div class='rel'>
+                        <table class='table'>
+                            <thead>
+                            <tr>
+                                <th scope='col'>Имя пакета</th>
+                                <th class='th-2' scope='col' style="cursor: pointer"
+                                    data-toggle="tooltip" data-placement="top" title="{{ result.iso1 }}">
+                                    Релиз на первом образе
+                                </th>
+                                <th class='th-2' scope='col' style="cursor: pointer"
+                                    data-toggle="tooltip" data-placement="top" title="{{ result.iso2 }}">
+                                    Релиз на втором образе
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody id='tbody-rel'>
+                            {% for elem in result.rel %}
+                                {#                <li> {{ elem }} </li>#}
+                                <tr id="{{ elem }}">
+                                    <td> {{ elem.name }} </td>
+                                    <td> {{ elem.iso1 }} </td>
+                                    <td> {{ elem.iso2 }} </td>
+                                </tr>
+
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p style="color: grey;">Отличий не выявлено</p>
+                {% endif %}
+                <br>
+
+                {#отличия по контролным суммам#}
+                <h4>Список пакетов отличающихся по контрольной сумме</h4>
+                {% if result.checksum %}
+                    <p><span style='color: green'>Выявлено пакетов: {{ result.checksum|length }}</span>
+                        <a class='float-right mylink' id='a-checksum'>показать <i class='fa fa-angle-double-down'></i></a>
+                    </p>
+
+                    <div class='checksum'>
+                        <table class='table'>
+                            <thead>
+                            <tr>
+                                <th scope='col'>Имя пакета</th>
+                                <th class='th' scope='col' style="width: 100px">Хеш</th>
+                                <th class='th-2' scope='col' style="width: 80px"
+                                    data-toggle="tooltip" data-placement="top" title="{{ result.iso1 }}">
+                                    Сумма на первом образе
+                                </th>
+                                <th style="width: 20px"></th>
+                                <th class='th-2' scope='col' style="width: 80px"
+                                    data-toggle="tooltip" data-placement="top" title="{{ result.iso2 }}">
+                                    Сумма на втором образе
+                                </th>
+                                <th style="width: 20px"></th>
+                            </tr>
+                            </thead>
+                            <tbody id='tbody-checksum'>
+
+                            {% for elem in result.checksum %}
+                                <tr id="{{ elem }}">
+                                    <td> {{ elem.name }} </td>
+                                    <td> {{ elem.checksum_type }} </td>
+                                    <td> {{ elem.iso1_short }}</td>
+                                    <td>
+                                        <a id='a-copyclipboard' checksum="{{ elem.iso1 }}"
+                                           data-toggle="tooltip" data-placement="top" title="Копировать">
+                                            <i class='fa fa-clipboard'></i>
+                                        </a>
+                                    </td>
+                                    <td> {{ elem.iso2_short }}</td>
+                                    <td>
+                                        <a id='a-copyclipboard' checksum="{{ elem.iso2 }}"
+                                           data-toggle="tooltip" data-placement="top" title="Копировать">
+                                            <i class='fa fa-clipboard'></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p style="color: grey;">Отличий не выявлено</p>
+                {% endif %}
+
+            </div>
+        </div>
+
+        <div class="row float-right" style="padding-top: 40px">
+            <div class="col">
+                <a id="a-scrollto">Вверх <i class="fas fa-arrow-up"></i></a> |
+                <a onClick="javascript:CallPrint('result-content');">Печать <i class="fas fa-print"></i></a>
+            </div>
+        </div>
+
+    </div>
+</div>

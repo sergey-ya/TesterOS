@@ -1,0 +1,44 @@
+{#<div class="row" id="result-title">#}
+{#    <div class="col text-right">#}
+{#        <a onClick="javascript:CallPrint('result-content');">Печать <i class="fas fa-print"></i></a>#}
+{#    </div>#}
+{#</div>#}
+
+<div class="card">
+    <div class="card-body">
+
+        <div class="row" id="result-content">
+            <div class="col">
+
+                <h3 id="res-header"></h3>
+                <h5 style="color: grey;" id="res-header-iso"></h5>
+
+                <br>
+
+                <ul>
+                    {% for record in result %}
+                        {% if record.status == '1' %}
+                            <li> {{ record.mask }} -<span style="color: green"> найдено {{ record.pkgs|length }} совпадений</span></li>
+                            <ul>
+                                {% for pkg in record.pkgs %}
+                                    <li> {{ pkg }} </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <li> {{ record.mask }} -<span style="color: grey"> совпадений не найдено</span></li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+
+            </div>
+        </div>
+
+        <div class="row float-right" style="padding-top: 40px">
+            <div class="col">
+                <a id="a-scrollto">Вверх <i class="fas fa-arrow-up"></i></a> |
+                <a onClick="javascript:CallPrint('result-content');">Печать <i class="fas fa-print"></i></a>
+            </div>
+        </div>
+
+    </div>
+</div>

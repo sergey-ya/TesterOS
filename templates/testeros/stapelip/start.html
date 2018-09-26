@@ -1,0 +1,282 @@
+{% extends "base.html" %}
+
+{% block css2 %}
+    <style type="text/css">
+        .table-builds-row:hover {
+            background: #cfd8dc4d;
+        }
+
+        a .fas:hover {
+            color: #9bb4e2;
+        }
+
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <!--title-->
+    <div class="row" style="padding-bottom: 20px;">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <p style="text-align: justify;"><span class="header">Stapel IP</span> -  автоматизирует процесс установки выбранного
+                пакета со стапеля <a data-container="body" data-toggle="popover" data-placement="right"
+                                     data-content="Необходимо выбрать пакет, затем сборку, скачать подготовленный файл
+                                 и запустить его"><i class="fa fa-question-circle"> </i></a>
+            </p>
+        </div>
+    </div>
+
+    <!--form-->
+    <div class="row">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-xs-4 col-md-4 col-lg-4">
+
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label" style="padding-right: 10px">Стапель:</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" id="select-stapel-list">
+                                        {% for elem in stapelLst %}
+                                            <option value="{{ elem.url }}">{{ elem.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <label id="title-pkgs">Список пакетов:</label>
+                            <input type="text" class="form-control" id="input-pkg-filter" placeholder="Фильтр">
+
+                            <select class="form-control" id="select-pkgs" size="3"  style="margin-top: 10px; height: 400px"></select>
+                        </div>
+
+                        <div class="col-xs-8 col-md-8 col-lg-8">
+                            <label id="title-table-builds">Список сборок</label>
+                            <table class="table table-builds">
+                                <thead class="blue-grey lighten-4">
+                                <tr>
+                                    <th style="width:30px">#</th>
+                                    <th>Версия</th>
+                                    <th>Релиз</th>
+                                    <th>Тег</th>
+                                    <th style="width:80px">Автор</th>
+                                    <th style="width:160px">Дата</th>
+                                    <th style="width:100px"></th>
+                                </tr>
+                                </thead>
+
+                                <tbody id="table-builds-data">
+                                </tbody>
+                            </table>
+
+                            <!--loader-->
+                            <div class="row">
+                                <div class="col-xs-12 col-md-12 col-lg-12 ">
+                                    <div class="loader-block-1" id="loader-1">
+                                        <span></span><span></span><span></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+{% endblock %}
+
+
+{% block js %}
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            $("#select-stapel-list").change();
+        });
+
+
+        $('#input-pkg-filter').keyup(function () {
+            var countPkgs = 0;
+            $("#select-pkgs option").map(function() {
+                if ($(this).text().toLowerCase().indexOf($("#input-pkg-filter").val().toLowerCase()) < 0) {
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                    countPkgs++;
+                }
+            });
+            $("#title-pkgs").html("Список пакетов (" + countPkgs + ")");
+
+        });
+
+
+        {#получаем список пакетов#}
+        $("#select-stapel-list").change(function() {
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            var stapelUrl = $("#select-stapel-list").val();
+            {#console.log(stapelUrl);#}
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'getPkgLst',
+                    stapelUrl: stapelUrl,
+                },
+                cache: false,
+
+                success: function (data) {
+                    $("#title-pkgs").html("Список пакетов (" + data.length + "):");
+                    data.forEach(function (value) {
+                        $("#select-pkgs").append("<option class='pkgs-list' value='" + value.id + "'>" + value.name + "</option>");
+                    });
+                    $("#select-pkgs").prop('disabled', false);
+                    $("#input-pkg-filter").prop('disabled', false);
+                },
+
+                error: function (request, error) {
+                    console.log(error + request.status + request.statusText);
+                    $.alert("При получени списка пакетов.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function (xhr, settings) {
+                    $("#title-pkgs").html("Список пакетов:");
+                    $("#select-pkgs").html("");
+                    $('#select-pkgs').prop('disabled', true);
+                    $('#input-pkg-filter').prop('disabled', true);
+                    $("#title-table-builds").html('Список сборок');
+                    $("#table-builds-data").html("<tr><td colspan='6'>Нет записей для отображения</td></tr>");
+
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+
+                complete: function () {
+                },
+            });
+        });
+
+
+        {#получаем список сборок#}
+        $('#select-pkgs').dblclick(function () {
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            var stapelUrl = $("#select-stapel-list").val();
+            var pkgId = $("#select-pkgs option:selected").val();
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'getBuildLst',
+                    stapelUrl: stapelUrl,
+                    pkgId: pkgId,
+                },
+                cache: false,
+
+                success: function (data) {
+                    {#console.log(data);#}
+                    if (data.length == 0) {
+                        $("#table-builds-data").append("<tr><td colspan='6'>Нет записей для отображения</td></tr>");
+                    } else {
+                        $("#title-table-builds").html('Список сборок для <b>' + $("#select-pkgs option:selected").text() + '</b>');
+
+                        i = 0;
+                        data.forEach(function (value) {
+                            i++;
+                            {## http://stapel.red-soft.ru/koji/buildinfo?buildID=812#}
+                            {#console.log(value.tags);#}
+                            var tags = '';
+                            value.tags.forEach(function (tag) {
+                                tags = tags + "<p>" + tag.name + "</p>";
+                            })
+
+                            $("#table-builds-data").append("<tr class='table-builds-row'>" +
+                                "<td scope='row'>" + i + "</td>" +
+                                {#"<td><a href='http://stapel.red-soft.ru/koji/buildinfo?buildID=" + value.build_id + "'>" + value.name + "</a></td>" +#}
+                                "<td>" + value.version + "</td>" +
+                                "<td>" + value.release + "</td>" +
+                                "<td>" + tags + "</td>" +
+                                "<td>" + value.author + "</td>" +
+                                "<td>" + value.date + "</td>" +
+                                "<td><h5><a id='url' build_url='" + value.url + "' style='margin: 0 10px'><i class='fas fa-eye'></i></a>" +
+                                "<a id='upload' build_id='" + value.build_id + "' style='margin: 0 10px'><i class='fas fa-download'></i></a>" +
+                                "</h5></td></tr>");
+
+                        });
+                        {#sleeps(800);#}
+                    }
+                },
+
+                error: function (request, error) {
+                    // console.log(error + request.status + request.statusText);
+                    $.alert("При получени списка сборок.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function(xhr, settings) {
+                    $("#title-table-builds").html('Список сборок');
+                    $("#table-builds-data").empty();
+                    $('.loader-block-1').css("display", "block");
+
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+
+                complete: function() {
+                    $('.loader-block-1').css("display", "none");
+                },
+            });
+        });
+
+
+        $("body").on('click','a[id="url"]',function(){
+            window.open($(this).attr('build_url'));
+        });
+
+
+        {#подготавливаем и скачмваем файл#}
+        $("body").on('click','a[id="upload"]',function(){
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            var url = $("#select-stapel-list").val();
+            var build_id = $(this).attr("build_id");
+
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'genRepoFile',
+                    url: url,
+                    build_id: build_id,
+                },
+                cache: false,
+
+                success: function (data) {
+                    {#console.log('load' + data);#}
+                    window.location.href = "download/?filepath=" + data;
+                },
+
+                error: function (request, error) {
+                    {#console.log(error + request.status + request.statusText);#}
+                    $.alert("При загрузке файла.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function(xhr, settings) {
+                    $('.loader-block-1').css("display", "block");
+
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+
+                complete: function() {
+                    $('.loader-block-1').css("display", "none");
+                },
+            });
+        });
+
+    </script>
+{% endblock %}

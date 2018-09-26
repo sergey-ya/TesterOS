@@ -1,0 +1,101 @@
+{% load static %}
+
+<div class="navbar navbar navbar-fixed-top">
+    <div class="container">
+
+        <a class="navbar-brand" href="/testeros"><img src="{% static 'img/logo.png' %}"></a>
+
+        <ul class="nav">
+
+            <li class="nav-item">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    ISO
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="left: auto; top: auto">
+                    <a class="nav-link" href="{% url 'isocompare' %}">Compare</a>
+                    <a class="nav-link" href="{% url 'packages' %}">Packages</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="nav-link" href="{% url 'scanner' %}">Scanner</a>
+                    {% if user.id is not None %}
+                        <div class="dropdown-divider"></div>
+                        <a class="nav-link" href="{% url 'buildiso' %}">Build</a>
+                        <a class="nav-link" href="{% url 'buildisolog' %}">Journal</a>
+                    {% endif %}
+                </div>
+
+
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'stapelip' %}">StapelIP</a>
+            </li>
+
+            {% if user.id is None %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'tests' %}">Tests</a>
+                </li>
+            {% endif %}
+
+            {% if user.id is not None %}
+
+                {#            <li class="nav-item">#}
+                {#                <a class="nav-link disabled" href="/virtualbox/">VB Manager</a>#}
+                {#            </li>#}
+
+                <li class="nav-item">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Test
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="left: auto; top: auto">
+                        <a class="nav-link" href="{% url 'tests' %}">Tests</a>
+                        <a class="nav-link" href="{% url 'testing' %}">Testing</a>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Repo
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="left: auto; top: auto">
+                        <a class="nav-link" href="{% url 'repomanager' %}">Manager</a>
+                        <a class="nav-link" href="{% url 'repoinfo' %}">Information</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="nav-link" href="{% url 'repolog' %}">Journal</a>
+                    </div>
+                </li>
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'settings' %}"><i class="fas fa-cogs"></i></a>
+                </li>
+
+            {% endif %}
+
+            {#            <li class="nav-item">#}
+            {#                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#}
+            {#                    <i class="fa fa-home"></i>#}
+            {#                </a>#}
+            {#                <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="left: auto; top: auto">#}
+            {#                    <a class="dropdown-item" href="http://www.red-soft.ru/" target="_blank">red-soft.ru</a>#}
+            {#                    <a class="dropdown-item link" href="http://stapel.red-soft.ru/koji/" target="_blank">stapel.red-soft.ru</a>#}
+            {#                    <a class="dropdown-item" href="http://tracker.red-soft.biz/" target="_blank">tracker.red-soft.biz</a>#}
+            {#                    <div class="dropdown-divider"></div>#}
+            {#                    <a class="dropdown-item" href="https://10.81.1.26:4888/" target="_blank"> repomanager 4888</a>#}
+            {#                    <a class="dropdown-item" href="https://10.81.1.26:4488/" target="_blank"> repomanager 4488</a>#}
+            {#                </div>#}
+            {#            </li>#}
+
+            {% if user.id is not None %}
+                <li class="nav-item">
+                    <a class="nav-link text-uppercase" href="http://stapel.red-soft.ru/testeros/logout/"><strong>{{ user }} </strong><i class="fas fa-sign-out-alt"></i></a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link text-uppercase" href="https://stapel.red-soft.ru/testeros/login/">Login <i class="fas fa-sign-in-alt"></i></a>
+                </li>
+            {% endif %}
+
+        </ul>
+
+    </div>
+</div>

@@ -1,0 +1,45 @@
+# RELEASE
+release_name = "RED OS"
+release_short = "redos"
+release_version = "MUROM-7.1"
+release_is_layered = False
+
+disc_types = {"boot": "netinst", "live": "Live", "dvd": "DVD"}
+
+# GENERAL SETTINGS
+comps_file = "/home/yarikov/web/testeros/magic/work/buildiso/comps.xml"
+variants_file = "/home/yarikov/web/testeros/magic/work/buildiso/variants.xml.redos"
+
+# KOJI SETTINGS
+runroot = False
+koji_profile = "koji"
+
+# PKGSET
+sigkeys = [None]
+pkgset_source = "repos"
+pkgset_repos = {"x86_64": ["file:///mnt/hdd/redos_repo/source", "file:///mnt/hdd/redos_repo/x86_64/os"]}
+
+# CREATEREPO
+createrepo_checksum = "sha256"
+
+# GATHER
+gather_source = "comps"
+gather_method = "deps"
+greedy_method = "build"
+check_deps = False
+hashed_directories = True
+additional_packages = []
+filter_packages = []
+multilib = [("^.*$", {"x86_64": ["none"]}), ("^.*$", {"i686": ["none"]})]
+
+multilib_blacklist = {}
+
+multilib_whitelist = {}
+
+# BUILDINSTALL
+bootable = True
+buildinstall_method = "lorax"
+
+# CREATEISO
+createiso_skip = []
+create_jigdo = False

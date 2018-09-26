@@ -1,0 +1,59 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function runBuildIso(logId) {
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'runBuildIso',
+                    settingId: buildisoRow.attr('settingId'),
+                    id: logId,
+                },
+                cache: false,
+
+                success: function (data) {
+                    console.log(data);
+                    {#$('.loader-block-2').css("display", "none");#}
+                    {#if (data == 'cancel') {#}
+                    {#    $.alert("Сборка образа отменена.", {type: 'warning'});#}
+                    {#                    { else if (data == 'ok') {#}
+                    {#                        $.alert("Сборка образа успешно завершена.", {type: 'success'});#}
+                    {#                    }#}
+                },
+
+                error: function (request, error) {
+                    // console.log(error + request.status + request.statusText);
+                    {#$("#loader2").replaceWith("<div id='closeLoader'><a id='close-loader'><i class='fas fa-times-circle fa-9x'></i></a></div>");#}
+                    $.alert("При сборке образа.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function (xhr, settings) {
+                    {#$('.loader-block-2').css("display", "block");#}
+                    {#$("#buildIsoInfo").empty();#}
+
+                    {#timerId = setInterval(getBuildIsoInfo, 2000);#}
+                    setInterval(reloadPage, 2000);
+
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+
+                complete: function () {
+                    {#clearInterval(timerId);#}
+                    {#getBuildIsoInfo();#}
+                },
+            })
+        }

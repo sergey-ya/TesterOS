@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block css2 %}
+    <style type="text/css">
+
+    </style>
+
+{% endblock %}
+
+{% block content %}
+
+    <!--title-->
+    <div class="row" id="start" style="padding-bottom: 20px;">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <p style="text-align: justify;"><span class="header">ISO Packages</span> - выявляет наличие пакетов на ISO образе.
+                Поиск происходит путем проверки вхождения маски в nvra пакета.
+            </p>
+        </div>
+    </div>
+
+    <!--forms-->
+    <div class="row">
+
+        <!--form gl-->
+        <div class="col-xs-6 col-md-6 col-lg-6">
+            <div class="card">
+                <div class="card-body">
+
+                    <h3>ГосЛинукс</h3>
+
+                    <div class="form-group row" style="margin-top: 2rem;">
+                        <label class="col-sm-3 col-form-label">Образ</label>
+                        <div class="col-sm-9">
+
+                            <select class="form-control" id="select-iso-gl">
+                                {% for iso in gllist %}
+                                    <option value="{{ iso.path }}" title="{{ iso.dateFormat }}">{{ iso.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Маска
+                            <a data-container="body" data-toggle="popover" data-placement="right"
+                               data-content="Список масок, каждая маска указывается на новой строке.">
+                                <i class="fa fa-question-circle"></i>
+                            </a>
+                        </label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" id="textarea-mask-gl" rows="7"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <button class="btn btn-danger float-right" id="btn-gl"><i class="fa fa-magic mr-1"></i> Поиск</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!--form ro-->
+        <div class="col-xs-6 col-md-6 col-lg-6">
+            <div class="card">
+                <div class="card-body">
+
+                    <h3>РедОС</h3>
+
+                    <div class="form-group row" style="margin-top: 2rem;">
+                        <label class="col-sm-3 col-form-label">Образ</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="select-iso-ro">
+
+                                {% for iso in rolist %}
+                                    <option value="{{ iso.path }}" title="{{ iso.dateFormat }}">{{ iso.name }}</option>
+                                {% endfor %}
+
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Маска
+                            <a data-container="body" data-toggle="popover" data-placement="right"
+                               data-content="Список масок, каждая маска указывается на новой строке.">
+                                <i class="fa fa-question-circle"></i>
+                            </a>
+                        </label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" id="textarea-mask-ro" rows="7"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <button class="btn btn-danger float-right" id="btn-ro"><i class="fa fa-magic mr-1"></i> Поиск</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!--ajax-result-->
+    <div id="result" style="padding-top: 30px"></div>
+
+    <!--loader-->
+    {#    <div class="row">#}
+    {#        <div class="col-xs-12 col-md-12 col-lg-12 ">#}
+    {#            <div class="loader-block-1" id="loader-1">#}
+    {#                <span></span><span></span><span></span>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
+
+    <div class="loader-block-2">
+        <div class="modal-mask">
+            <div class="modal-wrapper">
+                <center>
+                    <div class="loader-2"></div>
+                </center>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block js %}
+    <script type="text/javascript">
+
+        function search(os, iso, mask) {
+            if (!mask.value) {
+                $.alert("Введите маску", {type: 'warning'});
+            } else {
+                var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+                $.ajax({
+                    type: "POST",
+                    url: "ajax/",
+                    data: {
+                        action: 'searchPkg',
+                        iso: iso.value,
+                        mask: mask.value,
+                    },
+                    cache: false,
+
+                    success: function (data) {
+                        {#console.log(data);#}
+                        $("#result").html(data);
+                        $("#res-header").text('ISO Compare / отчет по ' + os);
+                        $("#res-header-iso").text('образ: ' + $(iso).find('option:selected').text());
+                        moveToTitle();
+                    },
+
+                    error: function (request, error) {
+                        // console.log(error + request.status + request.statusText);
+                        $.alert("При поиске пакетов.", {type: 'danger'}, request.status + request.responseText);
+                    },
+
+                    beforeSend: function (xhr, settings) {
+                        $("#result").html("");
+                        $('.loader-block-2').css("display", "block");
+
+                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                        }
+                    },
+
+                    complete: function () {
+                        $('.loader-block-2').css("display", "none");
+                    },
+                });
+            }
+        }
+
+        $('#btn-gl').click(function () {
+            search('ГосЛинукс', document.getElementById("select-iso-gl"), document.getElementById("textarea-mask-gl"));
+        })
+
+        $('#btn-ro').click(function () {
+            search('РедОС', document.getElementById("select-iso-ro"), document.getElementById("textarea-mask-ro"));
+        })
+
+        function moveToTitle() {
+            var top = $("#result-content").offset().top - 150;
+            $('body,html').animate({scrollTop: top}, 800);
+        };
+
+    </script>
+{% endblock %}

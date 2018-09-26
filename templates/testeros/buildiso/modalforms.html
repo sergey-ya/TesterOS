@@ -1,0 +1,233 @@
+{#BUILDISO MODAL FORM#}
+<div class="modal fade" id="buildisoModal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title font-weight" id="buildiso-modal-form-label">Добавление</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+
+            <form role="form" id="buildisoForm">
+                <div class="modal-body">
+
+                    <input id="buildisoAction" type="text" hidden>
+                    <input id="buildisoId" type="text" hidden>
+
+                    <div class="form-group">
+                        <label class="font-weight-light">Имя</label>
+                        <input class="form-control" id="buildisoName" name="buildisoName" type="text" require>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="font-weight-light">Комментарий</label>
+                        <input class="form-control" id="buildisoComment" name="buildisoComment" type="text" require>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger waves-effect" data-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-danger" >Сохранить</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+{#ARCH MODAL FORM#}
+<div class="modal fade" id="archModal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title font-weight" id="arch-modal-form-label">Добавление</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+
+            <form role="form" id="archForm">
+                <div class="modal-body">
+
+                    <input id="archAction" type="text" hidden>
+
+                    <div class="form-group">
+                        <label class="font-weight-light">Архитектура</label>
+
+                        <select class="form-control" id="archName" name="archName">
+                            <option value="x86_64">x86_64</option>
+                            <option value="i686">i686</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger waves-effect" data-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-danger" >Сохранить</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+{#CONFIRM FORM#}
+<div class="modal fade" id="confirmFormModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmFormLabel">Подтверждение</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form role="form" id="confirmForm">
+                <div class="modal-body">
+
+                    <input id="confirmAction" type="text" hidden>
+
+                    <p id="confirmMessage"></p>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger waves-effect" data-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-danger" >Ok</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+
+{#QUESTION FORM#}
+<div class="modal fade" id="questionFormModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="questionFormLabel">Подтверждение</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form role="form" id="questionForm">
+                <div class="modal-body">
+
+                    <p id="confirmMessage">Настройки были изменены. Сохранить их?</p>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger waves-effect" id="questionCancel" data-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-danger" >Ok</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+{#SELECTFILE FORM#}
+<div class="modal fade" id="selectfileFormModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="selectfileFormLabel">Выбор файла</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form role="form" id="selectfileForm">
+                <div class="modal-body" style="padding-left: 40px; padding-top: 40px;">
+
+                    <div class="row" style="heght: 350px">
+                        <div class="col">
+
+                            <input id="selectfileAction" type="text" hidden>
+
+                            <div id="jstree_file" style="height: 350px;" class="jstree jstree-1 jstree-default jstree-default-small"
+                                 role="tree" aria-multiselectable="true" tabindex="0" aria-activedescendant="Steps" aria-busy="false">
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="row">
+                        <div class="col">
+                            <p id="selectfilePath"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger waves-effect" data-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-danger" >Ok</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+{#SELECTFOLDER FORM#}
+<div class="modal fade" id="selectfolderFormModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="selectfolderFormLabel">Выбор каталога</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form role="form" id="selectfolderForm">
+                <div class="modal-body" style="padding-left: 40px; padding-top: 40px;">
+
+                    <div class="row" style="heght: 350px">
+                        <div class="col">
+
+                            <input id="selectfolderAction" type="text" hidden>
+
+                            <div id="jstree_folder" style="height: 350px;" class="jstree jstree-1 jstree-default jstree-default-small"
+                                 role="tree" aria-multiselectable="true" tabindex="0" aria-activedescendant="Steps" aria-busy="false">
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="row">
+                        <div class="col">
+                            <p id="selectfolderPath"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger waves-effect" data-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-danger" >Ok</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+
+

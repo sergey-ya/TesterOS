@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block css2 %}
+    <style type="text/css">
+        .carousel-multi-item .controls-top .btn-floating {
+            background: #4285f4;
+        }
+
+        .btn-floating i {
+            display: inline-block;
+            width: inherit;
+            text-align: center;
+            color: #fff;
+        }
+
+        .btn-floating i {
+            font-size: 1.25rem;
+            line-height: 47px;
+        }
+
+        .carousel .carousel-indicators li {
+            width: .625rem;
+            height: .625rem;
+            -webkit-border-radius: 50%;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .carousel-indicators li {
+            position: relative;
+            -ms-flex: 0 1 auto;
+            flex: 0 1 auto;
+            width: 30px;
+            height: 3px;
+            margin-right: 3px;
+            margin-left: 3px;
+            text-indent: -999px;
+            background-color: rgba(255,255,255,.5);
+        }
+
+        .carousel-multi-item .carousel-indicators {
+            margin-bottom: -2em;
+        }
+
+        .carousel-indicators {
+            position: absolute;
+            right: 0;
+            bottom: 10px;
+            left: 0;
+            z-index: 15;
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-pack: center;
+            justify-content: center;
+            padding-left: 0;
+            margin-right: 15%;
+            margin-left: 15%;
+            list-style: none;
+        }
+
+        .carousel-multi-item .carousel-indicators li {
+            height: 20px;
+            width: 20px;
+            max-width: 20px;
+            background-color: #4285f4;
+            margin-bottom: -60px;
+        }
+
+        .carousel-multi-item .carousel-indicators .active {
+            height: 25px;
+            width: 25px;
+            max-width: 25px;
+            background-color: #4285f4;
+            -webkit-border-radius: 50%;
+            border-radius: 50%;
+        }
+
+        .bkg-elem {
+            margin: -20px -20px 20px -20px;
+            border-top-left-radius: calc(.25rem - 1px);
+            border-top-right-radius: calc(.25rem - 1px);
+            background: #3e455166;
+        }
+
+        .bkg-icon {
+            color: #fff;
+            margin: 45px 0;
+        {#color: #3e4551; #}
+        {#margin: 25px 0"#}
+        }
+
+        .card-mark {
+            padding-bottom: 15px;
+            cursor: pointer
+        }
+    </style>
+{% endblock %}logo2
+
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+
+            <div class="text-center mt-2 mb-3 extra-padding">
+                <h1 class="h1-responsive mt-5 py-3">RedSoft Tester OS</h1>
+                <br>
+
+                <p style="margin-bottom: 2rem; padding: 0 220px;">
+                    Ресурс предоставляет возможности контроля, сборки и тестирования операционных систем: ГосЛинукс и РедОС.</p>
+            </div>
+
+            <!--Carousel Wrapper-->
+            <div id="multi-item-example" class="carousel slide carousel-multi-item" data-ride="carousel">
+
+                <!--Indicators-->
+                <ol class="carousel-indicators">
+                    <li data-target="#multi-item-example" data-slide-to="0" class="active"></li>
+                    <li data-target="#multi-item-example" data-slide-to="1"></li>
+                </ol>
+
+                <!--Slides-->
+                <div class="carousel-inner" role="listbox">
+                    <!--First slide-->
+                    <div class="carousel-item active">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <a href="{% url 'isocompare' %}" class="card mb-2 card-mark">
+                                    <div class="card-body text-center">
+                                        <div class="bkg-elem">
+                                            <i class="fas fa-balance-scale fa-8x bkg-icon"></i>
+                                        </div>
+                                        <h4 class="card-title">ISO Compare</h4>
+                                        <p class="card-text">Сопоставление пакетов на ISO образах.</p>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col-md-4 clearfix d-none d-md-block">
+                                <a href="{% url 'packages' %}" class="card mb-2 card-mark">
+                                    <div class="card-body text-center">
+                                        <div class="bkg-elem">
+                                            <i class="fas fa-search fa-8x bkg-icon"></i>
+                                        </div>
+                                        <h4 class="card-title">ISO Packages</h4>
+                                        <p class="card-text">Поиск пакетов на ISO образе.</p>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col-md-4 clearfix d-none d-md-block">
+                                <a href="{% url 'stapelip' %}" class="card mb-2 card-mark">
+                                    <div class="card-body text-center">
+                                        <div class="bkg-elem">
+                                            <i class="fas fa-box-open fa-8x bkg-icon"></i>
+                                        </div>
+                                        <h4 class="card-title">Stapel IP</h4>
+                                        <p class="card-text">Установка пакетов со стапеля.</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Second slide-->
+                    <div class="carousel-item">
+                        <div class="row">
+                            <div class="col-md-4">
+                                {% if user.id is not None %}
+                                    <a class="card mb-2 card-mark" href="{% url 'testing' %}" >
+                                {% else %}
+                                    <a class="card mb-2 card-mark" data-toggle="modal" data-target="#modalLoginForm">
+                                {% endif %}
+                                <div class="card-body text-center">
+                                    <div class="bkg-elem">
+                                        <i class="fas fa-clipboard-list fa-8x bkg-icon"></i>
+                                    </div>
+                                    <h4 class="card-title">Test Case</h4>
+                                    <p class="card-text">Тестирование ОС.</p>
+                                </div>
+                                </a>
+                            </div>
+
+                            <div class="col-md-4 clearfix d-none d-md-block">
+                                {% if user.id is not None %}
+                                    <a class="card mb-2 card-mark" href="{% url 'repomanager' %}" >
+                                {% else %}
+                                    <a class="card mb-2 card-mark" data-toggle="modal" data-target="#modalLoginForm">
+                                {% endif %}
+                                <div class="card-body text-center">
+                                    <div class="bkg-elem">
+                                        <i class="fas fa-code-branch fa-8x bkg-icon"></i>
+                                    </div>
+                                    <h4 class="card-title">Repo Manager</h4>
+                                    <p class="card-text">Работа с репозиторием.</p>
+                                </div>
+                                </a>
+                            </div>
+
+                            <div class="col-md-4 clearfix d-none d-md-block">
+                                {% if user.id is not None %}
+                                    <a class="card mb-2 card-mark" href="{% url 'buildiso' %}" >
+                                {% else %}
+                                    <a class="card mb-2 card-mark" data-toggle="modal" data-target="#modalLoginForm">
+                                {% endif %}
+                                <div class="card-body text-center">
+                                    <div class="bkg-elem">
+                                        <i class="fas fa-compact-disc fa-8x bkg-icon"></i>
+                                    </div>
+                                    <h4 class="card-title">Build ISO</h4>
+                                    <p class="card-text">Сборка ISO образов.</p>
+                                </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    {#modal form#}
+    <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title w-100 font-weight-bold">RedSoft Testing OS</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body text-center mb-1">
+                    <h5 class="mt-1 mb-2">Только авторизованные пользователи могут использовать это приложение.</h5>
+                </div>
+
+                <div class="modal-footer d-flex justify-content-center">
+                    <a class="btn btn-danger mt-1" href="{% url 'login' %}">Login <i class="fas fa-sign-in-alt"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

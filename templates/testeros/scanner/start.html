@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block css2 %}
+    <style type="text/css">
+        .pkg-name-row {
+            padding: 15px 0 5px 0;
+            margin: 15px 0;
+            cursor: pointer;
+        }
+        .pkg-name-row:hover{
+            background: #8080801a;
+        }
+
+        .pkg-data-row{
+            padding: 15px 0;
+            margin: 15px 0;
+        }
+        .pkg-data-row:hover{
+            background: #8080801a;
+        }
+
+
+
+
+        .score-4{
+            color: rgb(220, 231, 117);
+        }
+        .score-5{
+            color: rgb(255, 193, 7);
+        }
+        .score-6{
+            color: rgb(255, 183, 77);
+        }
+        .score-7{
+            color: rgb(255, 138, 101);
+        }
+        .score-9{
+            color: rgb(230, 74, 25);
+        }
+        .score-10{
+            color: rgb(255, 61, 0);
+        }
+
+
+
+        .ac-medium{
+            color: rgb(255, 183, 77);
+        }
+        .ac-low{
+            color: rgb(255, 61, 0);
+        }
+        .ac-high{
+            color: rgb(129, 199, 132);
+        }
+
+
+
+
+
+    </style>
+{% endblock %}
+
+
+
+{% block content %}
+
+    <!--title-->
+    <div class="row" id="start" style="padding-bottom: 20px;">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <p style="text-align: justify;"><span class="header">ISO Scanner</span> - производит поиск уязвимостей пакетов, находящихся на образе.
+                Для анализа используется сервис <a href="https://vulners.com/audit" target="_blank">vulners.com</a>
+            </p>
+        </div>
+    </div>
+
+
+    <!--forms-->
+    <div class="row">
+
+        <!--form gl-->
+        <div class="col-xs-6 col-md-6 col-lg-6">
+            <div class="card">
+                <div class="card-body">
+
+                    <h3>ГосЛинукс</h3>
+
+                    <div class="form-group row" style="margin-top: 2rem;">
+                        <label class="col-sm-3 col-form-label">Образ</label>
+                        <div class="col-sm-9">
+
+                            <select class="form-control" id="select-iso-gl">
+                                {% for iso in gllist %}
+                                    <option value="{{ iso.path }}" title="{{ iso.dateFormat }}">{{ iso.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Маска
+                            <a data-container="body" data-toggle="popover" data-placement="right"
+                               data-content="Маска состоит из списка имен пакетов, где каждое новое имя наначинается с новой строки. Если маска пуста, анализ будет проводиться по всем пакетам находящихся на выбранном образе.">
+                                <i class="fa fa-question-circle"></i>
+                            </a>
+                        </label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" id="textarea-mask-gl" rows="7"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <button class="btn btn-danger float-right" id="btn-gl"><i class="fa fa-magic mr-1"></i> Поиск</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!--form ro-->
+        <div class="col-xs-6 col-md-6 col-lg-6">
+            <div class="card">
+                <div class="card-body">
+
+                    <h3>РедОС</h3>
+
+                    <div class="form-group row" style="margin-top: 2rem;">
+                        <label class="col-sm-3 col-form-label">Образ</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="select-iso-ro">
+
+                                {% for iso in rolist %}
+                                    <option value="{{ iso.path }}" title="{{ iso.dateFormat }}">{{ iso.name }}</option>
+                                {% endfor %}
+
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Маска
+                            <a data-container="body" data-toggle="popover" data-placement="right"
+                               data-content="Маска состоит из списка имен пакетов, где каждое новое имя наначинается с новой строки. Если маска пуста, анализ будет проводиться по всем пакетам находящихся на выбранном образе.">
+                                <i class="fa fa-question-circle"></i>
+                            </a>
+                            <br>
+                            <br>
+                            <a id="fill-data">ОО 7.1 <i class="fas fa-angle-double-right"></i></a>
+                        </label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" id="textarea-mask-ro" rows="7"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <button class="btn btn-danger float-right" id="btn-ro"><i class="fa fa-magic mr-1"></i> Поиск</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <!--result-->
+    <div id="result" style="padding-top: 30px"></div>
+
+    <div class="loader-block-2">
+        <div class="modal-mask">
+            <div class="modal-wrapper">
+                <center>
+                    <div class="loader-2"></div>
+                </center>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+
+{% block js %}
+    <script type="text/javascript">
+
+        $("body").on('click','a[id="fill-data"]',function(){
+            $("#textarea-mask-ro").val(['Chkconfig', 'Cpp', 'Cryptsetup', 'Cryptsetup-libs', 'Cryptsetup-python', 'Cryptsetup-reencrypt', 'Gnome-keyring', 'Gnome-keyring-pam', 'Grubby', 'Libblkid', 'Libcanberra', 'Libcanberra-gtk2', 'Libcanberra-gtk3', 'Libmount', 'Libreport', 'Libreport-anaconda', 'Libreport-centos', 'Libreport-cli', 'Libreport-compat', 'Libreport-filesystem', 'Libreport-gtk', 'Libreport-newt', 'Libreport-plugin-bugzilla', 'Libreport-plugin-kerneloops', 'Libreport-plugin-logger', 'Libreport-plugin-mailx', 'Libreport-plugin-mantisbt', 'Libreport-plugin-reportuploader', 'Libreport-plugin-rhtsupport', 'Libreport-plugin-ureport', 'Libreport-python', 'Libreport-rhel', 'Libreport-rhel-anaconda-bugzilla', 'Libreport-rhel-bugzilla', 'Libreport-web', 'Libuuid', 'Logrotate', 'Newt', 'Newt-python', 'Newt-static', 'Nspr', 'Ntsysv', 'Openldap', 'Openldap-clients', 'Openldap-servers', 'Passwd', 'Policycoreutils', 'Policycoreutils-gui', 'Policycoreutils-newrole', 'Policycoreutils-python', 'Policycoreutils-restorecond', 'Policycoreutils-sandbox', 'Polkit', 'Polkit-docs', 'Polkit-pkla-compat', 'Util-linux', 'Uuidd', 'Veritysetup', 'accountsservice', 'accountsservice-libs', 'acl', 'afick', 'afick-doc', 'afick-gui', 'amtu', 'attr', 'audispd-plugins', 'audit', 'audit-libs', 'audit-libs-python', 'audit-libs-static', 'augeas', 'augeas-libs', 'authconfig', 'authconfig-gtk', 'autogen', 'autogen-libopts', 'basesystem', 'bash', 'bash-doc', 'bc', 'binutils', 'bsdcpio', 'bsdtar', 'bzip2', 'bzip2-libs', 'ca-certificates', 'checkpolicy', 'clufter-cli', 'clufter-lib-ccs', 'clufter-lib-general', 'clufter-lib-pcs', 'cmirror', 'cmirror-standalone', 'coreutils', 'corosync', 'corosync-qdevice', 'corosync-qnetd', 'corosynclib', 'cpio', 'cracklib', 'cracklib-dicts', 'cracklib-python', 'cronie', 'cronie-anacron', 'cronie-noanacron', 'crontabs', 'crypto-policies', 'curl', 'cyrus-sasl', 'cyrus-sasl-gs2', 'cyrus-sasl-gssapi', 'cyrus-sasl-ldap', 'cyrus-sasl-lib', 'cyrus-sasl-md5', 'cyrus-sasl-ntlm', 'cyrus-sasl-plain', 'cyrus-sasl-scram', 'cyrus-sasl-sql', 'dbus', 'dbus-doc', 'dbus-libs', 'dbus-x11', 'dconf', 'dconf-editor', 'debugmode', 'device-mapper', 'device-mapper-event', 'device-mapper-event-libs', 'device-mapper-libs', 'device-mapper-multipath', 'device-mapper-multipath-libs', 'device-mapper-multipath-sysvinit', 'diffutils', 'dmidecode', 'dosfstools', 'dracut', 'dracut-caps', 'dracut-config-generic', 'dracut-config-rescue', 'dracut-fips', 'dracut-fips-aesni', 'dracut-network', 'dracut-tools', 'e2fsprogs', 'e2fsprogs-libs', 'e2fsprogs-static', 'elfutils', 'elfutils-libelf', 'elfutils-libs', 'emacs-gettext', 'emacs-gettext-el', 'emacs-libidn', 'expat', 'expat-static', 'facter', 'file', 'file-libs', 'file-static', 'fileprotect', 'filesystem', 'findutils', 'fipscheck', 'fipscheck-lib', 'freetype', 'freetype-demos', 'gawk', 'gcc', 'gcc-c++', 'gcc-gfortran', 'gcc-gnat', 'gcc-go', 'gcc-objc', 'gcc-objc++', 'gdbm', 'gdisk', 'gdk-pixbuf2', 'gdk-pixbuf2-modules', 'gdk-pixbuf2-tests', 'gdk-pixbuf2-xlib', 'gdm', 'gettext', 'gettext-libs', 'glib2', 'glib2-doc', 'glib2-fam', 'glib2-static', 'glib2-tests', 'glibc', 'glibc-all-langpacks', 'glibc-common', 'glibc-headers', 'glibc-locale-source', 'glibc-static', 'glibc-utils', 'gmp', 'gmp-static', 'gnome-session', 'gnome-session-custom-session', 'gnome-session-xsession', 'gnome-settings-daemon', 'gnome-shell', 'gnome-shell-browser-plugin', 'gnupg2', 'gnupg2-smime', 'gnutls', 'gnutls-c++', 'gnutls-dane', 'gnutls-guile', 'gnutls-utils', 'gpgme', 'grep', 'groff', 'groff-base', 'groff-doc', 'groff-perl', 'groff-x11', 'grub2', 'grub2-efi', 'grub2-efi-modules', 'grub2-tools', 'gtk-update-icon-cache', 'gtk3', 'gtk3-immodule-xim', 'gtk3-immodules', 'gtk3-tests', 'gui-kick', 'gzip', 'hardlink', 'hiera', 'hostname', 'hwdata', 'icu', 'ima-evm-utils', 'ima-manage', 'info', 'initscripts', 'iproute', 'iproute-doc', 'iptables', 'iptables-services', 'iptables-utils', 'iputils', 'iputils-ninfod', 'iputils-sysvinit', 'iso-codes', 'iwl100-firmware', 'iwl1000-firmware', 'iwl105-firmware', 'iwl135-firmware', 'iwl2000-firmware', 'iwl2030-firmware', 'iwl3160-firmware', 'iwl3945-firmware', 'iwl4965-firmware', 'iwl5000-firmware', 'iwl5150-firmware', 'iwl6000-firmware', 'iwl6000g2a-firmware', 'iwl6000g2b-firmware', 'iwl6050-firmware', 'iwl7260-firmware', 'iwl7265-firmware', 'kbd', 'kbd-legacy', 'kbd-misc', 'kernel-lt', 'kernel-lt-doc', 'kernel-lt-headers', 'kernel-lt-tools', 'kernel-lt-tools-libs', 'keyutils', 'keyutils-libs', 'kmod', 'kmod-libs', 'kpartx', 'krb5-libs', 'krb5-pkinit', 'krb5-server', 'krb5-server-ldap', 'krb5-workstation', 'lemon', 'libX11', 'libX11-common', 'libXau', 'libXdmcp', 'libacl', 'libarchive', 'libasan', 'libasan-static', 'libassuan', 'libatasmart', 'libatomic', 'libatomic-static', 'libattr', 'libcap', 'libcap-ng', 'libcap-ng-python', 'libcap-ng-utils', 'libcgroup', 'libcgroup-pam', 'libcgroup-tools', 'libcom_err', 'libcrypt', 'libcrypt-nss', 'libcurl', 'libdb', 'libdb-cxx', 'libdb-java', 'libdb-sql', 'libdb-tcl', 'libdb-utils', 'libedit', 'libestr', 'libfastjson', 'libffi', 'libgcc', 'libgcrypt', 'libgfortran', 'libgfortran-static', 'libgnat', 'libgnat-static', 'libgo', 'libgo-static', 'libgomp', 'libgpg-error', 'libgudev1', 'libicu', 'libicu-doc', 'libidn', 'libidn2', 'libitm', 'libitm-static', 'libkadm5', 'liblogging-stdlog', 'libmnl', 'libmnl-static', 'libmudflap', 'libmudflap-static', 'libnetfilter_conntrack', 'libnfnetlink', 'libobjc', 'libpwquality', 'libqb', 'libquadmath', 'libquadmath-static', 'librelp', 'libselinux', 'libselinux-python', 'libselinux-python3', 'libselinux-ruby', 'libselinux-static', 'libselinux-utils', 'libsemanage', 'libsemanage-python', 'libsemanage-static', 'libsepol', 'libsepol-static', 'libss', 'libssh2', 'libssh2-docs', 'libstdc++', 'libstdc++-docs', 'libstdc++-static', 'libtasn1', 'libtasn1-tools', 'libtirpc', 'libtool', 'libtool-ltdl', 'libtsan', 'libtsan-static', 'libudisks2', 'libunistring', 'libusbx', 'libuser', 'libuser-python', 'libutempter', 'libverto', 'libverto-glib', 'libverto-libevent', 'libverto-tevent', 'libxcb', 'libxcb-doc', 'libxml2', 'libxml2-python', 'libxml2-static', 'libxslt', 'libxslt-python', 'libyaml', 'linux-firmware', 'lua', 'lua-static', 'lvm2', 'lvm2-cluster', 'lvm2-cluster-standalone', 'lvm2-libs', 'lvm2-lockd', 'lvm2-python-libs', 'lvm2-sysvinit', 'lzo', 'lzo-minilzo', 'make', 'mate-screensaver', 'mdadm', 'minizip', 'mozjs17', 'nano', 'ncurses', 'ncurses-base', 'ncurses-libs', 'ncurses-static', 'ncurses-term', 'net-snmp', 'net-snmp-agent-libs', 'net-snmp-gui', 'net-snmp-libs', 'net-snmp-perl', 'net-snmp-python', 'net-snmp-sysvinit', 'net-snmp-utils', 'net-tools', 'nettle', 'nscd', 'nss', 'nss-pem', 'nss-softokn', 'nss-softokn-freebl', 'nss-sysinit', 'nss-tools', 'nss-util', 'nss_db', 'nss_hesiod', 'nss_nis', 'ntp', 'ntp-doc', 'ntp-perl', 'ntpdate', 'openssh', 'openssh-askpass', 'openssh-cavs', 'openssh-clients', 'openssh-keycat', 'openssh-ldap', 'openssh-server', 'openssh-server-sysvinit', 'openssl', 'openssl-libs', 'openssl-perl', 'openssl-static', 'os-prober', 'p11-kit', 'p11-kit-trust', 'pacemaker', 'pacemaker-cli', 'pacemaker-cluster-libs', 'pacemaker-cts', 'pacemaker-doc', 'pacemaker-libs', 'pacemaker-nagios-plugins-metadata', 'pacemaker-remote', 'pam', 'pam_ssh_agent_auth', 'pam_usb', 'parted', 'pciutils', 'pciutils-libs', 'pcre', 'pcre-static', 'pcre-tools', 'pcs', 'perf', 'perl', 'perl-CPAN', 'perl-Carp', 'perl-Data-Dumper', 'perl-Digest', 'perl-Digest-MD5', 'perl-Encode', 'perl-Exporter', 'perl-ExtUtils-CBuilder', 'perl-ExtUtils-Embed', 'perl-ExtUtils-Install', 'perl-File-Path', 'perl-File-Temp', 'perl-Filter', 'perl-Getopt-Long', 'perl-HTTP-Tiny', 'perl-IO-Zlib', 'perl-Locale-Maketext-Simple', 'perl-Module-CoreList', 'perl-Module-Loaded', 'perl-Object-Accessor', 'perl-Package-Constants', 'perl-PathTools', 'perl-Perl4-CoreLibs', 'perl-Pod-Escapes', 'perl-Pod-Escapes', 'perl-Pod-Perldoc', 'perl-Pod-Simple', 'perl-Pod-Usage', 'perl-Scalar-List-Utils', 'perl-Socket', 'perl-Storable', 'perl-Text-ParseWords', 'perl-Time-HiRes', 'perl-Time-Local', 'perl-Time-Piece', 'perl-TimeDate', 'perl-constant', 'perl-core', 'perl-libs', 'perl-macros', 'perl-parent', 'perl-podlators', 'perl-tests', 'perl-threads', 'perl-threads-shared', 'pinentry', 'pinentry-gtk', 'pinentry-qt', 'pinentry-qt4', 'pkgconfig', 'pmount', 'popt', 'popt-static', 'procps-ng', 'procps-ng-i18n', 'psmisc', 'pth', 'pulseaudio', 'pulseaudio-esound-compat', 'pulseaudio-gdm-hooks', 'pulseaudio-libs', 'pulseaudio-libs-glib2', 'pulseaudio-module-bluetooth', 'pulseaudio-module-gconf', 'pulseaudio-module-x11', 'pulseaudio-module-zeroconf', 'pulseaudio-qpaeq', 'pulseaudio-utils', 'puppet', 'puppet-server', 'pygpgme', 'pyliblzma', 'python', 'python-IPy', 'python-clufter', 'python-cssselect', 'python-iniparse', 'python-libs', 'python-lxml', 'python-lxml-docs', 'python-magic', 'python-perf', 'python-pwquality', 'python-pycurl', 'python-test', 'python-tools', 'python-urlgrabber', 'python2-setuptools', 'python3-cssselect', 'python3-lxml', 'python3-pycurl', 'python3-setuptools', 'pyxattr', 'qrencode', 'qrencode-libs', 'quota', 'quota-doc', 'quota-nld', 'quota-nls', 'quota-warnquota', 'readline', 'readline-static', 'redos-logos', 'redos-release', 'resource-agents', 'resource-agents-sap', 'resource-agents-sap-hana', 'rpcbind', 'rpm', 'rpm-apidocs', 'rpm-build', 'rpm-build-libs', 'rpm-cron', 'rpm-libs', 'rpm-plugin-ima', 'rpm-plugin-selinux', 'rpm-plugin-syslog', 'rpm-plugin-systemd-inhibit', 'rpm-python', 'rpm-sign', 'rsync', 'rsyslog', 'rsyslog-crypto', 'rsyslog-doc', 'rsyslog-elasticsearch', 'rsyslog-gnutls', 'rsyslog-gssapi', 'rsyslog-kafka', 'rsyslog-libdbi', 'rsyslog-mmaudit', 'rsyslog-mmjsonparse', 'rsyslog-mmnormalize', 'rsyslog-mmsnmptrapd', 'rsyslog-mysql', 'rsyslog-omamqp1', 'rsyslog-pgsql', 'rsyslog-rabbitmq', 'rsyslog-relp', 'rsyslog-snmp', 'rsyslog-udpspoof', 'ruby', 'ruby-augeas', 'ruby-doc', 'ruby-irb', 'ruby-libs', 'ruby-shadow', 'ruby-tcltk', 'rubygem-bigdecimal', 'rubygem-io-console', 'rubygem-json', 'rubygem-minitest', 'rubygem-psych', 'rubygem-rake', 'rubygem-rdoc', 'rubygem-rgen', 'rubygem-rgen-doc', 'rubygems', 'secure-delete', 'sed', 'setools', 'setools-console', 'setools-gui', 'setools-libs', 'setools-libs-tcl', 'setup', 'shadow-utils', 'shared-mime-info', 'sntp', 'sqlite', 'sqlite-doc', 'sqlite-tcl', 'srm', 'sudo', 'systemd', 'systemd-journal-gateway', 'systemd-libs', 'systemd-networkd', 'systemd-python', 'systemd-resolved', 'systemd-sysv', 'sysvinit-tools', 'tar', 'tcp_wrappers', 'tcp_wrappers-libs', 'texinfo', 'texinfo-tex', 'tkinter', 'tzdata', 'tzdata-java', 'udisks2', 'usbutils', 'ustr', 'ustr-static', 'vim-X11', 'vim-common', 'vim-enhanced', 'vim-filesystem', 'vim-minimal', 'virt-what', 'which', 'wipe', 'xfsprogs', 'xorg-x11-server-utils', 'xorg-x11-xinit', 'xorg-x11-xinit-session', 'xorg-x11-xkb-extras', 'xorg-x11-xkb-utils', 'xprintidle', 'xz', 'xz-compat-libs', 'xz-libs', 'xz-lzma-compat', 'yum', 'yum-NetworkManager-dispatcher', 'yum-cron', 'yum-metadata-parser', 'yum-plugin-aliases', 'yum-plugin-changelog', 'yum-plugin-fastestmirror', 'yum-plugin-filter-data', 'yum-plugin-fs-snapshot', 'yum-plugin-keys', 'yum-plugin-list-data', 'yum-plugin-local', 'yum-plugin-merge-conf', 'yum-plugin-ovl', 'yum-plugin-post-transaction-actions', 'yum-plugin-priorities', 'yum-plugin-protectbase', 'yum-plugin-ps', 'yum-plugin-remove-with-leaves', 'yum-plugin-rpm-warm-cache', 'yum-plugin-show-leaves', 'yum-plugin-tmprepo', 'yum-plugin-tsflags', 'yum-plugin-upgrade-helper', 'yum-plugin-verify', 'yum-plugin-versionlock', 'yum-updateonboot', 'yum-utils', 'zlib', 'zlib-static'].join('\n'));
+        });
+
+
+
+        function runScanner(os, iso, mask) {
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            if ($(mask).val() == '') {
+                var pkgsName = []
+            } else {
+                var pkgsName = $(mask).val().split('\n');
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'getVulners',
+                    isoPath: iso.value,
+                    pkgsName: pkgsName,
+                    pkgsNVRA: [],
+                },
+                cache: false,
+
+                success: function (data) {
+                    console.log(data);
+                    $("#result").append(data);
+                    $("#res-header").text('CVE Scanner / отчет по ' + os);
+                    $("#res-header-iso").text('образ: ' + $(iso).find('option:selected').text());
+                    moveToTitle();
+                },
+
+                error: function (request, error) {
+                    // console.log(error + request.status + request.statusText);
+                    $.alert("При поиске пакетов.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function (xhr, settings) {
+                    $("#result").empty();
+                    $('.loader-block-2').css("display", "block");
+
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+
+                complete: function () {
+                    $('.loader-block-2').css("display", "none");
+                },
+            });
+
+        }
+
+        $('#btn-gl').click(function () {
+            runScanner('ГосЛинукс', document.getElementById("select-iso-gl"), document.getElementById("textarea-mask-gl"));
+        });
+
+        $('#btn-ro').click(function () {
+            runScanner('РедОС', document.getElementById("select-iso-ro"), document.getElementById("textarea-mask-ro"));
+        });
+
+        function moveToTitle() {
+            var top = $("#result-content").offset().top - 150;
+            $('body,html').animate({scrollTop: top}, 800);
+        };
+
+
+        $("body").on('click','a[id="show-hide-block"]',function(){
+            var $block = "#" + $(this).attr("num");
+            $($block).toggle();
+        });
+
+    </script>
+{% endblock %}

@@ -1,0 +1,63 @@
+[NAME]
+ФБО «Аудит»
+Сигналы нарушения безопасности
+[/NAME]
+
+
+[PRERE]
+Никаких предварительных операций производить не требуется.
+[/PRERE]
+
+
+[EXPECTED]
+Администратору на электронную почту поступает уведомление о возможном нарушении информационной безопасности.
+[/EXPECTED]
+
+
+[PROCEDURE]
+От имени администратора root запускаем редактор конфигурационного файла sudoers:
+[code][root@goslinux etc]# visudo[/code]
+Для начала редактирования нажать клавишу «insert», добавить записи следующего вида:
+[code]Defaults mailto="root@localhost.localdomain"
+Defaults mail_badpass
+Defaults mail_no_perms
+Defaults mail_no_user
+Defaults mail_always[/code]
+Этой запись настраивает отправку уведомлений на электронную почту root@localhost.localdomain администратора root уведомления в случае обнаружения неуспешных попыток пользователя:
+- выполнить команду sudo с неправильным паролем,
+- если вызывающему пользователю разрешено использовать sudo, но команда, которую он пытается выполнить, не указана в записи файла sudoers или явно запрещена,
+- если вызывающий пользователь не находится в списке sudoers.
+Для выхода из редактора, нажать клавишу Esc, ввести комбинацию :wq для записи изменений и выхода из редактора.
+От имени пользователя ivanov попытаться выполнить команду sudo su с вводом неправильного пароля пользователя root:
+[code][ivanov@goslinux ~]$ sudo su
+[sudo] password for ivanov:
+Sorry, try again.
+[sudo] password for ivanov:
+Sorry, try again.
+[sudo] password for ivanov:
+Sorry, try again.
+sudo: 3 incorrect password attempts[/code]
+От имени администратора root просмотреть содержимое почтового ящика:
+[code][root@goslinux ivanov]# sudo mail -u root[/code]
+[/PROCEDURE]
+
+
+[RESULT]
+Администратору на электронную почту поступает извещение о нарушении информационной безопасности вида:
+[code]From root@goslinux.localdomain  Wed Oct 18 09:50:50 2017
+Return-Path: <root@goslinux.localdomain>
+X-Original-To: root@localhost.localdomain
+Delivered-To: root@localhost.localdomain
+To: root@localhost.localdomain
+From: ivanov@goslinux.localdomain
+Auto-Submitted: auto-generated
+Subject: *** SECURITY information for goslinux ***
+Date: Wed, 18 Oct 2017 09:50:50 +0300 (MSK)
+Status: R
+goslinux : Oct 18 09:50:50 : ivanov : user NOT in sudoers ; TTY=pts/1 ;
+PWD=/home/ivanov ; USER=root ; COMMAND=/bin/su[/code]
+[/RESULT]
+
+[FILE1]
+test001.py
+[/FILE1]

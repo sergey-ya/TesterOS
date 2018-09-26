@@ -1,0 +1,316 @@
+[NAME]
+ФБО «Защита данных пользователя»
+Дискреционное управление доступом — общий механизм
+[/NAME]
+
+
+[PRERE]
+От имени администратора root в каталоге tmp создать 4 подкаталога:
+[code][root@goslinux ivanov]# mkdir /tmp/dir_wr
+[root@goslinux ivanov]# mkdir /tmp/dir_read
+[root@goslinux ivanov]# mkdir /tmp/dir_exec
+[root@goslinux ivanov]# mkdir /tmp/dir_wr_read[/code]
+
+Для созданного каталога dir_wr установить права только на изменение каталога для владельца и группы владельца каталога:
+[code][root@goslinux ivanov]# chmod 330 /tmp/dir_wr/[/code]
+
+Для созданного каталога dir_read установить права только на чтение имён файлов для владельца и группы владельца каталога:
+[code][root@goslinux ivanov]# chmod 440 /tmp/dir_read/[/code]
+
+Для созданного каталога dir_wr_read установить права на чтение и запись для владельца и группы владельца каталога:
+[code][root@goslinux ivanov]# chmod 660 /tmp/dir_wr_read/[/code]
+
+Для созданного каталога dir_exec установить права на получение доступа к метаданным о файлах для владельца и группы владельца каталога:
+[code][root@goslinux ivanov]# chmod 110 /tmp/dir_exec/[/code]
+
+Просмотреть права созданных каталогов:
+[code][root@goslinux ivanov]# ls -l /tmp/
+итого 40
+d--x--x---. 2 root   root   4096 сен 18 09:55 dir_exec
+dr--r-----. 2 root   root   4096 сен 18 09:55 dir_read
+d-wх-wх---. 2 root   root   4096 сен 18 09:55 dir_wr
+drw-rw----. 2 root   root   4096 сен 18 09:59 dir_wr_read[/code]
+
+Создать тестовый каталог  tst_fldr и в нем 4 файла:
+[code][root@goslinux audit]# mkdir /tmp/tst_fldr/
+[root@goslinux audit]# touch /tmp/tst_fldr/read_only.txt
+[root@goslinux audit]# touch /tmp/tst_fldr/write_only.txt
+[root@goslinux audit]# touch /tmp/tst_fldr/exec_only.sh
+[root@goslinux audit]# touch /tmp/tst_fldr/rw.txt[/code]
+
+Для созданного файла read_only.txt установить права только на чтение для владельца и группы владельца каталога:
+[code][root@goslinux audit]# chmod 440 /tmp/tst_fldr/read_only.txt[/code]
+
+Для созданного файла write_only.txt установить права только на запись для владельца и группы владельца каталога:
+[code][root@goslinux audit]# chmod 220 /tmp/tst_fldr/write_only.txt[/code]
+
+Для созданного файла rw.txt установить права на запись и чтение для владельца и группы владельца каталога:
+[code][root@goslinux audit]# chmod 660 /tmp/tst_fldr/rw.txt[/code]
+
+Для созданного файла exec_only.sh установить права только на выполнение (пользователь также должен иметь разрешение на чтение) для владельца и группы владельца каталога:
+[code][root@goslinux audit]# chmod 550 /tmp/tst_fldr/exec_only.sh[/code]
+Просмотреть права созданных файлов:
+[code][root@goslinux tmp]# ls -l /tmp/tst_fldr/
+итого 0
+-r-xr-x---. 1 root root 0 сен 15 15:46 exec_only.sh
+-r--r-----. 1 root root 0 сен 15 15:32 read_only.txt
+-rw-rw----. 1 root root 0 сен 15 15:33 rw.txt
+--w--w----. 1 root root 0 сен 15 15:33 write_only.txt[/code]
+Владельцем всех созданных файлов и каталогов является пользователь root.
+[/PRERE]
+
+
+[EXPECTED]
+ФБ ОС осуществляет дискреционную политику доступа для объектов файловой системы.
+[/EXPECTED]
+
+
+[PROCEDURE]
+а) Пользователями ivanov и petrov просмотреть содержимое файлов в каталоге tst_fldr:
+[code][petrov@goslinux tmp]$ cat /tmp/tst_fldr/read_only.txt
+[petrov@goslinux tmp]$ cat /tmp/tst_fldr/rw.txt
+[petrov@goslinux tmp]$ cat /tmp/tst_fldr/write_only.txt
+[petrov@goslinux tmp]$ cat /tmp/tst_fldr/exec_only.sh[/code]
+
+пользователями ivanov и petrov записать текст в файлы каталога  tst_fldr:
+[code][petrov@goslinux tmp]$ echo "txt" > /tmp/tst_fldr/read_only.txt
+[petrov@goslinux tmp]$ echo "txt" > /tmp/tst_fldr/rw.txt
+[petrov@goslinux tmp]$ echo "txt" > /tmp/tst_fldr/write_only.txt
+[petrov@goslinux tmp]$ echo "txt" > /tmp/tst_fldr/exec_only.sh[/code]
+
+пользователями ivanov и petrov выполнить файлы каталога  tst_fldr:
+[code][petrov@goslinux tmp]$ /tmp/tst_fldr/exec_only.sh
+[petrov@goslinux tmp]$ /tmp/tst_fldr/rw.txt
+[petrov@goslinux tmp]$ /tmp/tst_fldr/write_only.txt
+[petrov@goslinux tmp]$ /tmp/tst_fldr/read_only.txt[/code]
+
+б) Пользователем root назначить владельцем каталога tst_fldr и всех файлов в нем пользователя ivanov:
+[code][root@goslinux ivanov]# chown -R ivanov /tmp/tst_fldr/[/code]
+Проверить правильность назначенных прав:
+[code][root@goslinux ivanov]# ls -l /tmp/tst_fldr/
+итого 8
+-r-xr-x---. 1 ivanov root 0 сен 15 15:46 exec_only.sh
+-r--r-----. 1 ivanov root 0 сен 15 15:32 read_only.txt
+-rw-rw----. 1 ivanov root 4 сен 18 10:42 rw.txt
+--w--w----. 1 ivanov root 4 сен 18 10:41 write_only.txt[/code]
+Владельцем всех созданных файлов является пользователь ivanov.
+
+Пользователями ivanov и petrov повторить попытки чтения, записи, запуска файлов в каталоге tst_fldr.
+
+в) Пользователем root назначить владельцем каталога tst_fldr и всех файлов в нем пользователя root, группой владельца назначить ivanov:
+[code][root@goslinux ivanov]# chown -R root:ivanov /tmp/tst_fldr/[/code]
+Проверить правильность назначенных прав:
+[code][root@goslinux ivanov]# ls -l /tmp/tst_fldr/
+итого 8
+-r-xr-x---. 1 root ivanov 0 сен 15 15:46 exec_only.sh
+-r--r-----. 1 root ivanov 0 сен 15 15:32 read_only.txt
+-rw-rw----. 1 root ivanov 4 сен 18 10:42 rw.txt
+--w--w----. 1 root ivanov 4 сен 18 10:41 write_only.txt[/code]
+Владельцем всех созданных файлов является пользователь root, группа ivanov.
+
+Пользователями ivanov и petrov повторить попытки чтения, записи, запуска файлов в каталоге tst_fldr.
+
+г) Добавить пользователей ivanov и petrov в группу audio:
+[code][root@goslinux ivanov]# usermod -a -G audio ivanov
+[root@goslinux ivanov]# usermod -a -G audio petrov[/code]
+
+Пользователем root назначить владельцем каталога tst_fldr и всех файлов в нем пользователя root, группой владельца назначить audio:
+[code][root@goslinux ivanov]# chown -R root:audio /tmp/tst_fldr/[/code]
+Проверить правильность назначенных прав:
+[code][root@goslinux ivanov]# ls -l /tmp/tst_fldr/
+итого 8
+-r-xr-x---. 1 root audio 0 сен 15 15:46 exec_only.sh
+-r--r-----. 1 root audio 0 сен 15 15:32 read_only.txt
+-rw-rw----. 1 root audio 4 сен 18 11:21 rw.txt
+--w--w----. 1 root audio 4 сен 18 11:21 write_only.txt[/code]
+Владельцем всех созданных файлов является пользователь root, группа audio.
+
+Для применения назначенных групп завершить текущие сеансы пользователей ivanov и petrov. Начать новые сеансы от имени  пользователей ivanov и petrov. Убедиться, что новая группа доступна пользователю:
+[code][petrov@goslinux ivanov]$ id
+uid=1001(petrov)         gid=1001(petrov)         группы=1001(petrov),63(audio)
+контекст=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023[/code]
+
+Пользователями ivanov и petrov повторить попытки чтения, записи, запуска файлов в каталоге tst_fldr.
+
+д) Владельцем созданных каталогов  dir_exec,  dir_read. dir_wr,  dir_wr_read является пользователь root группа владельца root. Пользователи ivanov и petrov не входят в группу root.
+Пользователями ivanov и petrov просмотреть содержимое каталогов:
+[code][ivanov@goslinux tmp]$ ls -l /tmp/dir_exec/
+[ivanov@goslinux tmp]$ ls -l /tmp/dir_read/
+[ivanov@goslinux tmp]$ ls -l /tmp/dir_wr/
+[ivanov@goslinux tmp]$ ls -l /tmp/dir_wr_read/[/code]
+
+Пользователями ivanov и petrov в каждом каталоге создать файл test.txt:
+[code][ivanov@goslinux tmp]$ touch /tmp/dir_exec/test.txt
+[ivanov@goslinux tmp]$ touch /tmp/dir_read/test.txt
+[ivanov@goslinux tmp]$ touch /tmp/dir_wr/test.txt
+[ivanov@goslinux tmp]$ touch /tmp/dir_wr_read/test.txt[/code]
+
+Пользователями ivanov и petrov сменить текущий каталог:
+[code][ivanov@goslinux tmp]$ cd /tmp/dir_exec/
+[ivanov@goslinux tmp]$ cd /tmp/dir_read/
+[ivanov@goslinux tmp]$ cd /tmp/dir_wr/
+[ivanov@goslinux tmp]$ cd /tmp/dir_wr_read/[/code]
+
+e) Сменить владельца каталогов   dir_exec,   dir_read. dir_wr,   dir_wr_read назначив новым владельцем пользователя ivanov:
+[code][root@goslinux ivanov]# chown ivanov /tmp/dir_exec/
+[root@goslinux ivanov]# chown ivanov /tmp/dir_read/
+[root@goslinux ivanov]# chown ivanov /tmp/dir_wr/
+[root@goslinux ivanov]# chown ivanov /tmp/dir_wr_read/[/code]
+
+Проверить правильность назначенных прав:
+[code][root@goslinux ivanov]# ls -l /tmp/
+итого 48
+d--x--x---. 2 ivanov root   4096 сен 18 09:55 dir_exec
+dr--r-----. 2 ivanov root   4096 сен 18 09:55 dir_read
+d-wх-wх---. 2 ivanov root   4096 сен 18 09:55 dir_wr
+drw-rw----. 2 ivanov root   4096 сен 18 09:59 dir_wr_read[/code]
+
+Пользователями ivanov и petrov просмотреть содержимое каталогов, в каждом каталоге создать файл test.txt,  сменить текущий каталог.
+
+ж) Сменить владельца каталогов dir_exec, dir_read, dir_wr, dir_wr_read назначив новым владельцем пользователя root и назначив группу владельца ivanov:
+[code][root@goslinux ivanov]# chown root:ivanov /tmp/dir_exec/
+[root@goslinux ivanov]# chown root:ivanov /tmp/dir_read/
+[root@goslinux ivanov]# chown root:ivanov /tmp/dir_wr/
+[root@goslinux ivanov]# chown root:ivanov /tmp/dir_wr_read/[/code]
+Проверить правильность назначенных прав:
+[code][root@goslinux ivanov]# ls -l /tmp/
+итого 48
+d--x--x---. 2 root   ivanov 4096 сен 18 09:55 dir_exec
+dr--r-----. 2 root   ivanov 4096 сен 18 09:55 dir_read
+d-wx-wx---. 2 root   ivanov 4096 сен 18 12:26 dir_wr
+drw-rw----. 2 root   ivanov 4096 сен 18 09:59 dir_wr_read[/code]
+
+з) Сменить владельца каталогов dir_exec, dir_read, dir_wr, dir_wr_read назначив новым владельцем пользователя root и назначив группу владельца audio:
+[code][root@goslinux ivanov]# chown root:audio /tmp/dir_wr_read/
+[root@goslinux ivanov]# chown root:audio /tmp/dir_wr/
+[root@goslinux ivanov]# chown root:audio /tmp/dir_read/
+[root@goslinux ivanov]# chown root:audio /tmp/dir_exec/[/code]
+Проверить правильность назначенных прав:
+[code][root@goslinux ivanov]# ls -l /tmp/
+итого 48
+d--x--x---. 2 root   audio  4096 сен 18 09:55 dir_exec
+dr--r-----. 2 root   audio  4096 сен 18 09:55 dir_read
+d-wx-wx---. 2 root   audio  4096 сен 18 12:26 dir_wr
+drw-rw----. 2 root   audio  4096 сен 18 09:59 dir_wr_read[/code]
+
+и) Пользователем ivanov создать файл:
+[code][ivanov@goslinux dir_wr]$ touch /tmp/ivanov.file[/code]
+
+Назначить ему права с полным доступом для всех пользователей и дополнительным
+атрибутом Sticky bit:
+[code][ivanov@goslinux dir_wr]$ chmod 1777 /tmp/ivanov.file[/code]
+
+Пользователем root сменить группу владельца файла на общедоступную для пользователей ivanov и petrov:
+[code][root@goslinux ivanov]# chown ivanov:audio /tmp/ivanov.file[/code]
+Проверить правильность назначенных прав:
+[code][ivanov@goslinux dir_wr]$ ls -l /tmp
+итого 48
+-rwxrwxrwt. 1 ivanov audio     0 сен 18 15:06 ivanov.file[/code]
+
+Пользователем  petrov удалить  файл ivanov.file:
+[code][petrov@goslinux dir_wr]$ rm /tmp/ivanov.file[/code]
+
+Пользователем ivanov удалить  файл ivanov.file:
+[code][ivanov@goslinux dir_wr]$ rm /tmp/ivanov.file[/code]
+[/PROCEDURE]
+
+[RESULT]
+ФБ ОС осуществляет дискреционную политику доступа для объектов файловой системы.
+
+а) Так как доступ к файлам в каталоге tst_fldr предоставлен только пользователю root и группе root, то при попытке выполнения операций с файлами другими пользователями (ivanov, petrov) возникают ошибки доступа. При попытке чтения:
+[code]cat: /tmp/tst_fldr/exec_only.sh: Отказано в доступе[/code]
+при попытке записи:
+[code]bash: /tmp/tst_fldr/read_only.txt: Отказано в доступе[/code]
+при попытке запуска:
+[code]bash: /tmp/tst_fldr/exec_only.sh: Отказано в доступе[/code]
+Ни одна из операций успешно не заканчивается.
+
+б) После назначения владельцем файлов пользователя ivanov при попытке чтения файлов пользователем ivanov успешно завершаются операции чтения файлов read_only.txt, rw.txt и exec_only.sh. При попытке чтения файла write_only.txt возникает ошибка доступа:
+[code]cat: /tmp/tst_fldr/write_only.txt: Отказано в доступе[/code]
+Для пользователя petrov недоступны для чтения все файлы. Все попытки чтения заканчиваются ошибкой доступа.
+При попытке записи пользователем ivanov успешно удается записать данные в файлы write_only.txt и rw.txt. Остальные файлы недоступны для записи. Возникает ошибка доступа:
+[code]bash: /tmp/tst_fldr/read_only.txt: Отказано в доступе[/code]
+Для пользователя petrov недоступны для записи все файлы. Все попытки записи заканчиваются ошибкой доступа.
+При попытке исполнения файлов пользователем ivanov успешно удается выполнить только файл exec_only.sh. Остальные файлы недоступны для выполнения. Возникает ошибка доступа:
+[code]bash: /tmp/tst_fldr/rw.txt: Отказано в доступе[/code]
+Для пользователя petrov недоступны для выполнения все файлы. Все попытки выполнить файл заканчиваются ошибкой доступа.
+
+в) После назначения владельцем файлов пользователя root и группой пользователя ivanov при попытке чтения файлов пользователем ivanov, который входит в группу ivanov, успешно завершаются операции чтения файлов read_only.txt, rw.txt и exec_only.sh. При попытке чтения файла  write_only.txt возникает ошибка доступа:
+[code]cat: /tmp/tst_fldr/write_only.txt: Отказано в доступе[/code]
+Для пользователя petrov, который не входит в группу ivanov, недоступны для чтения все файлы. Все попытки чтения заканчиваются ошибкой доступа.
+При попытке записи пользователем ivanov успешно удается записать данные в файлы write_only.txt и rw.txt. Остальные файлы недоступны для записи. Возникает ошибка доступа:
+[code]bash: /tmp/tst_fldr/read_only.txt: Отказано в доступе[/code]
+Для пользователя petrov недоступны для записи все файлы. Все попытки записи заканчиваются ошибкой доступа.
+При попытке исполнения файлов пользователем ivanov успешно удается выполнить
+только файл exec_only.sh. Остальные файлы недоступны для выполнения. Возникает ошибка доступа:
+[code]bash: /tmp/tst_fldr/rw.txt: Отказано в доступе[/code]
+Для пользователя petrov недоступны для выполнения все файлы. Все попытки выполнить файл заканчиваются ошибкой доступа.
+
+г) После назначения владельцем файлов пользователя root и группой пользователя audio при попытке чтения файлов пользователями ivanov и petrov, которые входят в группу audio, успешно завершаются операции чтения файлов read_only.txt, rw.txt и exec_only.sh.
+При попытке чтения файла  write_only.txt возникает ошибка доступа:
+[code]cat: /tmp/tst_fldr/write_only.txt: Отказано в доступе[/code]
+При попытке записи пользователями ivanov и petrov успешно удается записать данные в файлы write_only.txt и rw.txt. Остальные файлы недоступны для записи. Возникает ошибка доступа:
+[code]bash: /tmp/tst_fldr/read_only.txt: Отказано в доступе[/code]
+При попытке исполнения файлов пользователями ivanov и petrov успешно удается выполнить только файл exec_only.sh. Остальные файлы недоступны для выполнения. Возникает ошибка доступа:
+[code]bash: /tmp/tst_fldr/rw.txt: Отказано в доступе[/code]
+
+д) Так как доступ к каталогам предоставлен только пользователю root и группе root, то при попытке выполнения операций с каталогами другими пользователями (ivanov, petrov) возникают ошибки доступа. При попытке чтения:
+[code]ls: невозможно открыть каталог /tmp/dir_exec/: Отказано в доступе[/code]
+При попытке записи:
+[code]touch: невозможно выполнить touch для «/tmp/dir_exec/test.txt»: Отказано в доступе[/code]
+При попытке выполнения:
+[code]bash: cd: /tmp/dir_exec/: Отказано в доступе[/code]
+
+е) После назначения новым владельцем каталогов пользователя ivanov операции просмотра содержимого каталогов dir_read и dir_wr_read пользователем ivanov завершаются успешно. Для остальных каталогов просмотр запрещен, пользователю выводится уведомление об ошибке доступа:
+[code]ls: невозможно открыть каталог /tmp/dir_exec/: Отказано в доступе[/code]
+Попытки создания файла внутри каталога пользователем ivanov заканчиваются успешно только для каталога dir_wr. Во всех остальных каталогах создание файлов запрещено. Пользователю выводится предупреждение:
+[code]touch: невозможно выполнить touch для «/tmp/dir_exec/test.txt»: Отказано в доступе[/code]
+Попытки сменить текущий каталог пользователем ivanov успешно завершаются только для каталогов dir_exec и dir_wr. Смена каталога для остальных запрещена. Пользователь получает сообщение об ошибке:
+[code]bash: cd: /tmp/dir_read/: Отказано в доступе[/code]
+Для пользователь petrov все операции заканчиваются ошибкой.
+
+ж) После назначения новым владельцем каталогов пользователя root и группой владельца ivanov операции просмотра содержимого каталогов dir_read и dir_wr_read пользователем ivanov завершаются успешно. Для остальных каталогов просмотр запрещен, пользователю выводится уведомление об ошибке доступа:
+[code]ls: невозможно открыть каталог /tmp/dir_exec/: Отказано в доступе[/code]
+Попытки создания файла внутри каталога пользователем ivanov   заканчиваются успешно только для каталога dir_wr. Во всех остальных каталогах создание файлов запрещено. Пользователю выводится предупреждение:
+[code]touch: невозможно выполнить touch для «/tmp/dir_exec/test.txt»: Отказано в доступе[/code]
+Попытки сменить текущий каталог пользователем ivanov успешно завершаются только для каталогов dir_exec и dir_wr. Смена каталога для остальных запрещена. Пользователь получает сообщение об ошибке:
+[code]bash: cd: /tmp/dir_read/: Отказано в доступе[/code]
+Для пользователь petrov все операции заканчиваются ошибкой.
+
+з) После назначения новым владельцем каталогов пользователя root и группой владельца audio (в которую входят пользователи ivanov и petrov) операции просмотра содержимого каталогов dir_read и dir_wr_read пользователями ivanov и petrov завершаются успешно. Для остальных каталогов просмотр запрещен, пользователям выводится уведомление об ошибке доступа:
+[code]ls: невозможно открыть каталог /tmp/dir_exec/: Отказано в доступе[/code]
+Попытки создания файла внутри каталога пользователями ivanov и petrov заканчиваются успешно только для каталога dir_wr. Во всех остальных каталогах создание файлов запрещено. Пользователю выводится предупреждение:
+[code]touch: невозможно выполнить touch для «/tmp/dir_exec/test.txt»: Отказано в доступе[/code]
+Попытки сменить текущий каталог пользователями ivanov и petrov успешно завершаются только для каталогов dir_exec и dir_wr. Смена каталога для остальных запрещена. Пользователь получает сообщение об ошибке:
+[code]bash: cd: /tmp/dir_read/: Отказано в доступе[/code]
+
+и) Специальный атрибут sticky bit используется в основном для каталогов, чтобы защитить в них файлы. Из такого каталога пользователь может удалить только те файлы, владельцем которых он является. Несмотря на то, что на файл ivanov.file выставлены неограниченные права, которые позволяют проводить любые операции с файлом всем пользователям и то, что пользователь petrov состоит в группе audio владельца файла, попытка удаления файла будет неуспешной:
+[code]rm: невозможно удалить «/tmp/ivanov.file»: Операция не позволена[/code]
+А владелец файла пользователь ivanov сможет удалить файл.
+[/RESULT]
+
+[AUTO]
+<b>условия:</b>
+-запускать от root пользователя
+
+<b>входные параметры:</b>
+-имя первого пользователя
+-имя второго пользователя
+
+<b>результат тестирования:</b>
+-в случае успешного тестирования
+[code]тест пройден успешно[/code]
+
+-в случае неудачного тестирования
+[code]при прохождении теста произошли ошибки:
+item: а; user: user; action: read; file: read_only.txt
+item: а; user: user; action: write; file: read_only.txt
+item: а; user: user; action: execute; file: read_only.txt
+item: а; user: user2; action: read; file: read_only.txt
+item: а; user: user2; action: write; file: read_only.txt[/code]
+Выдается список ошибок.
+-item (пункт в котором произошла ошибка)
+-user (пользователь от которого запущена команда)
+-action (тип команды)
+-file (файл для которого запущена команда)
+[/AUTO]

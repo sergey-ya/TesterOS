@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE variants PUBLIC "-//Red Hat, Inc.//DTD Variants info//EN" "variants2012.dtd">
+<variants>
+<!--    <variant id="Minimal" name="Minimal" type="variant" is_empty="true">
+        <arches>
+            <arch>x86_64</arch>
+        </arches>
+        <groups>
+            <group default="true">core</group>
+	    <group default="true">base</group>
+            <group default="true">anaconda-tools</group>
+        </groups>
+        <environments>
+          <environment display_order="10">minimal</environment>
+        </environments>
+    </variant> -->
+    <variant id="Everything" name="Everithing" type="variant">
+	<arches>
+	    <arch>x86_64</arch>
+	</arches>
+    </variant>
+</variants>

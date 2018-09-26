@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+
+{% block css2 %}
+    <style type="text/css">
+        .table-header-test{
+            cursor: pointer;
+            background-color: #e1ebf0;
+        }
+
+        .table-header-test:hover {
+            background: rgba(101, 129, 145, 0.3);
+        }
+
+        .table-tests-row:hover {
+            background: #cfd8dc4d;
+        }
+
+        .table-tests-row {
+            display: none;
+            padding-bottom: 10px;
+            line-height: 0;
+        }
+
+        a .fas:hover {
+            color: #9bb4e2;
+        }
+
+
+
+
+        .title-result {
+            font-size: 21px;
+        {#font-weight: 800;#}
+            margin-bottom: 10px;
+        {#color: #314d7c;#}
+            color: #04378c;
+            padding-top: 25px;
+            padding-bottom: 5px;
+            border-bottom-color: #c3cad5;
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+        }
+
+        .code {
+            padding: 1em;
+            border: 1px dashed #2f6fab;
+            color: #000;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            line-height: 1.1em;
+            font-family: Courier New, Courier, mono;
+            font-size: 12px;
+            font-style: italic;
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+
+
+
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <!--title-->
+    <div class="row" id="start" style="padding-bottom: 20px;">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <p style="text-align: justify;"><span class="header">Tests</span> - cписок тестов используемых для тестирования
+                <a data-container="body" data-toggle="popover" data-placement="right"
+                   data-content="Помощь."><i class="fa fa-question-circle"> </i></a>
+            </p>
+        </div>
+    </div>
+
+    <!--form-->
+    <div class="row">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+
+                    <input id="ipTesting" type="text" value="10.81.81.114">
+                    <input id="pasTesting" type="text" value="qqqwww">
+
+                    <a id="runTesting" style="margin: 0 10px">GO</a>
+
+
+
+
+
+                    <div class="row">
+                        <div class="col">
+
+                            <table class="table" id="table-tests" style="margin-top: 20px">
+
+                                <tbody id="table-tests-data">
+
+                                {% if tests %}
+                                    {% for osf in tests %}
+                                        <tr class="table-header-test" num="{{ osf.id }}">
+                                            <td colspan="4"><b>Функция безопасности объекта «{{ osf.name }}»</b></td>
+                                        </tr>
+
+                                        {% for test in osf.tests %}
+                                            <tr class="table-tests-row {{ osf.id }}">
+                                                <td style="width: 60px;">{{ test.id }}</td>
+                                                <td >{{ test.name }}</td>
+                                                <td style="width: 50px;">
+                                                    <h5>
+                                                        {% if test.file2 %}
+                                                            <a id="upload" testFile2="{{ test.file2 }}" style="margin: 0 10px">
+                                                                <i class="fas fa-download"></i>
+                                                            </a>
+                                                        {% endif %}
+                                                    </h5>
+                                                </td>
+
+                                                <td style="width: 50px;">
+                                                    <h5>
+                                                        {% if test.file1 %}
+                                                            <a id="see" testFile1="{{ test.file1 }}" testFile2="{{ test.file2 }}" style="margin: 0 10px">
+                                                                <i class="fas fa-eye"></i>
+                                                            </a>
+                                                        {% endif %}
+                                                    </h5>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+
+                                    {% endfor %}
+                                {% endif %}
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+
+                    <!--ajax-result-->
+                    <div class="row" style="margin-left: 0px; margin-right: 0px;">
+                        <div class="col" id="result-content">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block js %}
+    <script type="text/javascript">
+
+
+        $('.table-header-test').click(function() {
+            num = $(this).attr('num');
+            $("." + num).toggle();
+        });
+
+        {#скачиваем файл теста#}
+        $("body").on('click','a[id="upload"]',function(){
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            var testFile2 = $(this).attr('testFile2');
+
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'getTestFile',
+                    testFile: testFile2,
+                },
+                cache: false,
+
+                success: function (data) {
+                    {#console.log('load' + data);#}
+                    window.location.href = "download/?filepath=" + data;
+                },
+
+                error: function (request, error) {
+                    {#console.log(error + request.status + request.statusText);#}
+                    $.alert("При загрузке файла.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function(xhr, settings) {
+                    $('.loader-block-1').css("display", "block");
+
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+
+                complete: function() {
+                    $('.loader-block-1').css("display", "none");
+                },
+            });
+        });
+
+
+        {#получаем информацию о тесте#}
+        $("body").on('click','a[id="see"]',function(){
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            var testFile1 = $(this).attr('testFile1');
+            var testFile2 = $(this).attr('testFile2');
+            {#$('.table-tests-row').each(function(i, elem) {#}
+            {#    $(elem).css('background', '');#}
+
+            {#$(this).css('background', '#cfd8dc99');#}
+
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'getTestInfo',
+                    testFile1: testFile1,
+                    testFile2: testFile2,
+                },
+                cache: false,
+
+                success: function (data) {
+                    {#console.log(data);#}
+                    $("#result-content").append(data)
+
+                    $("#result-footer").css("display", "block");
+
+                    var top = $("#result-content").offset().top - 150;
+                    $('body,html').animate({scrollTop: top}, 800);
+                },
+
+                error: function (request, error) {
+                    // console.log(error + request.status + request.statusText);
+                    $.alert("При получении информации о тесте.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function (xhr, settings) {
+                    $("#result-content").empty();
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+
+                complete: function () {
+                },
+            });
+        });
+
+
+
+
+
+        $("body").on('click','a[id="a-scrollto"]',function() {
+            var top = $("#start").offset().top - 50;
+            $('body,html').animate({scrollTop: top}, 800);
+        });
+
+
+
+
+        {#************************************************************************************************************#}
+        $("body").on('click','a[id="runTesting"]',function(){
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'runTesting',
+                    host: $("#ipTesting").val(),
+                    rootPas: $("#pasTesting").val(),
+                },
+                cache: false,
+
+                success: function (data) {
+                    {#console.log(data);#}
+
+                    $("#result-content").append(data)
+                },
+
+                error: function (request) {
+                    $.alert("При запуске тестирования.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function (xhr, settings) {
+                    $("#result-content").empty();
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+
+            });
+        });
+
+
+
+    </script>
+{% endblock %}

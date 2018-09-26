@@ -1,0 +1,606 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+
+{% block css2 %}
+    <style type="text/css">
+        .table-builds-row:hover, .table-export-row:hover {
+            background: #cfd8dc4d;
+        }
+
+        .title-test {
+            display: none;
+            line-height: 0;
+            cursor: pointer;
+        }
+
+        .title-result {
+            font-size: 21px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: #314d7c;
+            padding-top: 25px;
+            padding-bottom: 5px;
+            border-bottom-color: #c3cad5;
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+        }
+
+        a .fas:hover {
+            color: #9bb4e2;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <!--title-->
+    <div class="row" style="padding-bottom: 20px;">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <p style="text-align: justify;"><span class="header">Repo Manager</span> - описание
+                <a data-container="body" data-toggle="popover" data-placement="right"
+                   data-content="описание"><i class="fa fa-question-circle"> </i></a>
+            </p>
+        </div>
+    </div>
+
+    <!--forms-->
+    <div class="row">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="col-xs-4 col-md-4 col-lg-4">
+
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label" style="padding-right: 10px">Стапель:</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" id="select-stapel-list">
+                                        {% for elem in stapelLst %}
+                                            <option value="{{ elem.url }}">{{ elem.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Тег:</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" id="select-tag-list"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label id="label-title-pkgs">Список пакетов:</label>
+                                <input class="col form-control w-100" type="text" value="" id="input-pkgs-filter" placeholder="Фильтр">
+                                <select id="select-pkgs" multiple class="col form-control" style="margin-top: 10px; height: 250px">
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="col-xs-8 col-md-8 col-lg-8">
+
+                            <label id="title-table-builds">Список сборок</label>
+
+                            <table class="table sortable" id="table-builds">
+                                <thead class="blue-grey lighten-4">
+                                <tr>
+                                    <th class="nosort" width="30">#</th>
+                                    {#                                    <th >Имя</th>#}
+                                    <th>Версия</th>
+                                    <th>Релиз</th>
+                                    <th style="width:100px">Автор</th>
+                                    <th style="width:160px">Дата</th>
+                                    <th style="width:100px"></th>
+                                </tr>
+                                </thead>
+
+                                <tbody id="table-builds-data">
+                                </tbody>
+                            </table>
+
+                            <!--loader-->
+                            <div class="row">
+                                <div class="col-xs-12 col-md-12 col-lg-12 ">
+                                    <div class="loader-block-1" id="loader-1">
+                                        <span></span><span></span><span></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="row" style="margin-top: 20px">
+
+                        <div class="col-xs-9 col-md-9 col-lg-9 ">
+
+                            <label class="card-title">Список пакетов для выгрузки</label>
+
+                            <table class="table" id="table-export">
+                                <thead class="blue-grey lighten-4">
+                                <tr>
+                                    <th style="width:30px">#</th>
+                                    <th>Имя</th>
+                                    <th>Версия</th>
+                                    <th>Релиз</th>
+                                    <th style="width:100px">Автор</th>
+                                    <th style="width:160px">Дата</th>
+                                    <th style="width:100px"></th>
+                                </tr>
+                                </thead>
+
+                                <tbody id="table-export-data">
+                                <tr id="table-export-none-data"><td colspan='6'>Нет записей для отображения</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="col-xs-3 col-md-3 col-lg-3">
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="card border-light mb-3" style="max-width: 18rem;">
+                                        <div class="card-body" id="export-options-panel">
+                                            <h4 class="card-title disabled" style="font-size: 1.1rem;">Репозиторий</h4>
+
+                                            {% for elem in repoLst %}
+                                                <div class="form-check">
+                                                    <input class="form-check-input" name="group100" type="radio"
+                                                           id="radio{{ forloop.counter }}" value="{{ elem.url }}" checked disabled>
+                                                    <label class="form-check-label disabled" for="radio{{ forloop.counter }}"
+                                                           data-toggle="tooltip" data-placement="right"
+                                                           title="{{ elem.url }}" style="cursor: pointer">{{ elem.name }}</label>
+                                                </div>
+                                            {% endfor %}
+
+                                            <hr>
+
+                                            <h4 class="card-title disabled" style="font-size: 1.1rem;">Параметры</h4>
+                                            <p></p>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="check-replace" disabled>
+                                                <label class="form-check-label disabled" for="check-replace" style="cursor: pointer">С заменой
+                                                    <p class="card-text">пакет обновляется</p>
+                                                </label>
+                                            </div>
+                                            <p></p>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="check-update" disabled>
+                                                <label class="form-check-label disabled" for="check-update" style="cursor: pointer">В обновления
+                                                    <p class="card-text">пакет добавляется в обновления</p>
+                                                </label>
+                                            </div>
+                                            <p></p>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="check-sign" disabled>
+                                                <label class="form-check-label disabled" for="check-sign" style="cursor: pointer">С подписью
+                                                    <p class="card-text">пакет подпиывается</p>
+                                                </label>
+
+                                            </div>
+                                            <p></p>
+                                            <div class="text-center">
+                                                <a class="btn btn-danger disabled" id="export-builds"
+                                                   data-toggle="modal" data-target="#confirm-form"><i class="fa fa-magic mr-1"></i> Выгрузить</a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ConfirmModalForm -->
+    {% include "testeros/repomanager/modalform.html" %}
+
+{% endblock %}
+
+
+{% block js %}
+    <script type="text/javascript">
+
+        $('#input-pkgs-filter').keyup(function () {
+            var countPkgs = 0;
+            $("#select-pkgs option").map(function() {
+                if ($(this).text().toLowerCase().indexOf($("#input-pkgs-filter").val().toLowerCase()) < 0) {
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                    countPkgs++;
+                }
+            });
+            $("#label-title-pkgs").html("Список пакетов (" + countPkgs + ")");
+        });
+
+        $(document).ready(function() {
+            $("#select-stapel-list").change();
+        });
+
+
+        {#получаем список тегов#}
+        $("#select-stapel-list").change(function() {
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            var stapel_url = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'getTagList',
+                    stapel_url: stapel_url,
+                },
+                cache: false,
+
+                success: function (data) {
+                    {#console.log(data);#}
+                    data.forEach(function (value) {
+                        $("#select-tag-list").append("<option value=" + value.id + ">" + value.name + '</option>');
+                    });
+                },
+
+                error: function (request, error) {
+                    // console.log(error + request.status + request.statusText);
+                    $.alert("При получении списка тегов.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function (xhr, settings) {
+                    $("#select-tag-list").empty();
+                    $("#select-pkgs").empty();
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+
+                complete: function () {
+                    $("#select-tag-list").change();
+                }
+            });
+        });
+
+
+        {#получаем список пакетов#}
+        $("#select-tag-list").change(function() {
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            var stapel_url = $("#select-stapel-list").val();
+            var tag_id = $("#select-tag-list").val();
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'getPkgsByTag',
+                    stapel_url: stapel_url,
+                    tag_id: tag_id,
+                },
+                cache: false,
+
+                success: function (data) {
+                    {#console.log(data);#}
+                    if (data.length != 0) {
+                        $("#label-title-pkgs").html("Список пакетов (" + data.length + "):");
+                        $('#input-pkgs-filter').prop('disabled', false);
+                        data.forEach(function (value) {
+                            $("#select-pkgs").append("<option class='pkgs-list' value=" + value.package_id + ">" + value.package_name + '</option>');
+                        });
+                        $('#select-pkgs').prop('disabled', false);
+                    }
+                },
+
+                error: function (request, error) {
+                    // console.log(error + request.status + request.statusText);
+                    $.alert("При получени списка пакетов.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function (xhr, settings) {
+                    $("#label-title-pkgs").html("Список пакетов (0):");
+                    $("#input-pkgs-filter").val("");
+                    $('#input-pkgs-filter').prop('disabled', true);
+                    $("#select-pkgs").empty();
+                    $('#select-pkgs').prop('disabled', true);
+                    $("#title-table-builds").html('Список сборок');
+                    $("#table-builds-data").html("<tr><td colspan='6'>Нет записей для отображения</td></tr>");
+
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+            });
+        });
+
+
+        {#получаем список сборок#}
+        $('#select-pkgs').dblclick(function () {
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            var stapel_url = $("#select-stapel-list").val();
+            var pkg_id = $("#select-pkgs option:selected").val();
+            var tag_id = $("#select-tag-list").val();
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'getBuildsByTag',
+                    stapel_url: stapel_url,
+                    pkg_id: pkg_id,
+                    tag_id: tag_id,
+                },
+                cache: false,
+
+                success: function (data) {
+                    {#console.log(data);#}
+                    if (data.length == 0) {
+                        $("#table-builds-data").append("<tr><td colspan='6'>Нет записей для отображения</td></tr>");
+                    } else {
+                        $("#title-table-builds").html('Список сборок для <b>' + $("#select-pkgs option:selected").text() + '</b>');
+                        $("#table-builds-data").empty();
+                        data.forEach(function callback(value, index) {
+                            var num = index + 1;
+                            var tags = '';
+                            value.tags.forEach(function (tag) {
+                                tags = tags + "<p>" + tag.name + "</p>";
+                            });
+                            $("#table-builds-data").append("<tr class='table-builds-row' build_url=" + value.url + ">" +
+                                "<td scope='row' class='number'>" + num + "</td>" +
+                                "<td id='build_name' style='display: none'>" + value.name + "</td>" +
+                                "<td id='build_version'>" + value.version + "</td>" +
+                                "<td id='build_release'>" + value.release + "</td>" +
+                                "<td id='build_author'>" + value.author + "</td>" +
+                                "<td id='build_date'>" + value.date + "</td>" +
+                                "<td><h5><a style='margin: 0 10px'><i class='fas fa-eye' id='url'></i></a>  " +
+                                "<a style='margin: 0 10px'><i class='fas fa-plus' id='add'></i></a></h5></td>" +
+                                "<td id='build_id' style='display: none'>" + value.id + "</td>" +
+                                "<td id='build_url' style='display: none'>" + value.url + "</td>" +
+                                "</tr>");
+                        });
+                    };
+                    {#sleeps(2000);#}
+                },
+
+                error: function (request, error) {
+                    // console.log(error + request.status + request.statusText);
+                    $.alert("При получени списка сборок.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function(xhr, settings) {
+                    $("#title-table-builds").html('Список сборок');
+                    $("#table-builds-data").empty();
+                    $('.loader-block-1').css("display", "block");
+
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+
+                complete: function() {
+                    $('.loader-block-1').css("display", "none");
+                },
+            });
+        });
+
+
+        {#клик по строке в таблице сборок#}
+        $("#table-builds-data").on('click', '.table-builds-row', function (e) {
+            if (e.target.id == 'url') {
+                window.open($(this).attr('build_url'));
+            }
+            if (e.target.id == 'add') {
+                var row = $(this).closest("tr");
+                addToExportTable(row);
+            }
+        });
+
+
+        {#добавляем запись в таблицу экспорта#}
+        function addToExportTable(row) {
+            var build_name = row.find("#build_name").text();
+            var $table = $("#table-export-data");
+            var bookmark = false;
+            var tableCount = 1;
+            $("#table-export-none-data").remove();
+            $table.each(function() {
+                $("tr", this).each(function () {
+                    tableCount++;
+                    if (this.id !== "") {
+                        if (this.id == build_name) {
+                            $.alert("Пакет '" + build_name + "' уже находится в списке", {type: 'warning'});
+                            bookmark = true;
+                        }
+                    }
+                });
+            });
+
+            if (bookmark !== true) {
+                $("#select-stapel-list").prop('disabled', true);
+                $("#select-tag-list").prop('disabled', true);
+
+                $('.form-check-input').each(function(i, elem) {
+                    $(elem).prop('disabled', false);
+                });
+
+                $('.form-check-label').each(function(i, elem) {
+                    $(elem).removeClass('disabled');
+                });
+
+                $('.card-title').each(function(i, elem) {
+                    $(elem).removeClass('disabled');
+                });
+
+                $("#export-builds").removeClass('disabled');
+
+                $("#table-export-data").append("<tr class='table-export-row' id='" + row.find("#build_name").text() + "' " +
+                    "build_url='" + row.find("#build_url").text() + "'>" +
+                    "<td scope='row' class='number'>" + tableCount + "</td>" +
+                    "<td id='build_name'>" + row.find("#build_name").text() + "</td>" +
+                    "<td id='build_version'>" + row.find("#build_version").text() + "</td>" +
+                    "<td id='build_release'>" + row.find("#build_release").text() + "</td>" +
+                    "<td id='build_author'>" + row.find("#build_author").text() + "</td>" +
+                    "<td id='build_date'>" + row.find("#build_date").text() + "</td>" +
+                    "<td><h5><a style='margin: 0 10px'><i class='fas fa-eye' id='url'></i></a>  " +
+                    "<a style='margin: 0 10px'><i class='fas fa-minus' id='del'></i></a></h5></td>"+
+                    "<td id='build_id' style='display: none'>" + row.find("#build_id").text() + "</td>" +
+                    "</tr>");
+            }
+        };
+
+
+        {#клик по строке в таблице экпорта#}
+        $("#table-export-data").on('click', '.table-export-row', function (e) {
+            if (e.target.id == 'url') {
+                window.open($(this).attr('build_url'));
+            }
+            if (e.target.id == 'del') {
+                var row = $(this).closest("tr");
+                removeFromExportTable(row);
+            }
+        });
+
+
+        {#удаляем запись из таблицы экспорта#}
+        function removeFromExportTable(row) {
+            var build_name = row.find("#build_name").text();
+            var $table = $("#table-export-data");
+
+            $table.each(function() {
+                if (this.rows.length == 1) {
+                    $("#table-export-data").html("<tr id='table-export-none-data'><td colspan='6'>Нет записей для отображения</td></tr>");
+
+                    $("#select-stapel-list").prop('disabled', false);
+                    $("#select-tag-list").prop('disabled', false);
+
+                    $('.form-check-input').each(function(i, elem) {
+                        $(elem).prop('disabled', true);
+                    });
+
+                    $('.card-title').each(function(i, elem) {
+                        $(elem).addClass('disabled');
+                    });
+
+                    $('.form-check-label').each(function(i, elem) {
+                        $(elem).addClass('disabled');
+                    });
+
+                    $("#export-builds").addClass('disabled');
+                };
+
+                $("tr", this).each(function () {
+                    if (this.id == build_name) {
+                        this.remove();
+                    }
+                });
+            });
+
+            {#пересмотр порядкового номера в списке пакетов для выгрузки#}
+            $table.each(function() {
+                $("td.number", this).each(function (i, elem) {
+                    $(this).html(i+1);
+                });
+            });
+        };
+
+
+        {#запускаем экспорт сборок#}
+        $("body").on('click','a[id="run-export-builds"]',function(){
+            $('#confirm-form').modal('hide');
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            var repo = $("input:radio:checked").val();
+            var stapel_url = $("#select-stapel-list").val();
+            var tag = $("#select-tag-list option:selected").text();
+
+            {#формирование списка сборок#}
+            var test = [];
+            var $table = $("#table-export");
+            $table.each(function() {
+                $("tr", this).each(function () {
+                    if (this.id !== "") {
+                        var cell = {};
+                        $("td", this).each(function () {
+                            if (this.id == 'build_name') {
+                                cell['package_name'] = this.innerText;
+                            }
+                            if (this.id == 'build_id') {
+                                cell['build_id'] = this.innerText;
+                            }
+                            if (this.id == 'build_version') {
+                                cell['version'] = this.innerText;
+                            }
+                            if (this.id == 'build_release') {
+                                cell['release'] = this.innerText;
+                            }
+                        });
+                        test.push(cell);
+                    }
+                });
+            });
+
+            var builds = JSON.stringify(test);
+            var replace = $('#check-replace').prop('checked');
+            var update = $('#check-update').prop('checked');
+            var sign = $('#check-sign').prop('checked');
+
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'exportRPMS',
+                    stapel_url: stapel_url,
+                    repo: repo,
+                    tag: tag,
+                    builds: builds,
+                    replace: replace,
+                    update: update,
+                    sign: sign,
+                },
+                cache: false,
+
+                success: function (data) {
+                    {#console.log(data);#}
+                    $.alert("Пакеты успешно добавлены в репозиторий", {type: 'success'});
+                },
+
+                error: function (request, error) {
+                    // console.log(error + request.status + request.statusText);
+                    $.alert("При выгрузке пакетов.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function (xhr, settings) {
+                    console.log('stapel_url:'+stapel_url);
+                    console.log('repo:'+repo);
+                    console.log('tag:'+tag);
+                    console.log('builds:'+builds);
+                    console.log('replace:'+replace);
+                    console.log('update:'+update);
+                    console.log('sign:'+sign);
+
+                    $('.loader-block-2').css("display", "block");
+
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+
+                complete: function () {
+                    $('.loader-block-2').css("display", "none");
+                },
+
+            });
+
+
+
+        });
+
+    </script>
+{% endblock %}

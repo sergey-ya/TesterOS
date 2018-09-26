@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+
+{% block css2 %}
+    <style type="text/css">
+        #jstree_demo {
+            float: left;
+            min-width: 319px;
+            border-right: 1px solid silver;
+            overflow: auto;
+            padding: 0px 0;
+
+        }
+        li.jstree-node {
+            list-style-type: none; /* Убираем маркеры */
+        }
+
+        .fa-file {
+            color: #b3b6ba;
+        }
+
+    </style>
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="row" style="heght: 350px">
+        <h5>Выбор файла</h5>
+        <br>
+        <div id="jstree_demo" style="height: 350px;" class="jstree jstree-1 jstree-default jstree-default-small" role="tree" aria-multiselectable="true" tabindex="0" aria-activedescendant="Steps" aria-busy="false">
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block js %}
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+
+
+    <script type="text/javascript">
+
+
+        var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+        $('#jstree_demo')
+            .jstree({
+
+                "core" : {
+                    "animation" : 0,
+                    "check_callback" : true,
+
+                    "themes" : { "stripes" : true },
+
+                    'data' : {
+                        'type': "POST",
+
+                        'url' : function (node) {
+                            return "ajax/";
+                            {#return node.id === '#' ?#}
+                            {#    'ajax_demo_roots.json' : 'ajax_demo_children.json';#}
+                        },
+
+                        'data' : function (node) {
+
+                            return { 'action' : 'getCatalogDialog', 'path' : node.id, 'id' : node.id };
+                        },
+
+
+                        'beforeSend': function (xhr, settings) {
+                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                            }
+                        },
+
+                    }
+                },
+                "types" : {
+                    "#" : {
+                        "max_children" : 1,
+                        "max_depth" : 4,
+                        "valid_children" : ["root"]
+                    },
+                    "root" : {
+                        "icon" : "fas fa-folder",
+                        "valid_children" : ["default"]
+                    },
+                    "default" : {
+                        "valid_children" : ["default","file"]
+                    },
+                    "file" : {
+                        "icon" : "fas fa-file",
+                        "valid_children" : []
+                    }
+                },
+
+                'plugins' : ['state','dnd','types','unique']
+            })
+            .on('changed.jstree', function (e, data) {
+
+                if(data.node) {
+                    if (data.node.type == 'file') {
+                        console.log(data.node.id)
+                    }
+                }
+            });
+
+    </script>
+{% endblock %}

@@ -1,0 +1,55 @@
+[NAME]
+ФБО «Аудит»
+Действия в случае возможной потери данных аудита
+[/NAME]
+
+
+[PRERE]
+Никаких предварительных операций производить не требуется.
+[/PRERE]
+
+
+[EXPECTED]
+Сигналом тревоги, генерируемым ОО, может являться сообщение системного журнала или уведомление пользователя по электронной почте. Это сообщение генерируется, когда потребности журнала аудита превышают предел, определенный в файле auditd.conf.
+[/EXPECTED]
+
+
+[PROCEDURE]
+От имени администратора root изменить следующие параметры в файле конфигурации службы аудита /etc/audit/auditd.conf:
+- минимум свободного пространства в мегабайтах, по достижении которого должно быть осуществлено оповещение:
+[code]space_left = 100[/code]
+- действие предпринимаемое при достижении объёмом свободного пространства на диске указанного минимума. Допустимые значения - ignore, syslog, email, exec, suspend, single и halt. При значении syslog в системный протокол добавляется соответствующая запись. При значении email по адресу указанному в action_mail_acct отправляется уведомление.
+[code]space_left_action =  syslog[/code]
+или
+[code]space_left_action = EMAIL
+action_mail_acct = root@localhost.localdomain[/code]
+
+В параметре space_left задать значение заведомо превышающее имеющееся свободное пространство или произвести действия по переполнению файловой системы, хранящей данные аудита.
+Перезагрузить ЭВМ.
+[/PROCEDURE]
+
+
+[RESULT]
+При превышении заданного порога минимально необходимого пространства для записи журналов аудита формируется сигнал тревоги. В журнал аудита записывается уведомление вида:
+[code]Nov  2 14:40:22 goslinux auditd[741]: Audit daemon is low on disk space for
+logging[/code]
+Или на электронную почту администратора отправляется письмо следующего содержания:
+[code][root@goslinux ivanov]# sudo mail -u root
+Heirloom Mail version 12.5 7/5/10.  Type ? for help.
+"/var/mail/root": 1 message 1 new
+>N   1 root@goslinux.locald   Mon Nov 20 15:57   15/598     "Audit Disk Space
+Alert"
+& 1
+Message  1:
+From root@localhost.localdomain  Mon Nov 20 15:57:36 2017
+Return-Path: <root@localhost.localdomain>
+X-Original-To: root@localhost.localdomain
+Delivered-To: root@localhost.localdomain
+To: root@localhost.localdomain
+From: root@goslinux.localdomain
+Subject: Audit Disk Space Alert
+Date: Thu,  2 Nov 2017 14:44:52 +0300 (MSK)
+Status: R
+The audit daemon is low on disk space for logging! Please take action
+to ensure no loss of service.[/code]
+[/RESULT]

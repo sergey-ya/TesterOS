@@ -1,0 +1,98 @@
+[NAME]
+ФБО «Защита данных пользователя»
+Дискреционное управление доступом - ACL
+[/NAME]
+
+
+[PRERE]
+Никаких предварительных операций производить не требуется.
+[/PRERE]
+
+
+[EXPECTED]
+ФБО осуществляют политику дискреционного управления доступом на основе ACL для предоставления или запрета доступа с детализацией до конкретного пользователя или группы, применяя элементы ACL для управления доступом. Эти элементы включают стандартные биты разрешений Unix. POSIX ACL могут использоваться для объектов файловой системы ext4.
+[/EXPECTED]
+
+
+[PROCEDURE]
+От имени администратора root создать текстовый файл
+[code][root@goslinux ivanov]# touch /tmp/acl_root.txt[/code]
+
+Изменить права доступа к созданному файлу, разрешив доступ на чтение и запись только пользователю root и группе root:
+[code][root@goslinux ivanov]# chmod 660 /tmp/acl_root.txt[/code]
+Убедиться, что права назначены верно:
+[code][root@goslinux ivanov]# ls -l /tmp/
+-rw-rw----. 1 root   root      0 окт  3 12:12 acl_root.txt[/code]
+Просмотреть права на созданный файл:
+[code][root@goslinux ivanov]# getfacl /tmp/acl_root.txt
+getfacl: Removing leading '/' from absolute path names
+# file: tmp/acl_root.txt
+# owner: root
+# group: root
+user::rw-
+group::rw-
+other::---[/code]
+
+От имени пользователей ivanov и petrov попробовать прочитать созданный файл или записать в него данные:
+[code][ivanov@goslinux ~]$ cat /tmp/acl_root.txt
+[petrov@goslinux /]$ cat /tmp/acl_root.txt
+[ivanov@goslinux ~]$ echo "123" >> /tmp/acl_root.txt
+[petrov@goslinux /]$ echo "123" >> /tmp/acl_root.txt[/code]
+
+Администратором root модифицировать права на файл acl_root.txt, разрешив пользователю ivanov только чтение:
+[code][root@goslinux ivanov]# setfacl -m u:ivanov:r-- /tmp/acl_root.txt[/code]
+
+Администратором root модифицировать права на файл acl_root.txt, разрешив группе petrov только запись:
+[code][root@goslinux ivanov]# setfacl -m g:petrov:-w- /tmp/acl_root.txt[/code]
+Убедиться, что права назначены верно:
+[code][root@goslinux ivanov]# ls -l /tmp/
+итого 32
+-rw-rw----+ 1 root   root      0 окт  3 12:12 acl_root.txt
+[root@goslinux ivanov]# getfacl /tmp/acl_root.txt
+getfacl: Removing leading '/' from absolute path names
+# file: tmp/acl_root.txt
+# owner: root
+# group: root
+user::rw-
+user:ivanov:r--
+group::rw-
+group:petrov:-w-
+mask::rw-
+other::---[/code]
+
+От имени пользователей ivanov и petrov попробовать прочитать созданный файл или записать в него данные.
+[/PROCEDURE]
+
+
+[RESULT]
+После создания файла и назначения необходимых прав только пользователь root и другие участники группы root могут читать и писать файл acl_root.txt. Для всех остальных пользователей права на файл отсутствуют. Так как пользователи  ivanov и petrov не входят в группу root, то при попытке чтения или записи в файл пользователи получают сообщение об ошибке:
+[code]bash: /tmp/acl_root.txt: Отказано в доступе[/code]
+операции не выполняются.
+
+После назначения прав доступа с помощью списков контроля доступа (ACL) пользователь ivanov, которому явно разрешен доступ списком, может читать файл acl_root.txt, но запись в файл по прежнему недоступна. Пользователь petrov входит в группу petrov, которой ACL явно разрешает запись в файл. После назначения соответствующих прав пользователь petrov может писать в файл  acl_root.txt, но чтение из файла по прежнему недоступно.
+[/RESULT]
+
+
+[AUTO]
+<b>условия:</b>
+-запускать от root пользователя
+
+<b>входные параметры:</b>
+-имя первого пользователя
+-имя второго пользователя
+
+<b>результат тестирования:</b>
+-в случае успешного тестирования
+[code]тест пройден успешно[/code]
+
+-в случае неудачного тестирования
+[code]при прохождении теста произошли ошибки:
+user: user; action: read; file: acl_root.txt
+user: user; action: write; file: acl_root.txt
+user: user2; action: read; file: acl_root.txt
+user: user2; action: write; file: acl_root.txt[/code]
+Выдается список ошибок.
+-user (пользователь от которого запущена команда)
+-action (тип команды)
+-file (файл для которого запущена команда)
+[/AUTO]

@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+
+{% block css2 %}
+    <style type="text/css">
+
+        .table-testing-row:hover {
+            cursor: pointer;
+            background:#e1ebf0;
+        }
+
+        a .fas:hover {
+            color: #9bb4e2;
+        }
+
+        .table-testing-test-row:hover {
+            background: #cfd8dc4d;
+        }
+
+        .title-test {
+            display: none;
+            line-height: 0;
+            cursor: pointer;
+        }
+
+        .title-result {
+            font-size: 21px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: #314d7c;
+            padding-top: 25px;
+            padding-bottom: 5px;
+            border-bottom-color: #c3cad5;
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+        }
+
+        .code {
+            padding: 1em;
+            border: 1px dashed #2f6fab;
+            color: #000;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            line-height: 1.1em;
+            font-family: Courier New, Courier, mono;
+            font-size: 12px;
+            font-style: italic;
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+
+        table.table td.test-td {
+            padding-top: 0.6rem;
+            padding-bottom: 0.6rem;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <!--title-->
+    <div class="row" id="start" style="padding-bottom: 20px;">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <p style="text-align: justify;"><span class="header">Testing</span> - журнал тестирвоания
+                <a data-container="body" data-toggle="popover" data-placement="right"
+                   data-content="Помощь."><i class="fa fa-question-circle"> </i></a>
+            </p>
+        </div>
+    </div>
+
+    <!--form-->
+    <div class="row">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    {#header#}
+                    {#                    <div class="row">#}
+                    {#                        <div class="col">#}
+                    {#                            <h3 class="title">Журнал тестирования</h3>#}
+                    {#                        </div>#}
+                    {#                        <div class="col" style="padding-top: 7px;">#}
+                    {#                            <a class="float-right btn btn-primary btn-sm" href="{% url 'tests' %}"><i class="far fa-list-alt"></i> Список тестов</a>#}
+                    {#                            <a class="float-right btn btn-success btn-sm" data-toggle="modal" data-target="#testingNewModal"><i class="fas fa-plus"></i> Создать </a>#}
+                    {#                        </div>#}
+                    {#                    </div>#}
+
+                    {#testing table#}
+                    <div class="row">
+                        <div class="col">
+
+                            <table class="table table-select" id="table-testing">
+                                <thead class="blue-grey lighten-4">
+                                <tr>
+                                    <th >Имя</th>
+                                    <th >Версия</th>
+                                    <th >Релиз</th>
+                                    <th style="width:200px">Дата начала</th>
+                                    <th style="width:200px">Дата завершения</th>
+                                    <th class="text-center" style="width:100px">Статус</th>
+                                </tr>
+                                </thead>
+
+                                <tbody id="table-testing-data">
+                                {% if testing %}
+                                    {% for elem in testing %}
+                                        <tr class="table-testing-row" num="{{ elem.id }}">
+                                            <td><b>{{ elem.os_name }}</b></td>
+                                            <td><b>{{ elem.os_version }}</b></td>
+                                            <td><b>{{ elem.os_release }}</b></td>
+                                            <td><b>{{ elem.begin_date|date:'d E Y, H:i' }}</b></td>
+                                            <td><b>{{ elem.end_date }}</b></td>
+
+                                            {% if elem.status == 0 %}
+                                                <td class="text-center"><i class="fas fa-hourglass-start color-info"></i></td>
+                                            {% endif %}
+
+                                            {% if elem.status == 1 %}
+                                                <td class="text-center"><i class="fas fa-times color-warning"></i></td>
+                                            {% endif %}
+
+                                            {% if elem.status == 2 %}
+                                                <td class="text-center"><i class="fas fa-minus color-danger"></i></td>
+                                            {% endif %}
+
+                                            {% if elem.status == 3 %}
+                                                <td class="text-center"><i class="fas fa-check color-success"></i></td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {#testing test-journal#}
+                    <div class="row" style="padding-top: 30px">
+                        <div class="col parent" id="test-journal">
+                            {#ajax testjournal#}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    {% include "testeros/testing/modalform.html" %}
+
+{% endblock %}
+
+
+{% block js %}
+    <script type="text/javascript">
+
+        {#выделение строки таблицы при нажатии#}
+        $('.table-testing-row').on('click', function () {
+            $('#table-testing-data .table-testing-row').css('background', 'none');
+            $(this).css('background', '#e1ebf0');
+        });
+
+
+
+        {#ссылка на тест#}
+        {#$('.parent').on('click', '.line-table-test', function () {#}
+        {#var journalId = $(this).attr('journalid');#}
+        {#window.location.href = "test/" + journalId;#}
+        {#});#}
+        $("body").on('click','a[id="url"]',function(){
+            window.open($(this).attr('test_url'));
+        });
+
+
+
+        {#загруза test-journal#}
+        $('.table-testing-row').click(function() {
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            var num = $(this).attr('num');
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'getTestingInfo',
+                    id: num,
+                },
+                cache: false,
+
+                success: function (data) {
+                    {#console.log(data);#}
+                    $("#test-journal").append(data);
+                },
+
+                error: function (request, error) {
+                    // console.log(error + request.status + request.statusText);
+                    $.alert("Ошибка ", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function(xhr, settings) {
+                    $("#test-journal").empty();
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+
+                complete: function() {
+                },
+            });
+        });
+
+
+        {#скачиваем файл теста#}
+        $("body").on('click','a[id="upload"]',function(){
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            var testFile2 = $(this).attr('testFile2');
+
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'getTestFile',
+                    testFile: testFile2,
+                },
+                cache: false,
+
+                success: function (data) {
+                    {#console.log('load' + data);#}
+                    window.location.href = "download/?filepath=" + data;
+                },
+
+                error: function (request, error) {
+                    {#console.log(error + request.status + request.statusText);#}
+                    $.alert("При загрузке файла.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function(xhr, settings) {
+                    $('.loader-block-1').css("display", "block");
+
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+
+                complete: function() {
+                    $('.loader-block-1').css("display", "none");
+                },
+            });
+        });
+
+
+
+        {#очистка modal-form и установка фокуса#}
+        $('#testingNewModal').on('show.bs.modal', function () {
+            $(this).find('form').trigger('reset');
+        });
+        $('#testingNewModal').on('shown.bs.modal', function () {
+            document.getElementById("id_os_name").focus();
+        });
+
+
+
+    </script>
+{% endblock %}

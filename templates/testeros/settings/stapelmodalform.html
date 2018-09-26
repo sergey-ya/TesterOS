@@ -1,0 +1,128 @@
+{#NEW STAPEL FORM#}
+<div class="modal fade" id="newStapelModalForm" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title font-weight" id="stapel-modal-form-label">Добавление стапеля</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+
+            <form role="form" id="newStapelForm">
+                <div class="modal-body">
+
+                    <input id="stapelAction" name="stapelAction" type="text" hidden>
+
+                    <div class="form-group">
+                        <label class="font-weight-light">Имя</label>
+                        <input class="form-control" id="stapelName" name="stapelName" type="text" require>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="font-weight-light">Адрес</label>
+                        <input class="form-control" id="stapelUrl" name="stapelUrl" type="text" require>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger waves-effect" data-dismiss="modal">Отмена</button>
+                    {#                        <a class="save btn btn-primary" id="save-stapel" data-dismiss="modal">Сохранить</a>#}
+                    <button type="submit" class="btn btn-danger" >Сохранить</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{#NEW REPO FORM#}
+<div class="modal fade" id="newRepoModalForm" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title font-weight" id="repo-modal-form-label">Добавление репозитория</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+
+            <form role="form" id="newRepoForm">
+                <div class="modal-body">
+
+                    <input id="repoAction" name="repoAction" type="text" hidden>
+
+                    <div class="form-group">
+                        <label class="font-weight-light">Имя</label>
+                        <input class="form-control" id="repoName" name="repoName" type="text" require>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="font-weight-light">Путь</label>
+                        <input class="form-control" id="repoUrl" name="repoUrl" type="text" require>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger waves-effect" data-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-danger" >Сохранить</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+{#CONFIRM STAPEL FORM#}
+<div class="modal fade" id="confirm-stapel-form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Подтверждение</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                Вы действительно хотите удалить стапель из списка?
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger waves-effect" data-dismiss="modal">Отмена</button>
+                <a class="btn btn-danger" id="run-del-stapel">Ок</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{#CONFIRM REPO FORM#}
+<div class="modal fade" id="confirm-repo-form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Подтверждение</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                Вы действительно хотите удалить репозиторий из списка?
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger waves-effect" data-dismiss="modal">Отмена</button>
+                <a class="btn btn-danger" id="run-del-repo">Ок</a>
+            </div>
+        </div>
+    </div>
+</div>

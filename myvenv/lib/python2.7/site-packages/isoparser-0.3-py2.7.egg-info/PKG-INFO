@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: isoparser
+Version: 0.3
+Summary: Parser for the ISO 9660 disk image format
+Home-page: https://github.com/barneygale/isoparser
+Author: Barney Gale
+Author-email: barney@barneygale.co.uk
+License: MIT
+Description: UNKNOWN
+Platform: UNKNOWN

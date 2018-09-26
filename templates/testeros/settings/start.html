@@ -1,0 +1,483 @@
+{% extends "base.html" %}
+
+{% block css2 %}
+    <style type="text/css">
+        table.table td, table.table th {
+            padding-top: 1rem;
+            padding-bottom: 0.5rem;
+        }
+
+        label.error {
+            color: #ff000080;
+            font-size: 0.8rem;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+
+    <!--title-->
+    <div class="row" style="padding-bottom: 20px;">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <p style="text-align: justify;"><span class="header">Управление ресурсом</span></p>
+
+
+            {{ data }}
+
+
+        </div>
+    </div>
+
+    <!--form-->
+    <div class="row">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="card border-light mb-3">
+                                <div class="card-header">Общие настройки</div>
+
+                                <div class="card-body">
+
+                                    <div class="form-group row">
+                                        <label for="input-path-gl" class="col-sm-5 col-form-label">Каталог с образами (ГосЛинукс)</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control" name="input-path-gl" id="input-path-gl"
+                                                   placeholder="Каталог" value="{{ gl_iso }}">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="input-path-ro" class="col-sm-5 col-form-label">Каталог с образами (РедОС)</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control" name="input-path-ro" id="input-path-ro"
+                                                   placeholder="Каталог" value="{{ ro_iso }}">
+                                        </div>
+                                    </div>
+
+                                    <a class="float-right btn btn-danger btn-sm" id="saveSettings">Сохранить <i class="fas fa-save"></i></a>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        {#список стапелей#}
+                        <div class="col-xs-6 col-md-6 col-lg-6">
+                            <div class="card border-light mb-3">
+                                <div class="card-header">Список стапелей</div>
+
+                                <div class="card-body">
+
+                                    <table class="table" id="table-stapel">
+                                        <thead>
+                                        <tr>
+                                            <th style="width:50px">#</th>
+                                            <th >Имя</th>
+                                            <th style="width:280px">Адрес</th>
+                                            <th style="width:50px"></th>
+                                            <th class="text-right" style="width:50px; margin-bottom: 0px;"><h5>
+                                                <a id="addStapelModal"><i class="fas fa-plus"></i></a>
+                                            </h5></th>
+                                        </tr>
+                                        </thead>
+
+                                        <tbody id="table-stapel-data">
+                                        {% for elem in stapelLst %}
+                                            <tr class="table-stapel-row">
+                                                <td>{{ forloop.counter }}</td>
+                                                <td id="stapel-name">{{ elem.name }}</td>
+                                                <td id="stapel-url">{{ elem.url }}</td>
+                                                <td><h5>
+                                                    <a style='margin: 0 10px'><i class='fas fa-pencil-alt' id="edit"></i></a>
+                                                </h5></td>
+                                                <td><h5>
+                                                    <a style='margin: 0 10px'><i class='fas fa-minus' id="del"></i></a>
+                                                </h5></td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        {#список репозиториев#}
+                        <div class="col-xs-6 col-md-6 col-lg-6">
+                            <div class="card border-light mb-3">
+                                <div class="card-header">Список репозиториев</div>
+
+                                <div class="card-body">
+
+                                    <table class="table" id="table-repo">
+                                        <thead>
+                                        <tr>
+                                            <th style="width:50px">#</th>
+                                            <th >Имя</th>
+                                            <th style="width:280px">Путь</th>
+                                            <th style="width:50px"></th>
+                                            <th class="text-right" style="width:50px; margin-bottom: 0px;"><h5>
+                                                <a id="addRepoModal"><i class="fas fa-plus"></i></a>
+                                            </h5></th>
+                                        </tr>
+                                        </thead>
+
+                                        <tbody id="table-repo-data">
+                                        {% for elem in repoLst %}
+                                            <tr class="table-repo-row">
+                                                <td>{{ forloop.counter }}</td>
+                                                <td id="repo-name">{{ elem.name }}</td>
+                                                <td id="repo-url">{{ elem.url }}</td>
+                                                <td><h5>
+                                                    <a style='margin: 0 10px'><i class='fas fa-pencil-alt' id="edit"></i></a>
+                                                </h5></td>
+                                                <td><h5>
+                                                    <a style='margin: 0 10px'><i class='fas fa-minus' id="del"></i></a>
+                                                </h5></td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- StapelModalForm -->
+    {% include "testeros/settings/stapelmodalform.html" %}
+
+
+{% endblock %}
+
+
+{% block js %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
+
+    <script type="text/javascript">
+        var stapelRow = '';
+        var repoRow = '';
+
+
+        $(document).ready(function(){
+            {#валидация формы и добавления стапеля#}
+            $("#newStapelForm").validate({
+
+                rules: {
+                    stapelName: {
+                        required: true,
+                        minlength: 3
+                    },
+                    stapelUrl: {
+                        required: true,
+                        minlength: 3
+                    },
+                    action: "required"
+                },
+                messages: {
+                    stapelName: {
+                        required: "Обязательное поле",
+                        minlength: "Минимальная длинна Имени 3 символа"
+                    },
+                    stapelUrl: {
+                        required: "Обязательное поле",
+                        minlength: "Минимальная длинна Адреса 3 символа"
+                    },
+                    action: "Please provide some data"
+                },
+
+                {#добавляем стапель#}
+                submitHandler: function(form) {
+                    console.log('123');
+
+                    if (form.stapelAction.value == 'add') {
+                        $("#table-stapel-data").append("<tr class='table-stapel-row'>" +
+                            "<td>-</td>" +
+                            "<td id='stapel-name'>" + form.stapelName.value + "</td>" +
+                            "<td id='stapel-url'>" + form.stapelUrl.value + "</td>" +
+                            "<td><h5><a style='margin: 0 10px'><i class='fas fa-pencil-alt' id='edit'></i></a></h5></td>" +
+                            "<td><h5><a style='margin: 0 10px'><i class='fas fa-minus' id='del'></i></a></h5></td></tr>");
+                    } else if (form.stapelAction.value == 'edit') {
+                        stapelRow.find("#stapel-name").html(form.stapelName.value);
+                        stapelRow.find("#stapel-url").html(form.stapelUrl.value);
+                    }
+                    saveStapelLst();
+                    $('#newStapelModalForm').modal('hide');
+                    return false;
+                    {#form.submit();#}
+                }
+            });
+
+            {#валидация формы добавления репозитория#}
+            $("#newRepoForm").validate({
+                rules: {
+                    repoName: {
+                        required: true,
+                        minlength: 3
+                    },
+                    repoUrl: {
+                        required: true,
+                        minlength: 3
+                    },
+                    action: "required"
+                },
+                messages: {
+                    repoName: {
+                        required: "Обязательное поле",
+                        minlength: "Минимальная длинна Имени 3 символа"
+                    },
+                    repoUrl: {
+                        required: "Обязательное поле",
+                        minlength: "Минимальная длинна Адреса 3 символа"
+                    },
+                    action: "Please provide some data"
+                },
+
+                {#добавляем репозиторий#}
+                submitHandler: function(form) {
+                    if (form.repoAction.value == 'add') {
+                        $("#table-repo-data").append("<tr class='table-repo-row'>" +
+                            "<td>-</td>" +
+                            "<td id='repo-name'>" + form.repoName.value + "</td>" +
+                            "<td id='repo-url'>" + form.repoUrl.value + "</td>" +
+                            "<td><h5><a style='margin: 0 10px'><i class='fas fa-pencil-alt' id='edit'></i></a></h5></td>" +
+                            "<td><h5><a style='margin: 0 10px'><i class='fas fa-minus' id='del'></i></a></h5></td></tr>");
+                    } else if (form.repoAction.value == 'edit') {
+                        repoRow.find("#repo-name").html(form.repoName.value);
+                        repoRow.find("#repo-url").html(form.repoUrl.value);
+                    }
+                    saveRepoLst();
+                    $('#newRepoModalForm').modal('hide');
+                    return false;
+                    {#form.submit();#}
+                }
+            });
+        });
+
+
+
+        {#НАСТРОЙКИ#}
+        {#очистка modal-form и установка фокуса#}
+        $('#newStapelModalForm').on('show.bs.modal', function () {
+            $(this).find('form').trigger('reset');
+        });
+        $('#newStapelModalForm').on('shown.bs.modal', function () {
+            document.getElementById("stapelName").focus();
+        });
+
+        $('#newRepoModalForm').on('show.bs.modal', function () {
+            $(this).find('form').trigger('reset');
+        });
+        $('#newRepoModalForm').on('shown.bs.modal', function () {
+            document.getElementById("repoName").focus();
+        });
+
+
+
+        {#сохранение списка стапелей#}
+        function saveStapelLst() {
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+            {#формирование списка стапелей#}
+            var $table = $("#table-stapel-data");
+            var test = [];
+            $table.each(function() {
+                $("tr", this).each(function () {
+                    var cell = {};
+                    $("td", this).each(function () {
+                        if (this.id == "stapel-name") {
+                            cell['name'] = this.textContent;
+                        }
+                        if (this.id == "stapel-url") {
+                            cell['url'] = this.textContent;
+                        }
+                    });
+                    test.push(cell);
+                });
+            });
+            var stapelLst = JSON.stringify(test);
+
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'saveStapelLst',
+                    stapelLst: stapelLst,
+                },
+                cache: false,
+
+                success: function (data) {
+                    console.log(data);
+                    $.alert("Изменения удачно сохранены.", {type: 'success'});
+                },
+
+                error: function (request, error) {
+                    // console.log(error + request.status + request.statusText);
+                    $.alert("При сохранении списка стапелей.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+            });
+        }
+
+
+        {#сохранение списка репозиториев#}
+        function saveRepoLst() {
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+            {#формирование списка стапелей#}
+            var $table = $("#table-repo-data");
+            var test = [];
+            $table.each(function() {
+                $("tr", this).each(function () {
+                    var cell = {};
+                    $("td", this).each(function () {
+                        if (this.id == "repo-name") {
+                            cell['name'] = this.textContent;
+                        }
+                        if (this.id == "repo-url") {
+                            cell['url'] = this.textContent;
+                        }
+                    });
+                    test.push(cell);
+                });
+            });
+            var repoLst = JSON.stringify(test);
+
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'saveRepoLst',
+                    repoLst: repoLst,
+                },
+                cache: false,
+
+                success: function (data) {
+                    console.log(data);
+                    $.alert("Изменения удачно сохранены.", {type: 'success'});
+                },
+
+                error: function (request, error) {
+                    // console.log(error + request.status + request.statusText);
+                    $.alert("При сохранении списка репозиториев.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+            });
+        }
+
+
+
+        {#клик по строке в таблице стапелей#}
+        $("#table-stapel-data").on('click', '.table-stapel-row', function (e) {
+            if (e.target.id == 'edit') {
+                stapelRow = $(this).closest("tr");
+                $('#stapel-modal-form-label').text("Редактирование стапеля");
+                $('#newStapelModalForm').modal('show');
+                $('#stapelAction').val("edit");
+                $('#stapelName').val(stapelRow.find("#stapel-name").html());
+                $('#stapelUrl').val(stapelRow.find("#stapel-url").html());
+            }
+            if (e.target.id == 'del') {
+                stapelRow = $(this).closest("tr");
+                $('#confirm-stapel-form').modal('show');
+            }
+        });
+
+        $("body").on('click','a[id="run-del-stapel"]',function(){
+            $('#confirm-stapel-form').modal('hide');
+            stapelRow.remove();
+            saveStapelLst();
+        });
+
+        $("body").on('click','a[id="addStapelModal"]',function(){
+            $('#stapel-modal-form-label').text("Добавление стапеля");
+            $('#newStapelModalForm').modal('show');
+            $('#stapelAction').val("add");
+        });
+
+
+
+        {#клик по строке в таблице репозиториев#}
+        $("#table-repo-data").on('click', '.table-repo-row', function (e) {
+            if (e.target.id == 'edit') {
+                repoRow = $(this).closest("tr");
+                $('#repo-modal-form-label').text("Редактирование репозитория");
+                $('#newRepoModalForm').modal('show');
+                $('#repoAction').val("edit");
+                $('#repoName').val(repoRow.find("#repo-name").html());
+                $('#repoUrl').val(repoRow.find("#repo-url").html());
+            }
+            if (e.target.id == 'del') {
+                repoRow = $(this).closest("tr");
+                $('#confirm-repo-form').modal('show');
+            }
+        });
+
+        $("body").on('click','a[id="run-del-repo"]',function(){
+            $('#confirm-repo-form').modal('hide');
+            repoRow.remove();
+            saveRepoLst();
+        });
+
+        $("body").on('click','a[id="addRepoModal"]',function(){
+            $('#repo-modal-form-label').text("Добавление репозитория");
+            $('#newRepoModalForm').modal('show');
+            $('#repoAction').val("add");
+        });
+
+
+        {#сохранение настроек#}
+        $("body").on('click','a[id="saveSettings"]',function(){
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            var iso_gl_path = $("#input-path-gl").val();
+            var iso_ro_path = $("#input-path-ro").val();
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'saveSettings',
+                    iso_gl_path: iso_gl_path,
+                    iso_ro_path: iso_ro_path,
+                },
+                cache: false,
+
+                success: function (data) {
+                    console.log(data);
+                    $.alert("Изменения удачно сохранены.", {type: 'success'});
+                },
+
+                error: function (request, error) {
+                    // console.log(error + request.status + request.statusText);
+                    $.alert("При сохранени настроек.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+            });
+        });
+
+    </script>
+{% endblock %}

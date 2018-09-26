@@ -1,0 +1,244 @@
+
+{% extends "base.html" %}
+
+{% block css2 %}
+    <style type="text/css">
+        .table-buildiso-log-row:hover{
+            background:#e1ebf0;
+        }
+
+    </style>
+{% endblock %}
+
+
+{% block content %}
+
+
+    <!--title-->
+    <div class="row" style="padding-bottom: 20px;">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <p style="text-align: justify;"><span class="header">Journal BuildISO</span></p>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'buildiso' %}">Build ISO</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="{% url 'buildisolog' %}">Journal Build ISO</a>
+        </li>
+    </ul>
+
+    <!--form-->
+    <div class="row">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col">
+
+                            <table class="table" id="table-buildiso-log">
+                                <thead>
+                                <tr>
+                                    <th style="width: 80px">ID</th>
+                                    <th>Information</th>
+                                    <th style="width: 150px">Built by</th>
+                                    <th style="width: 180px">Started</th>
+                                    <th style="width: 180px">Finished</th>
+                                    <th class="text-center" style="width: 80px">State</th>
+                                </tr>
+                                </thead>
+
+                                <tbody id="table-buildiso-log-data">
+
+                                {% for elem in log %}
+                                    <tr class="table-buildiso-log-row">
+                                        <td id="">{{ elem.id }}</td>
+                                        <td id="">{{ elem.inform }}</td>
+                                        <td id="">{{ elem.user_id }}</td>
+                                        <td id="">{{ elem.created_at|date:'d E Y, H:i' }}</td>
+                                        <td id="closeat{{ elem.id }}">{{ elem.close_at|date:'d E Y, H:i' }}</td>
+
+                                        <td class="text-center status" id="status{{ elem.id }}" num="{{ elem.id }}" status="{{ elem.status }}">
+                                            {% if elem.status == 0 %}
+                                                <i class="fas fa-check fa-lg color-success"></i>
+                                            {% endif %}
+
+                                            {% if elem.status == 1 %}
+                                                <i class="fas fa-sync-alt fa-spin fa-lg fa-fw color-info"></i>
+                                                <span class="sr-only">Loading...</span>
+                                                {% if elem.user_id == user.username %}
+                                                    <a id="cancelBuildIso" num="{{ elem.id }}">cancel</a>
+                                                {% endif %}
+                                            {% endif %}
+
+                                            {% if elem.status == 2 %}
+                                                <i class="fas fa-ban fa-lg color-warning"></i>
+                                            {% endif %}
+
+                                            {% if elem.status == 3 %}
+                                                <i class="fas fa-exclamation-circle fa-lg color-danger"></i>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+
+                    {% if log.paginator.num_pages != 1 %}
+                        <div class="row">
+                            <div class="col">
+                                <!--Pagination-->
+                                <nav aria-label="pagination example">
+                                    <ul class="pagination pg-blue justify-content-center">
+
+                                        <!--Arrow left-->
+                                        {% if log.has_previous %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ log.previous_page_number }}" aria-label="Previous">
+                                                    <span aria-hidden="true">&laquo;</span>
+                                                    <span class="sr-only">Previous</span>
+                                                </a>
+                                            </li>
+                                        {% else %}
+                                            <li class="page-item disabled">
+                                                <a class="page-link" href="#" aria-label="Previous">
+                                                    <span aria-hidden="true">&laquo;</span>
+                                                    <span class="sr-only">Previous</span>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+
+
+                                        {% for x in log.paginator.page_range %}
+                                            {% if log.number == x %}
+                                                <li class="page-item active">
+                                                    <a class="page-link" href="#">{{ x }} <span class="sr-only">(current)</span></a>
+                                                </li>
+                                            {% else %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?page={{ x }}">{{ x }}</a>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+
+
+                                        {#Arrow Right#}
+                                        {% if log.has_next %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ log.next_page_number }}" aria-label="Next">
+                                                    <span aria-hidden="true">&raquo;</span>
+                                                    <span class="sr-only">Next</span>
+                                                </a>
+                                            </li>
+                                        {% else %}
+                                            <li class="page-item disabled">
+                                                <a class="page-link" href="#" aria-label="Next">
+                                                    <span aria-hidden="true">&raquo;</span>
+                                                    <span class="sr-only">Next</span>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block js %}
+    <script type="text/javascript">
+        var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+        setInterval(getBuildIsoStatus, 1000);
+
+        {#проверка статусов#}
+        function getStatus(buildisoid) {
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'getBuildIsoStatus',
+                    id: buildisoid,
+                },
+                cache: false,
+
+                success: function (data) {
+                    {#console.log(data.status);#}
+                    var $obj = $("#status" + buildisoid);
+                    if (data.status != 1) {
+                        $obj.attr('status', data.status);
+                        {#$("#closeat" + id).html(data.close_at);#}
+                        if (data.status == 0) {
+                            $obj.html('<i class="fas fa-check fa-lg color-success"></i>');
+                        } else if (data.status == 2) {
+                            $obj.html('<i class="fas fa-ban fa-lg color-warning"></i>');
+                        } else if (data.status == 3) {
+                            $obj.html('<i class="fas fa-exclamation-circle fa-lg color-danger"></i>');
+                        }
+                    }
+                },
+
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+            })
+        }
+
+        function getBuildIsoStatus() {
+            $(".status").each(function(){
+                if ($(this).attr('status') == "1") {
+                    getStatus($(this).attr('num'))
+                }
+            });
+        }
+
+
+        {#отмена запущенной сборки#}
+        $("body").on('click','a[id="cancelBuildIso"]',function() {
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'cancelBuildIso',
+                    id: $(this).attr('num'),
+                },
+                cache: false,
+
+                success: function (data) {
+                    console.log(data);
+                },
+
+                error: function (request, error) {
+                    // console.log(error + request.status + request.statusText);
+                    $.alert("При отмене сборки.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+            });
+        });
+
+
+    </script>
+{% endblock %}

@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+
+{% block css2 %}
+    <style type="text/css">
+
+        .table-builds-row:hover, .table-export-row:hover {
+        {#cursor: pointer;#}
+            background: #cfd8dc4d;
+        }
+
+        .title-test {
+            display: none;
+            line-height: 0;
+            cursor: pointer;
+        }
+
+        .title-result {
+            font-size: 21px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: #314d7c;
+            padding-top: 25px;
+            padding-bottom: 5px;
+            border-bottom-color: #c3cad5;
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+        }
+
+        a .fas:hover {
+            color: #9bb4e2;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <!--title-->
+    <div class="row" style="padding-bottom: 20px;">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <p style="text-align: justify;"><span class="header">Repo Information</span> - описание
+                <a data-container="body" data-toggle="popover" data-placement="right"
+                   data-content="описание"><i class="fa fa-question-circle"> </i></a>
+            </p>
+        </div>
+    </div>
+
+    <!--forms-->
+    <div class="row">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="col-xs-4 col-md-4 col-lg-4">
+
+                            <div class="form-group row">
+                                <label class="col-sm-4 col-form-label" style="padding-right: 10px">Репозиторий</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" id="select-repo-list">
+                                        {% for elem in repoLst %}
+                                            <option value="{{ elem.url }}">{{ elem.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-4 col-form-label" style="padding-right: 10px">123</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" id="select-repo-type">
+                                        <option value="/x86_64/os">os</option>
+                                        <option value="/x86_64/updates">updates</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label id="label-title-pkgs">Список пакетов:</label>
+                                <input class="col form-control w-100" type="text" value="" id="input-pkgs-filter" placeholder="Фильтр">
+                                <select id="select-pkgs" multiple class="col form-control" style="margin-top: 10px; height: 250px">
+                                </select>
+                            </div>
+
+
+
+                        </div>
+
+                        <div class="col-xs-8 col-md-8 col-lg-8">
+
+                            <table>
+                                <tbody id="table-pkg-info-data">
+                                </tbody>
+                            </table>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {#loader2#}
+    <div class="loader-block-2">
+        <div class="modal-mask">
+            <div class="modal-wrapper">
+                <center>
+                    <div class="loader-2"></div>
+                </center>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block js %}
+    <script type="text/javascript">
+
+        $('#input-pkgs-filter').keyup(function () {
+            var countPkgs = 0;
+            $("#select-pkgs option").map(function() {
+                if ($(this).text().toLowerCase().indexOf($("#input-pkgs-filter").val().toLowerCase()) < 0) {
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                    countPkgs++;
+                }
+            });
+            $("#label-title-pkgs").html("Список пакетов (" + countPkgs + ")");
+        });
+
+
+        $(document).ready(function() {
+            $("#select-repo-list").change();
+        });
+
+
+        $("#select-repo-list").change(function() {
+            $("#select-repo-type").change();
+        });
+
+
+        {#получаем список пакетов#}
+        $("#select-repo-type").change(function() {
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            var repo_url = $("#select-repo-list").val() + $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'getPkgsFromRepo',
+                    repo_url: repo_url,
+                },
+                cache: false,
+
+                success: function (data) {
+                    {#console.log(data);#}
+                    data.forEach(function (value) {
+                        $("#select-pkgs").append("<option value=" + value.nvra + ">" + value.nvra + '</option>');
+                    });
+                    $("#label-title-pkgs").html("Список пакетов (" + data.length + "):");
+                },
+
+                error: function (request, error) {
+                    // console.log(error + request.status + request.statusText);
+                    $.alert("При получени списка пакетов.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function (xhr, settings) {
+                    $("#select-pkgs").empty();
+                    $("#input-pkgs-filter").val("");
+                    $("#table-builds-data").empty();
+                    $("#title-table-builds").html('Список сборок');
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+            });
+        });
+
+
+        {#получаем информация о пакете#}
+        $('#select-pkgs').dblclick(function () {
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            var repo_url = $("#select-repo-list").val() + $("#select-repo-type").val();
+            var pkg_name = $("#select-pkgs option:selected").val();
+            {#var tag_id = $("#select-tag-list").val();#}
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'getPkgInfo',
+                    repo_url: repo_url,
+                    pkg_name: pkg_name,
+                },
+                cache: false,
+
+                success: function (data) {
+                    console.log(data);
+                    var table = $("#table-pkg-info-data")
+                    table.html("");
+                    table.append("<tr><th style='width:100px;'>Name</th><td>" + data.name + "</td></tr>");
+                    table.append("<tr><th>Version</th><td>" + data.version + "</td></tr>");
+                    table.append("<tr><th>Release</th><td>" + data.release + "</td></tr>");
+                    table.append("<tr><th>Architecture</th><td>" + data.arch + "</td></tr>");
+                    table.append("<tr><th>Group</th><td>" + data.group + "</td></tr>");
+                    table.append("<tr><th>Size</th><td>" + data.sizeInstalled + "</td></tr>");
+                    table.append("<tr><th>License</th><td>" + data.license + "</td></tr>");
+                    table.append("<tr><th>Source RPM</th><td>" + data.sourceRpm + "</td></tr>");
+                    table.append("<tr><th>Build Date</th><td>" + data.timeBuild + "</td></tr>");
+                    table.append("<tr><th>Build Host</th><td>" + data.buildhost + "</td></tr>");
+                    table.append("<tr><th>Packager</th><td>" + data.packager + "</td></tr>");
+                    table.append("<tr><th>Vendor</th><td>" + data.vendor + "</td></tr>");
+                    table.append("<tr><th>URL</th><td>" + data.url + "</td></tr>");
+                    table.append("<tr><th>Summary</th><td>" + data.summary + "</td></tr>");
+                    table.append("<tr><th>Description</th><td>" + data.description + "</td></tr>");
+
+
+
+                    {#data.forEach(function (value) {#}
+                    {#    $("#select-pkgs").append("<option value=" + value.package_id + ">" + value.name + '</option>');#}
+
+                    {#$("#label-title-pkgs").html("Список пакетов (" + data.length + "):");#}
+                },
+
+                error: function (request, error) {
+                    // console.log(error + request.status + request.statusText);
+                    $.alert("При получении информации о пакете.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+            });
+        });
+
+    </script>
+{% endblock %}

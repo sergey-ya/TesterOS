@@ -1,0 +1,53 @@
+.close:focus, .close:hover {
+    color: white;
+}
+
+.my-alert-success {
+    color: white;
+    /*background-color: #00c851;*/
+    background-color: rgba(0%, 78%, 32%, 0.90);
+}
+
+.my-alert-info {
+    color: #443e3e;
+    /*background-color: #33b5e5;*/
+    background-color: rgba(20%, 71%, 90%, 0.90);
+}
+
+.my-alert-warning {
+    color: #443e3e;
+    /*background-color: #fb3;*/
+    background-color: rgba(100%, 73%, 20%, 0.90);
+}
+
+.my-alert-danger {
+    color: white;
+    /*background-color: #ff3547;*/
+    background-color: rgba(100%, 21%, 28%, 0.90);
+}
+
+/*цвета*/
+.color-info {
+    color: #33b5e5;
+}
+.color-warning {
+    color: #fb3;
+}
+.color-danger {
+    color: #ff3547;
+}
+
+.color-success {
+    color: #00c851;
+}
+
+.alertbody {
+    width: 350px;
+}
+
+.content {
+    display: none;
+}
+
+
+

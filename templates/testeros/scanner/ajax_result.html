@@ -1,0 +1,129 @@
+
+
+
+<div class="card">
+    <div class="card-body">
+
+        <div class="row" id="result-content">
+            <div class="col">
+
+                <h3 id="res-header"></h3>
+                <h5 style="color: grey;" id="res-header-iso"></h5>
+
+                {% if result == 'ok' %}
+                    <div class="text-center">
+                        <h2 class="color-success"><i class="fas fa-shield-alt"></i></h2>
+                        Уязвимых пакетов не найдено!
+                    </div>
+
+                {% elif result == 'no data' %}
+                    <div class="text-center" style="padding: 30px 0">
+                        Не найдено ни одного пакета<br>удовлетвояряющего условиям поиска.
+                    </div>
+                {% else %}
+                    {#                    <h5 style="color: grey;" id="res-header-iso">проанализировано пакетов: {{ result }}</h5>#}
+                    <h5 style="color: grey;" id="res-header-iso">выявлено уязвимых пакетов: {{ result|length }}</h5>
+
+                    <div style="padding: 20px 0">
+                        {% for pkg in result %}
+                            <a id="show-hide-block" num="num-{{ forloop.counter }}">
+                                <div class="row pkg-name-row">
+                                    <div class="col-8" style="padding-top: 2px;">
+                                        <b>{{ pkg.pkgName }}</b>
+                                    </div>
+                                    <div class="col-1 text-right">
+                                        {% if pkg.maxAC == 'MEDIUM' %}
+                                            <h4 class="ac-medium"><i class="far fa-frown"></i></h4>
+                                        {% elif pkg.maxAC == 'LOW' %}
+                                            <h4 class="ac-low"><i class="far fa-smile"></i></h4>
+                                        {% elif pkg.maxAC == 'HIGH' %}
+                                            <h4 class="ac-high"><i class="far fa-frown"></i></h4>
+                                        {% elif pkg.maxAC == None %}
+                                            <h4 class="ac-high" style="height: 30px;"></h4>
+                                        {% else %}
+                                            {{ pkg.maxAC }}
+                                        {% endif %}
+
+                                    </div>
+                                    <div class="col-2 text-center">
+
+                                        {% if pkg.maxScore == 0.0 %}
+                                            <h4></h4>
+                                        {% elif pkg.maxScore > 0 and pkg.maxScore < 4 %}
+                                            <h4 class="score-4"><b>{{ pkg.maxScore }}</b></h4>
+                                        {% elif pkg.maxScore >= 4 and pkg.maxScore < 5 %}
+                                            <h4 class="score-5"><b>{{ pkg.maxScore }}</b></h4>
+                                        {% elif pkg.maxScore >= 5 and pkg.maxScore < 6 %}
+                                            <h4 class="score-6"><b>{{ pkg.maxScore }}</b></h4>
+                                        {% elif pkg.maxScore >= 6 and pkg.maxScore < 7 %}
+                                            <h4 class="score-7"><b>{{ pkg.maxScore }}</b></h4>
+                                        {% elif pkg.maxScore >= 7 and pkg.maxScore < 9 %}
+                                            <h4 class="score-9"><b>{{ pkg.maxScore }}</b></h4>
+                                        {% elif pkg.maxScore >= 9 and pkg.maxScore <= 10 %}
+                                            <h4 class="score-10"><b>{{ pkg.maxScore }}</b></h4>
+                                        {% endif %}
+
+                                    </div>
+                                    <div class="col-1 text-right" style="padding-top: 3px;">
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                </div>
+                            </a>
+                            {#                        {{ forloop.parentloop.counter }}#}
+                            <div id="num-{{ forloop.counter }}" style="display: none">
+
+
+                                {% for bull in pkg.bulletin %}
+                                    <div class="row pkg-data-row">
+                                        <div class="col-1 text-center">
+
+                                            {% if bull.cvssScore == 0.0 %}
+                                                <h4></h4>
+                                            {% elif bull.cvssScore > 0 and bull.cvssScore < 4 %}
+                                                <h4 class="score-4"><b>{{ bull.cvssScore }}</b></h4>
+                                            {% elif bull.cvssScore >= 4 and bull.cvssScore < 5 %}
+                                                <h4 class="score-5"><b>{{ bull.cvssScore }}</b></h4>
+                                            {% elif bull.cvssScore >= 5 and bull.cvssScore < 6 %}
+                                                <h4 class="score-6"><b>{{ bull.cvssScore }}</b></h4>
+                                            {% elif bull.cvssScore >= 6 and bull.cvssScore < 7 %}
+                                                <h4 class="score-7"><b>{{ bull.cvssScore }}</b></h4>
+                                            {% elif bull.cvssScore >= 7 and bull.cvssScore < 9 %}
+                                                <h4 class="score-9"><b>{{ bull.cvssScore }}</b></h4>
+                                            {% elif bull.cvssScore >= 9 and bull.cvssScore <= 10 %}
+                                                <h4 class="score-10"><b>{{ bull.cvssScore }}</b></h4>
+                                            {% endif %}
+
+                                        </div>
+                                        <div class="col-11">
+                                            <b>{{ bull.id }}</b><br>
+                                            {{ bull.pkg }}<br>
+                                            <ul style="margin-left: -25px;">
+                                                {% for cve in bull.cveList %}
+                                                    <li>{{ cve }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="row float-right" style="padding-top: 40px">
+                        <div class="col">
+                            <a id="a-scrollto">Вверх <i class="fas fa-arrow-up"></i></a> |
+                            <a onClick="javascript:CallPrint('result-content');">Печать <i class="fas fa-print"></i></a>
+                        </div>
+                    </div>
+                {% endif %}
+
+
+
+
+
+            </div>
+        </div>
+
+
+    </div>
+</div>

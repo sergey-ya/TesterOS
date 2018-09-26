@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block css2 %}
+    <style type="text/css">
+        .pkgs1, .pkgs2, .ver, .rel, .checksum{
+            display: none;
+        }
+
+        .th-2 {
+            width: 250px;
+        }
+
+        .fa.fa-clipboard:active {
+            color: #8f97a2;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <!--title-->
+    <div class="row" id="start" style="padding-bottom: 20px;">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <p style="text-align: justify;"><span class="header">ISO Compare</span> - сравнивает наборы пакетов на iso образах
+                <a data-container="body" data-toggle="popover" data-placement="right"
+                   data-content="Сравнение пакетов производится по наборам, версиям, релизам и контрольным суммам.">
+                    <i class="fa fa-question-circle"> </i></a>
+            </p>
+        </div>
+    </div>
+
+    <!--forms-->
+    <div class="row">
+
+        <!--form-gl-->
+        <div class="col-xs-6 col-md-6 col-lg-6">
+            <div class="card">
+                <div class="card-body">
+
+                    <h3>ГосЛинукс</h3>
+
+                    <div class="form-group row" style="margin-top: 2rem;" >
+                        <label class="col-sm-3 col-form-label">Образ #1</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="select-iso1-gl">
+                                {% for iso in gllist %}
+                                    <option value="{{ iso.path }}" title="{{ iso.dateFormat }}">{{ iso.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Образ #2</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="select-iso2-gl">
+                                {% for iso in gllist %}
+                                    <option value="{{ iso.path }}" title="{{ iso.dateFormat }}">{{ iso.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <button class="btn btn-danger float-right" id="btn-gl"><i class="fa fa-magic mr-1"></i> Сравнить</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!--form-ro-->
+        <div class="col-xs-6 col-md-6 col-lg-6">
+            <div class="card">
+                <div class="card-body">
+
+                    <h3>РедОС</h3>
+
+                    <div class="form-group row" style="margin-top: 2rem;">
+                        <label class="col-sm-3 col-form-label">Образ #1</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="select-iso1-ro">
+                                {% for iso in rolist %}
+                                    <option value="{{ iso.path }}" title="{{ iso.dateFormat }}">{{ iso.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Образ #2</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="select-iso2-ro">
+                                {% for iso in rolist %}
+                                    <option value="{{ iso.path }}" title="{{ iso.dateFormat }}">{{ iso.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <button class="btn btn-danger float-right" id="btn-ro"><i class="fa fa-magic mr-1"></i> Сравнить</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!--result-->
+    <div id="result" style="padding-top: 30px"></div>
+
+    <div class="loader-block-2">
+        <div class="modal-mask">
+            <div class="modal-wrapper">
+                <center>
+                    <div class="loader-2"></div>
+                </center>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block js %}
+    <script type="text/javascript">
+
+        function compare(os, iso1, iso2) {
+            if (iso1.value == iso2.value) {
+                $.alert("Вы пытаетесь сравнить образ сам с собой!", {type: 'warning'});
+            } else {
+                var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+                $.ajax({
+                    type: "POST",
+                    url: "ajax/",
+                    data: {
+                        action: 'compareIso',
+                        iso1: iso1.value,
+                        iso2: iso2.value,
+                    },
+                    cache: false,
+
+                    success: function (data) {
+                        {#console.log(data);#}
+                        $("#result").append(data);
+                        $("#res-header").text('ISO Compare / отчет по ' + os);
+                        $("#res-header-iso1").text('первый образ: ' + $(iso1).find('option:selected').text());
+                        $("#res-header-iso2").text('второй образ: ' + $(iso2).find('option:selected').text());
+                        moveToTitle();
+                    },
+
+                    error: function (request, error) {
+                        // console.log(error + request.status + request.statusText);
+                        $.alert("При сравнении образов.", {type: 'danger'}, request.status + request.responseText);
+                    },
+
+                    beforeSend: function (xhr, settings) {
+                        $("#result").html("");
+                        $('.loader-block-2').css("display", "block");
+
+                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                        }
+                    },
+
+                    complete: function () {
+                        $('.loader-block-2').css("display", "none");
+                    },
+                });
+            }
+        }
+
+        $('#btn-gl').click(function () {
+            compare('ГосЛинукс', document.getElementById("select-iso1-gl"), document.getElementById("select-iso2-gl"));
+        })
+
+        $('#btn-ro').click(function () {
+            compare('РедОС', document.getElementById("select-iso1-ro"), document.getElementById("select-iso2-ro"));
+        })
+
+
+        // показать скрыть блок
+        function toggle(obj, name) {
+            if($(name).css("display") == "none")
+                obj.html("скрыть <i class='fa fa-angle-double-up'></i>");
+            else
+                obj.html("показать <i class='fa fa-angle-double-down'></i>");
+            $(name).slideToggle("slow");
+        }
+
+        $("body").on('click','a[id="a-pkgs1"]',function(){
+            toggle($(this), ".pkgs1");
+        });
+
+        $("body").on('click','a[id="a-pkgs2"]',function(){
+            toggle($(this), ".pkgs2");
+        });
+
+        $("body").on('click','a[id="a-ver"]',function(){
+            toggle($(this), ".ver");
+        });
+
+        $("body").on('click','a[id="a-rel"]',function(){
+            toggle($(this), ".rel");
+        });
+
+        $("body").on('click','a[id="a-checksum"]',function(){
+            toggle($(this), ".checksum");
+        });
+
+
+        function copyToClipboard(text) {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val(text).select();
+            document.execCommand("copy");
+            $temp.remove();
+        }
+
+        $("body").on('click','a[id="a-copyclipboard"]',function() {
+            copyToClipboard($(this).attr("checksum"));
+        });
+
+
+        function moveToTitle() {
+            var top = $("#result-content").offset().top - 150;
+            $('body,html').animate({scrollTop: top}, 800);
+        };
+
+        $("body").on('click','a[id="a-scrollto"]',function() {
+            var top = $("#start").offset().top - 50;
+            $('body,html').animate({scrollTop: top}, 800);
+        });
+
+
+    </script>
+{% endblock %}

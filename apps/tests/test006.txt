@@ -1,0 +1,42 @@
+[NAME]
+ФБО «Аудит»
+Защищенное хранение журнала аудита
+[/NAME]
+
+
+[PRERE]
+Никаких предварительных операций производить не требуется.
+[/PRERE]
+
+
+[EXPECTED]
+Журналы аудита недоступны для изменения/удаления непривилегированному пользователю. Для системного администратор root доступны все операции с журналами аудита.
+[/EXPECTED]
+
+
+[PROCEDURE]
+Пользователем ivanov попытаться удалить журналы аудита /var/log/audit/audit.log, /var/log/secure, /var/log/maillog, /var/log/messages, /var/log/iptables/:
+[code][ivanov@goslinux ~]$ rm /var/log/messages[/code]
+
+Администратором root попытаться удалить журналы аудита /var/log/audit/audit.log, /var/log/secure, /var/log/maillog, /var/log/messages, /var/log/iptables/:
+[code][root@goslinux ivanov]# rm /var/log/messages
+rm: удалить обычный файл «/var/log/messages»? y[/code]
+
+Пользователем ivanov попытаться внести изменения в журналы аудита /var/log/audit/audit.log, /var/log/secure, /var/log/maillog, /var/log/messages, /var/log/iptables/:
+[code][ivanov@goslinux ~]$ nano /var/log/secure[/code]
+
+Администратором root попытаться внести изменения в журналы аудита /var/log/audit/audit.log, /var/log/secure, /var/log/maillog, /var/log/messages, /var/log/iptables/:
+[code][root@goslinux ivanov]# nano /var/log/secure[/code]
+[/PROCEDURE]
+
+
+[RESULT]
+Журналы аудита недоступны для изменения/удаления непривилегированному пользователю. При попытке удалить файл пользователь ivanov получает сообщение об ошибке вида:
+[code]rm: удалить защищенный от записи обычный файл «/var/log/messages»? y
+rm: невозможно удалить «/var/log/messages»: Отказано в доступе[/code]
+
+При попытке редактирования файла аудита с помощью редактора nano выводится ошибка вида:
+[code]Ошибка чтения /var/log/secure: Отказано в доступе[/code]
+
+Для администратора root все журналы аудита доступны как для редактирования так идля удаления.
+[/RESULT]

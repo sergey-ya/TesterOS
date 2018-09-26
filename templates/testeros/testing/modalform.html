@@ -1,0 +1,38 @@
+<div class="modal fade" id="testingNewModal" tabindex="-1" role="dialog" aria-labelledby="testingNewModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="testingNewModalLabel">Новое тестирование</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form method="POST" class="passing-test-case-form">{% csrf_token %}
+                <div class="modal-body">
+
+                    <label class="grey-text font-weight-light">Cистема</label>
+                    <select class="form-control" name="os_name" id="id_os_name">
+                        <option value="ГосЛинукс">ГосЛинукс</option>
+                        <option value="РедОС">РедОС</option>
+                    </select>
+
+                    <br>
+
+                    <label class="grey-text font-weight-light">Версия</label>
+                    <input class="form-control" name="os_version" maxlength="20" id="id_os_version" type="text">
+
+                    <br>
+
+                    <label class="grey-text font-weight-light">Релиз</label>
+                    <input class="form-control" name="os_release" maxlength="20" id="id_os_release" type="text">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger waves-effect" data-dismiss="modal">Отмена</button>
+                    <button type="submit" class="save btn btn-danger">Создать</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

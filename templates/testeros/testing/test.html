@@ -1,0 +1,382 @@
+{% extends "base.html" %}
+
+{% block css2 %}
+    <style type="text/css">
+        .title-result {
+            font-size: 21px;
+        {#font-weight: 800;#}
+            margin-bottom: 10px;
+        {#color: #314d7c;#}
+            color: #04378c;
+            padding-top: 25px;
+            padding-bottom: 5px;
+            border-bottom-color: #c3cad5;
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+        }
+
+        .code {
+            padding: 1em;
+            border: 1px dashed #2f6fab;
+            color: #000;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            line-height: 1.1em;
+            font-family: Courier New, Courier, mono;
+            font-size: 12px;
+            font-style: italic;
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <!--form-->
+    <div class="row">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col">
+                            <h3 class="title">{{ result.os_name }}</h3>
+                        </div>
+                    </div>
+
+
+                    <div class="row" style="padding-bottom: 10px;">
+                        <div class="col">
+                            <h5 class="title" style="font-size: 1.3rem; margin-bottom: 0px;">Тестирование ФБО «{{ result.osf }}»</h5>
+                            <h5 class="title">{{ result.name }}</h5>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-2">
+                            <h5 class="title" style="padding-top: 2px;">Статус:</h5>
+                        </div>
+
+                        <div class="col" id="div-status">
+                            {% if result.status == 1 %}
+                                <span class="badge badge-info">В работе</span>
+                            {% else %}
+                                <a id="test-run"><small>В работе</small></a>
+                            {% endif %}
+
+                            {% if result.status == 2 %}
+                                <span class="badge badge-warning">Отменен</span>
+                            {% else %}
+                                <a id="test-cancel"><small>Отменен</small></a>
+                            {% endif %}
+
+                            {% if result.status == 3 %}
+                                <span class="badge badge-danger">Не пройден</span>
+                            {% else %}
+                                <a id="test-minus"><small>Не пройден</small></a>
+                            {% endif %}
+
+                            {% if result.status == 4 %}
+                                <span class="badge badge-success">Пройден</span>
+                            {% else %}
+                                <a id="test-check"><small>Пройден</small></a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {#comment#}
+                    <div class="row">
+                        <div class="col-2">
+                            <h5 class="title" style="padding-top: 2px;">Комментарий:</h5>
+                        </div>
+                        <div class="col" style="margin-right: 15px;">
+                            <textarea class="form-control" id="comment" rows="3">{% if result.comment %}{{ result.comment }}{% endif %}</textarea>
+                            <a class="float-right btn btn-danger btn-sm waves-effect waves-light" id="save-comment">Сохранить <i class="fas fa-save"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top:60px; margin-left: 0px; margin-right: 0px;">
+                        <div class="col-6">
+                            {% if result.prevTest %}
+                                <a href="{% url 'testing_test' result.prevTest %}" aria-label="Next">
+                                    <span aria-hidden="true"><i class="fas fa-chevron-left"></i> предыдущий</span>
+                                    <span class="sr-only">Prew</span>
+                                </a>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-6 text-right">
+                            {% if result.nextTest %}
+                                <a href="{% url 'testing_test' result.nextTest %}" aria-label="Next">
+                                    cледующий <i class="fas fa-chevron-right"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-left: 0px; margin-right: 0px;">
+                        <div class="col">
+
+                            <h2 class='title-result'>Предварительные условия</h2>
+                            <div id="prerequisites">
+                                {% if result.data.prere %}
+                                    {{ result.data.prere|safe }}
+                                {% else %}
+                                    не определены
+                                {% endif %}
+                            </div>
+                            <br><br>
+
+                            <h2 class='title-result'>Ожидаемый результат</h2>
+                            <div id="expectedResult">
+                                {% if result.data.expected %}
+                                    {{ result.data.expected|safe }}
+                                {% else %}
+                                    не определен
+                                {% endif %}
+                            </div>
+                            <br><br>
+
+                            <h2 class='title-result'>Процедура тестирования</h2>
+                            <div id="testProcedure">
+                                {% if result.data.procedure %}
+                                    {{ result.data.procedure|safe }}
+                                {% else %}
+                                    не определена
+                                {% endif %}
+                            </div>
+                            <br><br>
+
+                            <h2 class='title-result'>Результат тестирования</h2>
+                            <div id="testResult">
+                                {% if result.data.result %}
+                                    {{ result.data.result|safe }}
+                                {% else %}
+                                    не определен
+                                {% endif %}
+                            </div>
+                            <br><br>
+
+                            {% if result.file2 %}
+                                <h2 class='title-result'>Автоматическое тестирование</h2>
+                                <div id="auto">
+                                    <b>файл теста</b>:
+                                    <br>
+                                    -<a id="upload" testFile2="{{ result.file2 }}" style="margin: 0 10px">{{ result.file2 }} <i class="fas fa-download"></i></a>
+                                    <br><br>
+                                    {{ result.data.auto|safe }}
+                                </div>
+                                <br><br>
+                            {% endif %}
+
+                        </div>
+                    </div>
+
+                    <br><br>
+
+                    <div class="row" style="margin-left: 0px; margin-right: 0px;">
+                        <div class="col-6">
+                            {% if result.prevTest %}
+                                <a href="{% url 'testing_test' result.prevTest %}" aria-label="Next">
+                                    <span aria-hidden="true"><i class="fas fa-chevron-left"></i> предыдущий</span>
+                                    <span class="sr-only">Prew</span>
+                                </a>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-6 text-right">
+                            {% if result.nextTest %}
+                                <a href="{% url 'testing_test' result.nextTest %}" aria-label="Next">
+                                    <span aria-hidden="true">следующий <i class="fas fa-chevron-right"></i></span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block js %}
+    <script type="text/javascript">
+
+        window.onload=function(){
+            $("#prerequisites").html(parse_code($("#prerequisites").html()))
+            $("#expectedResult").html(parse_code($("#expectedResult").html()))
+            $("#testProcedure").html(parse_code($("#testProcedure").html()))
+            $("#testResult").html(parse_code($("#testResult").html()))
+        }
+
+        function test_edit_status(status) {
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            var testId = {{ result.id }};
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'editTestStatus',
+                    testId: testId,
+                    status: status
+                },
+                cache: false,
+
+                success: function (data) {
+                    {#console.log(data);#}
+                    {#window.location.reload();#}
+                    var statusDiv = $("#div-status");
+                    statusDiv.empty();
+                    if (status == 1) {
+                        statusDiv.append("<span class='badge badge-info'>В работе</span>");
+                    } else {
+                        statusDiv.append("<a id='test-run'><small>В работе</small></a>");
+                    }
+                    statusDiv.append(" ");
+                    if (status == 2) {
+                        statusDiv.append("<span class='badge badge-warning'>Отменен</span>");
+                    } else {
+                        statusDiv.append("<a id='test-cancel'><small>Отменен</small></a>");
+                    }
+                    statusDiv.append(" ");
+                    if (status == 3) {
+                        statusDiv.append("<span class='badge badge-danger'>Не пройден</span>");
+                    } else {
+                        statusDiv.append("<a id='test-minus'><small>Не пройден</small></a>");
+                    }
+                    statusDiv.append(" ");
+                    if (status == 4) {
+                        statusDiv.append("<span class='badge badge-success'>Пройден</span>");
+                    } else {
+                        statusDiv.append("<a id='test-check'><small>Пройден</small></a>");
+                    }
+
+                    $.alert("Статус изменен.", {type: 'success'});
+                },
+
+                error: function (request, error) {
+                    // console.log(error + request.status + request.statusText);
+                    $.alert("Ошибка ", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function(xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+
+                complete: function() {
+                },
+            });
+
+        }
+
+
+
+        $("body").on('click','a[id="test-check"]',function() {
+            test_edit_status(4);
+            {#if (test_edit_status(4) == true) {#}
+            {#    $.alert("Тесту присвоен статус 'Пройден'", {type: 'success'});#}
+            {#}#}
+            });
+
+        $("body").on('click','a[id="test-minus"]',function() {
+            test_edit_status(3)
+        });
+
+        $("body").on('click','a[id="test-cancel"]',function() {
+            test_edit_status(2)
+        });
+        $("body").on('click','a[id="test-run"]',function() {
+            test_edit_status(1)
+        });
+
+        $("body").on('click','a[id="save-comment"]',function() {
+            var text = $("#comment").val();
+            var testId = {{ result.id }};
+            {#var oldText = {{ result.comment }};#}
+            {#console.log(oldText);#}
+            {#console.log(text);#}
+            if (text != '') {
+                var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+                $.ajax({
+                    type: "POST",
+                    url: "ajax/",
+                    data: {
+                        action: 'saveComment',
+                        testId: testId,
+                        text: text,
+                    },
+                    cache: false,
+
+                    success: function (data) {
+                        {#console.log(data);#}
+                        $.alert("Комментарий сохранен.", {type: 'success'});
+                    },
+
+                    error: function (request, error) {
+                        // console.log(error + request.status + request.statusText);
+                        $.alert("Ошибка ", {type: 'danger'}, request.status + request.responseText);
+                    },
+
+                    beforeSend: function(xhr, settings) {
+                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                        }
+                    },
+
+                    complete: function() {
+                    },
+                });
+            }
+
+        });
+
+
+
+        {#скачиваем файл теста#}
+        $("body").on('click','a[id="upload"]',function(){
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            var testFile2 = $(this).attr('testFile2');
+
+            $.ajax({
+                type: "POST",
+                url: "ajax/",
+                data: {
+                    action: 'getTestFile',
+                    testFile: testFile2,
+                },
+                cache: false,
+
+                success: function (data) {
+                    {#console.log('load' + data);#}
+                    window.location.href = "/testeros/testing/download/?filepath=" + data;
+                },
+
+                error: function (request, error) {
+                    {#console.log(error + request.status + request.statusText);#}
+                    $.alert("При загрузке файла.", {type: 'danger'}, request.status + request.responseText);
+                },
+
+                beforeSend: function(xhr, settings) {
+                    $('.loader-block-1').css("display", "block");
+
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+
+                complete: function() {
+                    $('.loader-block-1').css("display", "none");
+                },
+            });
+        });
+
+    </script>
+{% endblock %}

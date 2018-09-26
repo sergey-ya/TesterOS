@@ -1,0 +1,80 @@
+[NAME]
+ФБО «Аудит»
+Избирательный аудит
+[/NAME]
+
+
+[PRERE]
+Никаких предварительных операций производить не требуется.
+[/PRERE]
+
+
+[EXPECTED]
+Фиксируются только заданные фильтрами конфигурации аудита события.
+[/EXPECTED]
+
+
+[PROCEDURE]
+Для добавления и настройки правил используется команда auditctl.
+Для настройки ведение аудита обращений к файлам из каталога /etc необходимо ввести команду:
+[code][root@goslinux petrov]# auditctl -w /etc/ -p wa -k access_etc[/code]
+
+Также правила можно задавать редактируя файл etc/audit/audit.rules. В начале файла размещаются несколько мета-правил, задающих конфигурацию и очищающих правила:
+# Удаляем все правила из всех списков
+-D
+# Указываем количество буферов, хранящих сообщения аудита
+-b 8192
+#Что делать в чрезвычайной ситуации
+-f 1
+
+Далее необходимо добавить пользовательские правила безопасности:
+# Наблюдение за конфигурационными файлами
+-w /etc/audit/auditd.conf -p wa
+-w /etc/audit/audit.rules -p wa
+# Наблюдение за журнальными файлами
+-w /var/log/audit/
+-w /var/log/audit/audit.log
+# Задания cron
+-w /etc/cron.allow -p wa
+-w /etc/cron.deny -p wa
+-w /etc/cron.d/ -p wa
+# Файлы паролей и групп
+-w /etc/group -p wa
+-w /etc/passwd -p wa
+-w /etc/shadow
+# Изменение прав доступа к файлам
+-a entry,always -S chmod -S fchmod -S chown -S chown32 -S fchown -S fchown32
+-S lchown -S lchown32
+# Создание, открытие или изменение размеров файлов
+-a entry,always -S creat -S open -S truncate -S truncate64 -S ftruncate -S
+ftruncate64
+# Создание и удаление каталогов
+-a entry,always -S mkdir -S rmdir
+# Удаление или создание ссылок
+-a entry,always -S unlink -S rename -S link -S symlink
+# Изменение расширенных атрибутов файлов
+-a entry,always -S setxattr
+-a entry,always -S lsetxattr
+-a entry,always -S fsetxattr
+-a entry,always -S removexattr
+-a entry,always -S lremovexattr
+-a entry,always -S fremovexattr
+# Создание файлов устройств
+-a entry,always -S mknod
+# Монтирование файловых систем
+-a entry,always -S mount -S umount -S umount2
+# Использование системного вызова ptrace для отладки процессов
+-a entry,always -S ptrace
+# отслеживать системные вызовы unlink () и rmdir()
+-a exit,always -S unlink -S rmdir
+# отслеживать системные вызовы open () от пользователя с UID 1001
+-a exit,always -S open -F loginuid=1001
+
+Изменения конфигурации вступят в силу после перезапуска демона auditd:
+[code][root@goslinux petrov]# service auditd restart[/code]
+[/PROCEDURE]
+
+
+[RESULT]
+Фиксируются только заданные фильтрами конфигурации аудита события.
+[/RESULT]

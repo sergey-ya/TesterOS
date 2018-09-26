@@ -1,0 +1,58 @@
+[NAME]
+ФБО «Аудит»
+Просмотр аудита и ограниченный просмотр аудита
+[/NAME]
+
+
+[PRERE]
+Никаких предварительных операций производить не требуется.
+[/PRERE]
+
+
+[EXPECTED]
+Только системный администратор имеет возможность чтения журналов аудита.
+[/EXPECTED]
+
+
+[PROCEDURE]
+С помощью утилиты cat от имени пользователя ivanov просмотреть журналы аудита: /var/log/audit/audit.log, /var/log/secure, /var/log/maillog, /var/log/messages, /var/log/iptables/:
+[code][ivanov@goslinux tmp]$ cat /var/log/audit/audit.log[/code]
+
+С помощью утилиты cat от имени пользователя root просмотреть журналы аудита: /var/log/audit/audit.log, /var/log/secure, /var/log/maillog, /var/log/messages, /var/log/iptables/:
+[code][root@goslinux tmp]# cat /var/log/audit/audit.log[/code]
+
+От имени пользователей ivanov и root выполнить команду просмотра событий безопасности (например аутентификации пользователей):
+[code][ivanov@goslinux ~]$ aureport -au[/code]
+
+Пользователем ivanov запустить графическую утилиту просмотра журналов аудита из главного меню «Приложения» - «Системные» - «Программа просмотра журналов».',
+[/PROCEDURE]
+
+
+[RESULT]
+При попытке просмотра журналов аудита пользователем ivanov возникает ошибка доступа:
+[code]cat: /var/log/audit/audit.log: Отказано в доступе[/code]
+
+Для администратора root журналы доступны для чтения. Информация выводится в заданном виде (таблица 5.2).
+При попытке просмотра журналов аудита утилитой aureport от имени пользователя ivanov система сообщает об ошибке доступа и не позволяет чтение журналов:
+[code]Authentication Report
+============================================
+# date time acct host term exe success event
+============================================
+Error opening config file (Отказано в доступе)
+NOTE - using built-in logs: /var/log/audit/audit.log
+Error opening /var/log/audit/audit.log (Отказано в доступе)
+для   администратора   root   команда   выполняется   без   ошибок,   список   событий
+отображается:
+Authentication Report
+============================================
+# date time acct host term exe success event
+============================================
+Wrong number of arguments for line 1 in /etc/audit/auditd.conf
+Not processing any more lines in /etc/audit/auditd.conf
+NOTE - using built-in logs: /var/log/audit/audit.log
+1. 19.09.2017 15:36:59 gdm ? ? /usr/libexec/gdm-session-worker yes 104
+2. 19.09.2017 15:37:35 root ? ? /usr/libexec/gdm-session-worker yes 117
+3. 19.09.2017 15:43:35 root ? pts/0 /usr/bin/su yes 157[/code]
+
+При попытке просмотра журналов аудита с помощью графической утилиты «Программа просмотра журналов» пользователем ivanov программ запрашивает пароль администратора root и только после предъявления действительного пароля выводит главное окно программы, в котором можно просматривать журналы аудита. Информация из журналов аудита, выводимая в программе просмотра, аналогична той, что представлена в таблице 3.2. При входе в программу без предъявления пароля (без привилегий) пользователь видит несколько системных журналов, не содержащих информацию аудита информационной безопасности.',
+[/RESULT]

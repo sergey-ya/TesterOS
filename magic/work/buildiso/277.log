@@ -1,0 +1,9 @@
+20096
+[sudo] password for yarikov: Traceback (most recent call last):
+  File "/bin/pungi-koji", line 4, in <module>
+    import pkg_resources
+  File "/usr/lib/python2.7/site-packages/pkg_resources/__init__.py", line 72, in <module>
+    import packaging.requirements
+  File "/usr/lib/python2.7/site-packages/packaging/requirements.py", line 59, in <module>
+    MARKER_EXPR = originalTextFor(MARKER_EXPR())("marker")
+TypeError: __call__() takes exactly 2 arguments (1 given)

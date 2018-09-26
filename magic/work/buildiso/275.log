@@ -1,0 +1,512 @@
+32610
+[sudo] password for yarikov: 2018-07-17 17:28:43 [INFO    ] Host: stapel.red-soft.ru
+2018-07-17 17:28:43 [INFO    ] Pungi version: 4.1.17
+2018-07-17 17:28:43 [INFO    ] User name: root
+2018-07-17 17:28:43 [INFO    ] Working directory: /tmp
+2018-07-17 17:28:43 [INFO    ] Command line: /bin/pungi-koji --target-dir=/mnt/hdd_tmp/tester_build_iso/redos --config /home/yarikov/web/testeros/magic/work/buildiso/config.file --label=Snapshot-1.0 --supported
+2018-07-17 17:28:43 [INFO    ] Compose top directory: /mnt/hdd_tmp/tester_build_iso/redos/redos-MUROM-7.1-20180717.0
+2018-07-17 17:28:43 [DEBUG   ] Writing variants file: /mnt/hdd_tmp/tester_build_iso/redos/redos-MUROM-7.1-20180717.0/work/global/variants.xml
+2018-07-17 17:28:43 [DEBUG   ] Exporting file /home/yarikov/web/testeros/magic/work/buildiso/variants.xml.redos from current working directory...
+2018-07-17 17:28:43 [DEBUG   ] Config option 'productimg' not set. Skipping creating product images.
+2018-07-17 17:28:43 [INFO    ] Config section 'extra_files' was not found. Skipping.
+2018-07-17 17:28:43 [INFO    ] Config section 'live_images' was not found. Skipping.
+2018-07-17 17:28:43 [INFO    ] Config section 'live_media' was not found. Skipping.
+2018-07-17 17:28:43 [INFO    ] Config section 'image_build' was not found. Skipping.
+2018-07-17 17:28:43 [INFO    ] Config section 'ostree' was not found. Skipping.
+2018-07-17 17:28:43 [INFO    ] Config section 'ostree_installer' was not found. Skipping.
+2018-07-17 17:28:43 [INFO    ] Config section 'osbs' was not found. Skipping.
+2018-07-17 17:28:43 [INFO    ] [BEGIN] ---------- PHASE: INIT ----------
+2018-07-17 17:28:43 [DEBUG   ] Writing global comps file: /mnt/hdd_tmp/tester_build_iso/redos/redos-MUROM-7.1-20180717.0/work/global/comps/comps-global.xml
+2018-07-17 17:28:43 [DEBUG   ] Exporting file /home/yarikov/web/testeros/magic/work/buildiso/comps.xml from current working directory...
+2018-07-17 17:28:43 [DEBUG   ] Writing comps file for arch 'x86_64': /mnt/hdd_tmp/tester_build_iso/redos/redos-MUROM-7.1-20180717.0/work/x86_64/comps/comps-x86_64.xml
+2018-07-17 17:28:44 [INFO    ] [BEGIN] Creating comps repo for arch 'x86_64'
+2018-07-17 17:28:44 [INFO    ] [DONE ] Creating comps repo for arch 'x86_64'
+2018-07-17 17:28:44 [DEBUG   ] Copying original comps file (arch: x86_64, variant: Everything): /mnt/hdd_tmp/tester_build_iso/redos/redos-MUROM-7.1-20180717.0/work/x86_64/comps/comps-Everything.x86_64.xml
+2018-07-17 17:28:44 [INFO    ] [DONE ] ---------- PHASE: INIT ----------
+2018-07-17 17:28:44 [INFO    ] [BEGIN] ---------- PHASE: PKGSET ----------
+2018-07-17 17:28:44 [INFO    ] Writing pungi config (arch: x86_64, variant: None): /mnt/hdd_tmp/tester_build_iso/redos/redos-MUROM-7.1-20180717.0/work/x86_64/pungi/x86_64.conf
+2018-07-17 17:40:28 [INFO    ] [BEGIN] Linking downloaded pkgset packages
+2018-07-17 17:40:28 [DEBUG   ] Linked 100 out of 16692 packages
+2018-07-17 17:40:28 [DEBUG   ] Linked 200 out of 16692 packages
+2018-07-17 17:40:28 [DEBUG   ] Linked 300 out of 16692 packages
+2018-07-17 17:40:28 [DEBUG   ] Linked 400 out of 16692 packages
+2018-07-17 17:40:28 [DEBUG   ] Linked 500 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 600 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 700 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 800 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 900 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 1000 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 1100 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 1200 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 1300 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 1400 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 1500 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 1600 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 1700 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 1800 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 1900 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 2000 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 2100 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 2200 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 2300 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 2400 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 2500 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 2600 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 2700 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 2800 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 2900 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 3000 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 3100 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 3200 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 3300 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 3400 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 3500 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 3600 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 3700 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 3800 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 3900 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 4000 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 4100 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 4200 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 4300 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 4400 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 4500 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 4600 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 4700 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 4800 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 4900 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 5000 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 5100 out of 16692 packages
+2018-07-17 17:40:29 [DEBUG   ] Linked 5200 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 5300 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 5400 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 5500 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 5600 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 5700 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 5800 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 5900 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 6000 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 6100 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 6200 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 6300 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 6400 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 6500 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 6600 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 6700 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 6800 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 6900 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 7000 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 7100 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 7200 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 7300 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 7400 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 7500 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 7600 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 7700 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 7800 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 7900 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 8000 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 8100 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 8200 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 8300 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 8400 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 8500 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 8600 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 8700 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 8800 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 8900 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 9000 out of 16692 packages
+2018-07-17 17:40:31 [DEBUG   ] Linked 9100 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 9200 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 9300 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 9400 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 9500 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 9600 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 9700 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 9800 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 9900 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 10000 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 10100 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 10200 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 10300 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 10400 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 10500 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 10600 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 10700 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 10800 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 10900 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 11000 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 11100 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 11200 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 11300 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 11400 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 11500 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 11600 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 11700 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 11800 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 11900 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 12000 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 12100 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 12200 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 12300 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 12400 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 12500 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 12600 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 12700 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 12800 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 12900 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 13000 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 13100 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 13200 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 13300 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 13400 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 13500 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 13600 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 13700 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 13800 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 13900 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 14000 out of 16692 packages
+2018-07-17 17:40:32 [DEBUG   ] Linked 14100 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 14200 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 14300 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 14400 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 14500 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 14600 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 14700 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 14800 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 14900 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 15000 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 15100 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 15200 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 15300 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 15400 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 15500 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 15600 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 15700 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 15800 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 15900 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 16000 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 16100 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 16200 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 16300 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 16400 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 16500 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 16600 out of 16692 packages
+2018-07-17 17:40:33 [DEBUG   ] Linked 16692 out of 16692 packages
+2018-07-17 17:40:34 [INFO    ] [DONE ] Linking downloaded pkgset packages
+2018-07-17 17:40:34 [INFO    ] Populating the global package set from a file list
+2018-07-17 17:40:34 [INFO    ] [BEGIN] Getting RPMs from file list
+2018-07-17 17:40:34 [DEBUG   ] Package set: spawning 10 worker threads (SRPMs)
+2018-07-17 17:40:35 [DEBUG   ] Processed 100 out of 2859 packages
+2018-07-17 17:40:38 [DEBUG   ] Processed 200 out of 2859 packages
+2018-07-17 17:40:40 [DEBUG   ] Processed 300 out of 2859 packages
+2018-07-17 17:40:43 [DEBUG   ] Processed 400 out of 2859 packages
+2018-07-17 17:40:44 [DEBUG   ] Processed 500 out of 2859 packages
+2018-07-17 17:40:45 [DEBUG   ] Processed 600 out of 2859 packages
+2018-07-17 17:40:46 [DEBUG   ] Processed 700 out of 2859 packages
+2018-07-17 17:40:46 [DEBUG   ] Processed 800 out of 2859 packages
+2018-07-17 17:40:46 [DEBUG   ] Processed 900 out of 2859 packages
+2018-07-17 17:40:47 [DEBUG   ] Processed 1000 out of 2859 packages
+2018-07-17 17:40:48 [DEBUG   ] Processed 1100 out of 2859 packages
+2018-07-17 17:40:49 [DEBUG   ] Processed 1200 out of 2859 packages
+2018-07-17 17:40:50 [DEBUG   ] Processed 1300 out of 2859 packages
+2018-07-17 17:40:52 [DEBUG   ] Processed 1400 out of 2859 packages
+2018-07-17 17:40:53 [DEBUG   ] Processed 1500 out of 2859 packages
+2018-07-17 17:40:53 [DEBUG   ] Processed 1600 out of 2859 packages
+2018-07-17 17:40:54 [DEBUG   ] Processed 1700 out of 2859 packages
+2018-07-17 17:40:55 [DEBUG   ] Processed 1800 out of 2859 packages
+2018-07-17 17:40:58 [DEBUG   ] Processed 1900 out of 2859 packages
+2018-07-17 17:40:59 [DEBUG   ] Processed 2000 out of 2859 packages
+2018-07-17 17:41:00 [DEBUG   ] Processed 2100 out of 2859 packages
+2018-07-17 17:41:03 [DEBUG   ] Processed 2200 out of 2859 packages
+2018-07-17 17:41:04 [DEBUG   ] Processed 2300 out of 2859 packages
+2018-07-17 17:41:05 [DEBUG   ] Processed 2400 out of 2859 packages
+2018-07-17 17:41:07 [DEBUG   ] Processed 2500 out of 2859 packages
+2018-07-17 17:41:08 [DEBUG   ] Processed 2600 out of 2859 packages
+2018-07-17 17:41:09 [DEBUG   ] Processed 2700 out of 2859 packages
+2018-07-17 17:41:10 [DEBUG   ] Processed 2800 out of 2859 packages
+2018-07-17 17:41:11 [DEBUG   ] Processed 2859 out of 2859 packages
+2018-07-17 17:41:12 [DEBUG   ] Package set: worker threads stopped (SRPMs)
+2018-07-17 17:41:12 [DEBUG   ] Package set: spawning 10 worker threads (RPMs)
+2018-07-17 17:41:13 [DEBUG   ] Processed 100 out of 13833 packages
+2018-07-17 17:41:14 [DEBUG   ] Processed 200 out of 13833 packages
+2018-07-17 17:41:14 [DEBUG   ] Processed 300 out of 13833 packages
+2018-07-17 17:41:14 [DEBUG   ] Processed 400 out of 13833 packages
+2018-07-17 17:41:15 [DEBUG   ] Processed 500 out of 13833 packages
+2018-07-17 17:41:15 [DEBUG   ] Processed 600 out of 13833 packages
+2018-07-17 17:41:16 [DEBUG   ] Processed 700 out of 13833 packages
+2018-07-17 17:41:16 [DEBUG   ] Processed 800 out of 13833 packages
+2018-07-17 17:41:17 [DEBUG   ] Processed 900 out of 13833 packages
+2018-07-17 17:41:17 [DEBUG   ] Processed 1000 out of 13833 packages
+2018-07-17 17:41:18 [DEBUG   ] Processed 1100 out of 13833 packages
+2018-07-17 17:41:18 [DEBUG   ] Processed 1200 out of 13833 packages
+2018-07-17 17:41:20 [DEBUG   ] Processed 1300 out of 13833 packages
+2018-07-17 17:41:20 [DEBUG   ] Processed 1400 out of 13833 packages
+2018-07-17 17:41:21 [DEBUG   ] Processed 1500 out of 13833 packages
+2018-07-17 17:41:21 [DEBUG   ] Processed 1600 out of 13833 packages
+2018-07-17 17:41:22 [DEBUG   ] Processed 1700 out of 13833 packages
+2018-07-17 17:41:23 [DEBUG   ] Processed 1800 out of 13833 packages
+2018-07-17 17:41:23 [DEBUG   ] Processed 1900 out of 13833 packages
+2018-07-17 17:41:24 [DEBUG   ] Processed 2000 out of 13833 packages
+2018-07-17 17:41:24 [DEBUG   ] Processed 2100 out of 13833 packages
+2018-07-17 17:41:25 [DEBUG   ] Processed 2200 out of 13833 packages
+2018-07-17 17:41:26 [DEBUG   ] Processed 2300 out of 13833 packages
+2018-07-17 17:41:27 [DEBUG   ] Processed 2400 out of 13833 packages
+2018-07-17 17:41:27 [DEBUG   ] Processed 2500 out of 13833 packages
+2018-07-17 17:41:28 [DEBUG   ] Processed 2600 out of 13833 packages
+2018-07-17 17:41:29 [DEBUG   ] Processed 2700 out of 13833 packages
+2018-07-17 17:41:30 [DEBUG   ] Processed 2800 out of 13833 packages
+2018-07-17 17:41:31 [DEBUG   ] Processed 2900 out of 13833 packages
+2018-07-17 17:41:32 [DEBUG   ] Processed 3000 out of 13833 packages
+2018-07-17 17:41:33 [DEBUG   ] Processed 3100 out of 13833 packages
+2018-07-17 17:41:34 [DEBUG   ] Processed 3200 out of 13833 packages
+2018-07-17 17:41:34 [DEBUG   ] Processed 3300 out of 13833 packages
+2018-07-17 17:41:35 [DEBUG   ] Processed 3400 out of 13833 packages
+2018-07-17 17:41:36 [DEBUG   ] Processed 3500 out of 13833 packages
+2018-07-17 17:41:36 [DEBUG   ] Processed 3600 out of 13833 packages
+2018-07-17 17:41:37 [DEBUG   ] Processed 3700 out of 13833 packages
+2018-07-17 17:41:37 [DEBUG   ] Processed 3800 out of 13833 packages
+2018-07-17 17:41:37 [DEBUG   ] Processed 3900 out of 13833 packages
+2018-07-17 17:41:38 [DEBUG   ] Processed 4000 out of 13833 packages
+2018-07-17 17:41:38 [DEBUG   ] Processed 4100 out of 13833 packages
+2018-07-17 17:41:39 [DEBUG   ] Processed 4200 out of 13833 packages
+2018-07-17 17:41:39 [DEBUG   ] Processed 4300 out of 13833 packages
+2018-07-17 17:41:40 [DEBUG   ] Processed 4400 out of 13833 packages
+2018-07-17 17:41:40 [DEBUG   ] Processed 4500 out of 13833 packages
+2018-07-17 17:41:41 [DEBUG   ] Processed 4600 out of 13833 packages
+2018-07-17 17:41:44 [DEBUG   ] Processed 4700 out of 13833 packages
+2018-07-17 17:41:44 [DEBUG   ] Processed 4800 out of 13833 packages
+2018-07-17 17:41:46 [DEBUG   ] Processed 4900 out of 13833 packages
+2018-07-17 17:41:47 [DEBUG   ] Processed 5000 out of 13833 packages
+2018-07-17 17:41:50 [DEBUG   ] Processed 5100 out of 13833 packages
+2018-07-17 17:41:59 [DEBUG   ] Processed 5200 out of 13833 packages
+2018-07-17 17:42:02 [DEBUG   ] Processed 5300 out of 13833 packages
+2018-07-17 17:42:02 [DEBUG   ] Processed 5400 out of 13833 packages
+2018-07-17 17:42:03 [DEBUG   ] Processed 5500 out of 13833 packages
+2018-07-17 17:42:04 [DEBUG   ] Processed 5600 out of 13833 packages
+2018-07-17 17:42:04 [DEBUG   ] Processed 5700 out of 13833 packages
+2018-07-17 17:42:05 [DEBUG   ] Processed 5800 out of 13833 packages
+2018-07-17 17:42:05 [DEBUG   ] Processed 5900 out of 13833 packages
+2018-07-17 17:42:06 [DEBUG   ] Processed 6000 out of 13833 packages
+2018-07-17 17:42:06 [DEBUG   ] Processed 6100 out of 13833 packages
+2018-07-17 17:42:07 [DEBUG   ] Processed 6200 out of 13833 packages
+2018-07-17 17:42:07 [DEBUG   ] Processed 6300 out of 13833 packages
+2018-07-17 17:42:08 [DEBUG   ] Processed 6400 out of 13833 packages
+2018-07-17 17:42:08 [DEBUG   ] Processed 6500 out of 13833 packages
+2018-07-17 17:42:09 [DEBUG   ] Processed 6600 out of 13833 packages
+2018-07-17 17:42:09 [DEBUG   ] Processed 6700 out of 13833 packages
+2018-07-17 17:42:09 [DEBUG   ] Processed 6800 out of 13833 packages
+2018-07-17 17:42:10 [DEBUG   ] Processed 6900 out of 13833 packages
+2018-07-17 17:42:10 [DEBUG   ] Processed 7000 out of 13833 packages
+2018-07-17 17:42:11 [DEBUG   ] Processed 7100 out of 13833 packages
+2018-07-17 17:42:11 [DEBUG   ] Processed 7200 out of 13833 packages
+2018-07-17 17:42:12 [DEBUG   ] Processed 7300 out of 13833 packages
+2018-07-17 17:42:13 [DEBUG   ] Processed 7400 out of 13833 packages
+2018-07-17 17:42:13 [DEBUG   ] Processed 7500 out of 13833 packages
+2018-07-17 17:42:14 [DEBUG   ] Processed 7600 out of 13833 packages
+2018-07-17 17:42:14 [DEBUG   ] Processed 7700 out of 13833 packages
+2018-07-17 17:42:15 [DEBUG   ] Processed 7800 out of 13833 packages
+2018-07-17 17:42:15 [DEBUG   ] Processed 7900 out of 13833 packages
+2018-07-17 17:42:16 [DEBUG   ] Processed 8000 out of 13833 packages
+2018-07-17 17:42:16 [DEBUG   ] Processed 8100 out of 13833 packages
+2018-07-17 17:42:17 [DEBUG   ] Processed 8200 out of 13833 packages
+2018-07-17 17:42:18 [DEBUG   ] Processed 8300 out of 13833 packages
+2018-07-17 17:42:18 [DEBUG   ] Processed 8400 out of 13833 packages
+2018-07-17 17:42:19 [DEBUG   ] Processed 8500 out of 13833 packages
+2018-07-17 17:42:19 [DEBUG   ] Processed 8600 out of 13833 packages
+2018-07-17 17:42:19 [DEBUG   ] Processed 8700 out of 13833 packages
+2018-07-17 17:42:20 [DEBUG   ] Processed 8800 out of 13833 packages
+2018-07-17 17:42:21 [DEBUG   ] Processed 8900 out of 13833 packages
+2018-07-17 17:42:21 [DEBUG   ] Processed 9000 out of 13833 packages
+2018-07-17 17:42:22 [DEBUG   ] Processed 9100 out of 13833 packages
+2018-07-17 17:42:22 [DEBUG   ] Processed 9200 out of 13833 packages
+2018-07-17 17:42:22 [DEBUG   ] Processed 9300 out of 13833 packages
+2018-07-17 17:42:23 [DEBUG   ] Processed 9400 out of 13833 packages
+2018-07-17 17:42:23 [DEBUG   ] Processed 9500 out of 13833 packages
+2018-07-17 17:42:24 [DEBUG   ] Processed 9600 out of 13833 packages
+2018-07-17 17:42:24 [DEBUG   ] Processed 9700 out of 13833 packages
+2018-07-17 17:42:25 [DEBUG   ] Processed 9800 out of 13833 packages
+2018-07-17 17:42:25 [DEBUG   ] Processed 9900 out of 13833 packages
+2018-07-17 17:42:26 [DEBUG   ] Processed 10000 out of 13833 packages
+2018-07-17 17:42:26 [DEBUG   ] Processed 10100 out of 13833 packages
+2018-07-17 17:42:27 [DEBUG   ] Processed 10200 out of 13833 packages
+2018-07-17 17:42:27 [DEBUG   ] Processed 10300 out of 13833 packages
+2018-07-17 17:42:28 [DEBUG   ] Processed 10400 out of 13833 packages
+2018-07-17 17:42:28 [DEBUG   ] Processed 10500 out of 13833 packages
+2018-07-17 17:42:29 [DEBUG   ] Processed 10600 out of 13833 packages
+2018-07-17 17:42:29 [DEBUG   ] Processed 10700 out of 13833 packages
+2018-07-17 17:42:29 [DEBUG   ] Processed 10800 out of 13833 packages
+2018-07-17 17:42:30 [DEBUG   ] Processed 10900 out of 13833 packages
+2018-07-17 17:42:31 [DEBUG   ] Processed 11000 out of 13833 packages
+2018-07-17 17:42:32 [DEBUG   ] Processed 11100 out of 13833 packages
+2018-07-17 17:42:33 [DEBUG   ] Processed 11200 out of 13833 packages
+2018-07-17 17:42:33 [DEBUG   ] Processed 11300 out of 13833 packages
+2018-07-17 17:42:33 [DEBUG   ] Processed 11400 out of 13833 packages
+2018-07-17 17:42:34 [DEBUG   ] Processed 11500 out of 13833 packages
+2018-07-17 17:42:34 [DEBUG   ] Processed 11600 out of 13833 packages
+2018-07-17 17:42:35 [DEBUG   ] Processed 11700 out of 13833 packages
+2018-07-17 17:42:35 [DEBUG   ] Processed 11800 out of 13833 packages
+2018-07-17 17:42:36 [DEBUG   ] Processed 11900 out of 13833 packages
+2018-07-17 17:42:36 [DEBUG   ] Processed 12000 out of 13833 packages
+2018-07-17 17:42:37 [DEBUG   ] Processed 12100 out of 13833 packages
+2018-07-17 17:42:37 [DEBUG   ] Processed 12200 out of 13833 packages
+2018-07-17 17:42:38 [DEBUG   ] Processed 12300 out of 13833 packages
+2018-07-17 17:42:38 [DEBUG   ] Processed 12400 out of 13833 packages
+2018-07-17 17:42:39 [DEBUG   ] Processed 12500 out of 13833 packages
+2018-07-17 17:42:39 [DEBUG   ] Processed 12600 out of 13833 packages
+2018-07-17 17:42:40 [DEBUG   ] Processed 12700 out of 13833 packages
+2018-07-17 17:42:40 [DEBUG   ] Processed 12800 out of 13833 packages
+2018-07-17 17:42:41 [DEBUG   ] Processed 12900 out of 13833 packages
+2018-07-17 17:42:41 [DEBUG   ] Processed 13000 out of 13833 packages
+2018-07-17 17:42:42 [DEBUG   ] Processed 13100 out of 13833 packages
+2018-07-17 17:42:42 [DEBUG   ] Processed 13200 out of 13833 packages
+2018-07-17 17:42:42 [DEBUG   ] Processed 13300 out of 13833 packages
+2018-07-17 17:42:43 [DEBUG   ] Processed 13400 out of 13833 packages
+2018-07-17 17:42:44 [DEBUG   ] Processed 13500 out of 13833 packages
+2018-07-17 17:42:44 [DEBUG   ] Processed 13600 out of 13833 packages
+2018-07-17 17:42:44 [DEBUG   ] Processed 13700 out of 13833 packages
+2018-07-17 17:42:45 [DEBUG   ] Processed 13800 out of 13833 packages
+2018-07-17 17:42:45 [DEBUG   ] Processed 13833 out of 13833 packages
+2018-07-17 17:42:45 [DEBUG   ] Package set: worker threads stopped (RPMs)
+2018-07-17 17:42:45 [INFO    ] [DONE ] Getting RPMs from file list
+2018-07-17 17:42:47 [INFO    ] Populating package set for arch: x86_64
+2018-07-17 17:42:47 [DEBUG   ] [BEGIN] Merging package sets for x86_64: ['x86_64', 'athlon', 'i686', 'i586', 'i486', 'i386', 'noarch', 'src']
+2018-07-17 17:42:53 [DEBUG   ] [DONE ] Merging package sets for x86_64: ['x86_64', 'athlon', 'i686', 'i586', 'i486', 'i386', 'noarch', 'src']
+2018-07-17 17:42:53 [INFO    ] [BEGIN] Running createrepo for the global package set
+2018-07-17 17:46:45 [INFO    ] [DONE ] Running createrepo for the global package set
+2018-07-17 17:46:45 [INFO    ] [BEGIN] Running createrepo for arch 'x86_64'
+2018-07-17 17:47:05 [INFO    ] [DONE ] Running createrepo for arch 'x86_64'
+2018-07-17 17:47:05 [INFO    ] [DONE ] ---------- PHASE: PKGSET ----------
+2018-07-17 17:47:05 [INFO    ] [BEGIN] ---------- PHASE: BUILDINSTALL ----------
+2018-07-17 17:47:05 [INFO    ] [BEGIN] ---------- PHASE: GATHER ----------
+2018-07-17 17:47:05 [INFO    ] [BEGIN] Running buildinstall for arch x86_64, variant Everything
+2018-07-17 17:47:05 [INFO    ] [BEGIN] Gathering packages (arch: x86_64, variant: Everything)
+2018-07-17 17:47:06 [INFO    ] Writing pungi config (arch: x86_64, variant: Everything): /mnt/hdd_tmp/tester_build_iso/redos/redos-MUROM-7.1-20180717.0/work/x86_64/pungi/Everything.x86_64.conf
+2018-07-17 17:47:06 [INFO    ] [BEGIN] Running pungi (arch: x86_64, variant: Everything)
+2018-07-17 17:47:51 [INFO    ] [DONE ] Running pungi (arch: x86_64, variant: Everything)
+2018-07-17 17:47:51 [INFO    ] [DONE ] Gathering packages (arch: x86_64, variant: Everything)
+2018-07-17 17:47:51 [INFO    ] [BEGIN] Writing package list (arch: x86_64, variant: Everything)
+2018-07-17 17:47:51 [INFO    ] [DONE ] Writing package list (arch: x86_64, variant: Everything)
+2018-07-17 17:47:51 [INFO    ] [BEGIN] Linking packages (arch: x86_64, variant: Everything)
+2018-07-17 17:47:51 [WARNING ] Package ecj-1:4.5.2-3.el7.x86_64 has no SRPM available, guessing epoch: ecj-1:4.5.2-3.el7.src.rpm
+2018-07-17 17:47:51 [DEBUG   ] Linked 100 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 200 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 300 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 400 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 500 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 600 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 700 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 800 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 900 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 1000 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 1100 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 1200 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 1300 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 1400 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 1500 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 1600 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 1700 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 1800 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 1900 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 2000 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 2100 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 2200 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 2300 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 2400 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 2500 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 2600 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 2700 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 2800 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 2900 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 3000 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 3100 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 3200 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 3300 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 3400 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 3500 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 3600 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 3700 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 3800 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 3900 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 4000 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 4100 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 4200 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 4300 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 4400 out of 6060 packages
+2018-07-17 17:47:52 [DEBUG   ] Linked 4500 out of 6060 packages
+2018-07-17 17:47:53 [DEBUG   ] Linked 4600 out of 6060 packages
+2018-07-17 17:47:53 [DEBUG   ] Linked 4700 out of 6060 packages
+2018-07-17 17:47:53 [DEBUG   ] Linked 4800 out of 6060 packages
+2018-07-17 17:47:53 [DEBUG   ] Linked 4900 out of 6060 packages
+2018-07-17 17:47:53 [DEBUG   ] Linked 5000 out of 6060 packages
+2018-07-17 17:47:53 [DEBUG   ] Linked 5100 out of 6060 packages
+2018-07-17 17:47:53 [DEBUG   ] Linked 5200 out of 6060 packages
+2018-07-17 17:47:53 [DEBUG   ] Linked 5300 out of 6060 packages
+2018-07-17 17:47:53 [DEBUG   ] Linked 5400 out of 6060 packages
+2018-07-17 17:47:53 [DEBUG   ] Linked 5500 out of 6060 packages
+2018-07-17 17:47:53 [DEBUG   ] Linked 5600 out of 6060 packages
+2018-07-17 17:47:53 [DEBUG   ] Linked 5700 out of 6060 packages
+2018-07-17 17:47:53 [DEBUG   ] Linked 5800 out of 6060 packages
+2018-07-17 17:47:53 [DEBUG   ] Linked 5900 out of 6060 packages
+2018-07-17 17:47:53 [DEBUG   ] Linked 6000 out of 6060 packages
+2018-07-17 17:47:53 [DEBUG   ] Linked 6060 out of 6060 packages
+2018-07-17 17:47:53 [INFO    ] [DONE ] Linking packages (arch: x86_64, variant: Everything)
+2018-07-17 17:47:53 [INFO    ] Writing RPM manifest: /mnt/hdd_tmp/tester_build_iso/redos/redos-MUROM-7.1-20180717.0/compose/metadata/rpms.json
+2018-07-17 17:47:53 [INFO    ] [DONE ] ---------- PHASE: GATHER ----------
+2018-07-17 17:47:53 [INFO    ] Config section 'extra_files' was not found. Skipping.
+2018-07-17 17:47:53 [WARNING ] [SKIP ] ---------- PHASE: EXTRA_FILES ----------
+2018-07-17 17:47:53 [INFO    ] [BEGIN] ---------- PHASE: CREATEREPO ----------
+2018-07-17 17:47:53 [INFO    ] No product certificates specified
+2018-07-17 17:47:53 [INFO    ] [BEGIN] Creating repo (arch: None, variant: Everything): /mnt/hdd_tmp/tester_build_iso/redos/redos-MUROM-7.1-20180717.0/compose/Everything/source/tree
+2018-07-17 17:47:53 [INFO    ] [BEGIN] Creating repo (arch: x86_64, variant: Everything): /mnt/hdd_tmp/tester_build_iso/redos/redos-MUROM-7.1-20180717.0/compose/Everything/x86_64/os
+2018-07-17 17:47:53 [INFO    ] [BEGIN] Creating repo (arch: x86_64, variant: Everything): /mnt/hdd_tmp/tester_build_iso/redos/redos-MUROM-7.1-20180717.0/compose/Everything/x86_64/debug/tree
+2018-07-17 17:47:54 [INFO    ] [DONE ] Creating repo (arch: x86_64, variant: Everything): /mnt/hdd_tmp/tester_build_iso/redos/redos-MUROM-7.1-20180717.0/compose/Everything/x86_64/debug/tree
+2018-07-17 17:47:58 [INFO    ] [DONE ] Creating repo (arch: None, variant: Everything): /mnt/hdd_tmp/tester_build_iso/redos/redos-MUROM-7.1-20180717.0/compose/Everything/source/tree
+2018-07-17 17:48:05 [INFO    ] [DONE ] Creating repo (arch: x86_64, variant: Everything): /mnt/hdd_tmp/tester_build_iso/redos/redos-MUROM-7.1-20180717.0/compose/Everything/x86_64/os
+2018-07-17 17:48:05 [INFO    ] [DONE ] ---------- PHASE: CREATEREPO ----------
+2018-07-17 17:55:02 [INFO    ] [DONE ] Running buildinstall for arch x86_64, variant Everything
+2018-07-17 17:55:02 [INFO    ] [DONE ] ---------- PHASE: BUILDINSTALL ----------
+2018-07-17 17:55:02 [DEBUG   ] Path to ks.cfg (buildinstall_kickstart) not specified.
+2018-07-17 17:55:24 [INFO    ] [BEGIN] Linking boot.iso (arch: x86_64, variant: Everything)
+2018-07-17 17:55:24 [INFO    ] [DONE ] Linking boot.iso (arch: x86_64, variant: Everything)
+2018-07-17 17:55:24 [INFO    ] Config section 'ostree' was not found. Skipping.
+2018-07-17 17:55:24 [WARNING ] [SKIP ] ---------- PHASE: OSTREE ----------
+2018-07-17 17:55:24 [DEBUG   ] Config option 'productimg' not set. Skipping creating product images.
+2018-07-17 17:55:24 [WARNING ] [SKIP ] ---------- PHASE: PRODUCTIMG ----------
+2018-07-17 17:55:28 [INFO    ] Writing treeinfo: /mnt/hdd_tmp/tester_build_iso/redos/redos-MUROM-7.1-20180717.0/compose/Everything/x86_64/os/.treeinfo
+2018-07-17 17:55:28 [INFO    ] Writing treeinfo: /mnt/hdd_tmp/tester_build_iso/redos/redos-MUROM-7.1-20180717.0/compose/Everything/source/tree/.treeinfo
+2018-07-17 17:55:28 [INFO    ] [BEGIN] ---------- PHASE: CREATEISO ----------
+2018-07-17 17:55:28 [CREATEISO       ] [DEBUG   ] split_iso all_files_ignore = images/boot.iso
+2018-07-17 17:55:29 [CREATEISO       ] [INFO    ] split_iso: Skipping images/boot.iso
+2018-07-17 17:55:29 [CREATEISO       ] [DEBUG   ] MediaSplitter: free space on single media would be 99999999995453257728. Total size of single medium: 4546742272.
+2018-07-17 17:55:30 [CREATEISO       ] [DEBUG   ] split_iso all_files_ignore = 
+2018-07-17 17:55:30 [CREATEISO       ] [DEBUG   ] MediaSplitter: free space on single media would be -5361125632. Total size of single medium: 10050639872.
+2018-07-17 17:55:33 [CREATEISO       ] [INFO    ] [BEGIN] Creating ISO (arch: x86_64, variant: Everything): redos-MUROM-7.1-20180717.0-Everything-x86_64-DVD1.iso
+2018-07-17 17:55:33 [CREATEISO       ] [INFO    ] [BEGIN] Creating ISO (arch: src, variant: Everything): redos-MUROM-7.1-20180717.0-Everything-source-DVD1.iso
+2018-07-17 17:55:33 [CREATEISO       ] [INFO    ] [BEGIN] Creating ISO (arch: src, variant: Everything): redos-MUROM-7.1-20180717.0-Everything-source-DVD2.iso
+2018-07-17 17:55:33 [INFO    ] Config section 'live_images' was not found. Skipping.
+2018-07-17 17:55:33 [CREATEISO       ] [INFO    ] [BEGIN] Creating ISO (arch: src, variant: Everything): redos-MUROM-7.1-20180717.0-Everything-source-DVD3.iso
+2018-07-17 17:55:33 [WARNING ] [SKIP ] ---------- PHASE: LIVE_IMAGES ----------
+2018-07-17 17:55:33 [INFO    ] Config section 'image_build' was not found. Skipping.
+2018-07-17 17:55:33 [WARNING ] [SKIP ] ---------- PHASE: IMAGE_BUILD ----------
+2018-07-17 17:55:33 [INFO    ] Config section 'live_media' was not found. Skipping.
+2018-07-17 17:55:33 [WARNING ] [SKIP ] ---------- PHASE: LIVE_MEDIA ----------
+2018-07-17 17:55:33 [INFO    ] Config section 'ostree_installer' was not found. Skipping.
+2018-07-17 17:55:33 [WARNING ] [SKIP ] ---------- PHASE: OSTREE_INSTALLER ----------
+2018-07-17 17:55:33 [INFO    ] Config section 'osbs' was not found. Skipping.
+2018-07-17 17:55:33 [WARNING ] [SKIP ] ---------- PHASE: OSBS ----------
+2018-07-17 17:55:39 [CREATEISO       ] [INFO    ] [DONE ] Creating ISO (arch: src, variant: Everything): redos-MUROM-7.1-20180717.0-Everything-source-DVD3.iso
+2018-07-17 17:56:40 [CREATEISO       ] [INFO    ] [DONE ] Creating ISO (arch: src, variant: Everything): redos-MUROM-7.1-20180717.0-Everything-source-DVD2.iso
+2018-07-17 17:56:40 [CREATEISO       ] [INFO    ] [DONE ] Creating ISO (arch: src, variant: Everything): redos-MUROM-7.1-20180717.0-Everything-source-DVD1.iso
+2018-07-17 17:59:27 [CREATEISO       ] [INFO    ] [DONE ] Creating ISO (arch: x86_64, variant: Everything): redos-MUROM-7.1-20180717.0-Everything-x86_64-DVD1.iso
+2018-07-17 17:59:27 [INFO    ] [DONE ] ---------- PHASE: CREATEISO ----------
+2018-07-17 17:59:27 [INFO    ] [BEGIN] ---------- PHASE: IMAGE_CHECKSUM ----------
+2018-07-17 18:01:39 [INFO    ] [DONE ] ---------- PHASE: IMAGE_CHECKSUM ----------
+2018-07-17 18:01:39 [INFO    ] [BEGIN] Writing composeinfo
+2018-07-17 18:01:39 [INFO    ] [DONE ] Writing composeinfo
+2018-07-17 18:01:39 [INFO    ] [BEGIN] ---------- PHASE: TEST ----------
+2018-07-17 18:01:39 [INFO    ] [BEGIN] Running repoclosure
+ERROR running command: /usr/bin/repoclosure --arch=x86_64 --arch=athlon --arch=i686 --arch=i586 --arch=i486 --arch=i386 --arch=noarch --repofrompath=repoclosure-Everything.x86_64,file:///mnt/hdd_tmp/tester_build_iso/redos/redos-MUROM-7.1-20180717.0/compose/Everything/x86_64/os --repoid=repoclosure-Everything.x86_64
+2018-07-17 18:01:44 [INFO    ] [DONE ] Running repoclosure
+2018-07-17 18:01:44 [INFO    ] [DONE ] ---------- PHASE: TEST ----------
+2018-07-17 18:01:44 [INFO    ] Compose finished: /mnt/hdd_tmp/tester_build_iso/redos/redos-MUROM-7.1-20180717.0

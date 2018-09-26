@@ -1,0 +1,69 @@
+[NAME]
+ФБО «Защита данных пользователя»
+Дискреционное управление доступом — дополнительные правила
+[/NAME]
+
+
+[PRERE]
+Никаких предварительных операций производить не требуется.
+[/PRERE]
+
+
+[EXPECTED]
+ФБО должны явно отказывают в доступе субъектов к объектам, основываясь дополнительных правилах.
+[/EXPECTED]
+
+
+[PROCEDURE]
+а) От имени администратора root создать точку монтирования:
+[code][root@goslinux ivanov]# mkdir /mnt/disk_ext[/code]
+
+Дать полные права для всех пользователей для созданной точки:
+[code][root@goslinux ivanov]# chmod 777 /mnt/disk_ext/[/code]
+
+Примонтировать внешний диск к созданной точке монтирования с опцией -r (только для чтения):
+[code][root@goslinux ivanov]# mount -r /dev/sdb1 /mnt/disk_ext/[/code]
+
+Просмотреть список примонтированных устройств:
+[code][root@goslinux ivanov]# mount
+...
+/dev/sdb1 on /mnt/disk_ext type ext4 (ro,relatime,seclabel,data=ordered)[/code]
+
+Попытаться создать файл на диске:
+[code][root@goslinux ivanov]# touch /mnt/disk_ext/test.txt[/code]
+
+Попытаться создать каталог на диске:
+[code][root@goslinux ivanov]# mkdir /mnt/disk_ext/dir[/code]
+
+б) От имени администратора root создать файл:
+[code][root@goslinux ivanov]# touch /tmp/imm.txt[/code]
+
+Назначить файлу атрибут «неизменяемый»:
+[code][root@goslinux ivanov]# chattr +i /tmp/imm.txt[/code]
+
+Проверить правильность назначенных прав:
+[code][root@goslinux ivanov]# lsattr /tmp/imm.txt
+----i--------e-- /tmp/imm.txt[/code]
+
+Попытаться записать данные в созданный файл:
+[code][root@goslinux ivanov]# echo testtext >> /tmp/imm.txt[/code]
+
+Попытаться удалить созданный файл:
+[code][root@goslinux ivanov]# rm /tmp/imm.txt[/code]
+[/PROCEDURE]
+
+
+[RESULT]
+а) Использование опции -r при монтировании разделов позволяет создавать доступ к монтируемым разделам в режиме только чтение. Это правило работает даже для администратора root. Попытки записать данные на раздел: создать каталог или файл заканчиваются ошибкой:
+[code]touch:   невозможно   выполнить   touch   для   «/mnt/disk_ext/test.txt»:   Файловая
+система доступна только для чтения
+mkdir:   невозможно   создать   каталог   «/mnt/disk_ext/dir»:   Файловая   система
+доступна только для чтения[/code]
+
+б) При назначении на файл атрибута «неизменяемый» даже администратор root не может выполнять действия по записи данных в файл, или удалению файла. При попытке выполнения указанных операций пользователь получает сообщение об ошибке:
+[code]bash: /tmp/imm.txt: Операция не позволена
+rm: невозможно удалить «/tmp/imm.txt»: Операция не позволена[/code]
+[/RESULT]
+
+
+

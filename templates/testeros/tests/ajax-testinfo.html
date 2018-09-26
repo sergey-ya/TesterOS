@@ -1,0 +1,68 @@
+{#ajax begin#}
+
+<div class="row" id="result-content">
+    <div class="col">
+
+        {#    <div class="row" style="padding-bottom: 10px;">#}
+        {#    <div class="col">#}
+        {#        <h5 class="title" style="font-size: 1.3rem; margin-bottom: 0px;">Тестирование ФБО «Аудит» / Сигналы нарушения безопасности</h5>#}
+        {#    </div>#}
+        {#</div>#}
+
+        <h4 class='title'>{{ result.name|safe }}</h4>
+
+        <h2 class='title-result'>Предварительные условия</h2>
+        {% if result.prere %}
+            {{ result.prere|safe }}
+        {% else %}
+            не определены
+        {% endif %}
+        <br><br>
+
+        <h2 class='title-result'>Ожидаемый результат</h2>
+        {% if result.expected %}
+            {{ result.expected|safe }}
+        {% else %}
+            не определен
+        {% endif %}
+        <br><br>
+
+        <h2 class='title-result'>Процедура тестирования</h2>
+        {% if result.procedure %}
+            {{ result.procedure|safe }}
+        {% else %}
+            не определена
+        {% endif %}
+        <br><br>
+
+        <h2 class='title-result'>Результат тестирования</h2>
+        {% if result.result %}
+            {{ result.result|safe }}
+        {% else %}
+            не определен
+        {% endif %}
+        <br><br>
+
+
+        {% if testFile2 != "None" %}
+            <h2 class='title-result'>Автоматическое тестирование</h2>
+            <div id="auto">
+                <b>файл теста</b>:
+                <br>
+                -<a id="upload" testFile2="{{ testFile2 }}" style="margin: 0 10px">{{ testFile2 }} <i class="fas fa-download"></i></a>
+                <br>
+                <br>
+                {{ result.auto|safe }}
+            </div>
+            <br><br>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row float-right" style="padding-top: 40px">
+    <div class="col">
+        <a id="a-scrollto">Вверх <i class="fas fa-arrow-up"></i></a> |
+        <a onClick="javascript:CallPrint('result-content');">Печать <i class="fas fa-print"></i></a>
+    </div>
+</div>
+{#ajax end#}

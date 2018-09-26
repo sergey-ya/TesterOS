@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block css2 %}
+    <style type="text/css">
+        .header-actionlog {
+            cursor: pointer;
+        }
+
+        .content-actionlog {
+            display: none;
+            line-height: 0;
+        }
+
+        table.table td, table.table th {
+            padding-top: 1rem;
+            padding-bottom: 0.5rem;
+        }
+
+        #table-info-data td {
+            padding-top: 0.8rem;
+            padding-bottom: 0rem;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+
+
+
+    <!--title-->
+    <div class="row" style="padding-bottom: 20px;">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <p style="text-align: justify;"><span class="header">Журнал RepoManager22</span></p>
+        </div>
+    </div>
+
+
+    <!--form-->
+    <div class="row">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col">
+                            <table class="table table-hover table-responsive-md table-fixed" id="table-actionlog">
+                                <thead>
+                                <tr>
+                                    <th style="width: 60px">#</th>
+                                    <th style="width: 170px">Date</th>
+                                    <th style="width: 80px">User</th>
+                                    <th>Message</th>
+                                    <th style="width: 60px">Status</th>
+                                </tr>
+                                </thead>
+
+                                <tbody id="table-actionlog-data">
+
+                                {% for elem in actionlog %}
+                                    <tr class="header-actionlog" num="{{ elem.id }}">
+                                        <td><b>{{ elem.id }}</b></td>
+                                        <td>{{ elem.created_at|date:'d E Y, H:i'  }}</td>
+                                        <td>{{ elem.user_name }}</td>
+                                        <td>{{ elem.message }}</td>
+                                        <td class="text-center">
+                                            {% if elem.status == 1 %}
+                                                <i class="fas fa-minus color-danger"></i>
+                                            {% else %}
+                                                <i class="fas fa-check color-success"></i>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+
+                                    <tr class="content-actionlog content-log-{{ elem.id }}" style="background: rgba(222, 226, 230, 0.21) none repeat scroll 0% 0%">
+                                        <td colspan="5">
+
+                                            <div class="row">
+                                                <div class="col">
+                                                    <p><b>Stapel:</b> {{ elem.stapel }}</p>
+                                                    <p><b>Repo:</b> {{ elem.repo }}</p>
+                                                    <p><b>Tag:</b> {{ elem.tag }}</p>
+                                                    <p><b>Entire:</b> {{ elem.entire }}</p>
+                                                    <p><b>Replace:</b> {{ elem.entire }}</p>
+                                                    <p><b>Update:</b> {{ elem.update }}</p>
+                                                    <p><b>Sign:</b> {{ elem.sign }}</p>
+                                                </div>
+
+                                                <div class="col">
+                                                    <p><b>Packages:</b></p>
+
+                                                    <table class="table" id="table-info">
+                                                        <thead>
+                                                        <tr>
+                                                            <th style="width:30px">#</th>
+                                                            <th >Имя</th>
+                                                            <th style="width:80px">Версия</th>
+                                                            <th style="width:80px">Релиз</th>
+                                                            <th style="width:40px"></th>
+                                                        </tr>
+                                                        </thead>
+
+                                                        <tbody id="table-info-data">
+                                                        {% for pkg in elem.packages %}
+                                                            <tr>
+                                                                <td>{{ forloop.counter }}</td>
+                                                                <td>{{ pkg.package_name }}</td>
+                                                                <td>{{ pkg.version }}</td>
+                                                                <td>{{ pkg.release }}</td>
+                                                                <td>
+                                                                    <a href="{{ elem.stapel }}/koji/buildinfo?buildID={{ pkg.build_id }}" target="_blank">
+                                                                        <i class="fas fa-eye" id="url" style="margin-bottom: 5px;margin-top: -10px;"></i>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+
+                                                        </tbody>
+                                                    </table>
+
+                                                    </pdiv>
+
+                                                </div>
+
+
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+
+                            <!--Pagination-->
+                            <nav aria-label="pagination example">
+                                <ul class="pagination pg-blue justify-content-center">
+
+                                    <!--Arrow left-->
+                                    {% if actionlog.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ actionlog.previous_page_number }}" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                                <span class="sr-only">Previous</span>
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                                <span class="sr-only">Previous</span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+
+
+                                    {% for x in actionlog.paginator.page_range %}
+                                        {% if actionlog.number == x %}
+                                            <li class="page-item active">
+                                                <a class="page-link" href="#">{{ x }} <span class="sr-only">(current)</span></a>
+                                            </li>
+                                        {% else %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ x }}">{{ x }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+
+
+                                    {#Arrow Right#}
+                                    {% if actionlog.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ actionlog.next_page_number }}" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                                <span class="sr-only">Next</span>
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                                <span class="sr-only">Next</span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block js %}
+
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+
+            {#клик по строке таблицы логирования#}
+            $('.header-actionlog').click(function() {
+                {#console.log('12');#}
+                {#$('#table-actionlog-data .header-actionlog').removeAttr('style');#}
+                {#$('#table-actionlog-data .content-actionlog').css('display', 'none');#}
+                {#$(this).css('background', '#e1ebf0');#}
+                num = $(this).attr('num');
+                {#$('.content-log-' + num).css('background', '#dee2e680');#}
+                $(".content-log-" + num).toggle();
+            });
+
+        });
+
+    </script>
+{% endblock %}
